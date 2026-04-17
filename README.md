@@ -1,3 +1,18 @@
+# UNQ - PDES - 2026 c1
+## Aplicación Compra tu Hogar (CTH)
+
+### Frontend
+
+Tecnologías elegidas
+- React + Vite + Typescript
+
+Integrantes
+- Juan Hualampa
+- Sofia Justiniano
+
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
