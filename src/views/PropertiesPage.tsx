@@ -9,10 +9,12 @@ export default function PropertiesPage() {
   if (error) return <p>Error: {error}</p>
 
   return (
-    <div className="properties-list">
-      {list.map((p) => (
-        <PropertyCard key={p.propertyId} property={p} />
-      ))}
+    <div className="properties-list-wrapper">
+      <div className="properties-list">
+        {list.map((p) => (
+          <PropertyCard key={p.propertyId} property={p} />
+        ))}
+      </div>
     </div>
   )
 }
