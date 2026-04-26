@@ -1,4 +1,4 @@
-export type ProfileType = 'buyer' | 'seller' | 'admin'
+export type ProfileType = 'buyer' | 'admin'
 export type PropertyType = 'house' | 'apartment' | 'land' | 'commercial'
 
 export interface User {
@@ -17,10 +17,16 @@ export interface Agency {
   adminUserId: number
 }
 
+export interface Cadastre {
+  circunscripcion: string
+  seccion: string
+  manzana: string
+  parcela: string
+}
+
 export interface Property {
   propertyId: number
   propertyType: PropertyType
-  price: number
   address: string
   city: string
   province: string
@@ -28,7 +34,22 @@ export interface Property {
   rooms: number
   description: string
   available: boolean
+  cadastre: Cadastre
+}
+
+export interface Picture {
+  pictureId: number
+  agencyPropertyId: number
+  url: string
+}
+
+export interface AgencyProperty {
+  agencyPropertyId: number
   agencyId: number
+  propertyId: number
+  listedDate: string
+  listedPrice: number
+  pictures: Picture[]
 }
 
 export interface Favorite {
@@ -41,10 +62,18 @@ export interface Favorite {
   comment: string
 }
 
+export interface PropertyListing {
+  agencyPropertyId: number
+  listedPrice: number
+  listedDate: string
+  pictures: Picture[]
+  property: Property
+}
+
 export interface Purchase {
   purchaseId: number
   userId: number
-  propertyId: number
+  agencyPropertyId: number
   purchasePrice: number
   purchaseDate: string
 }
