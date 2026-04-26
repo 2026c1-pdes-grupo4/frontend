@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
-import { fetchProperties } from '../services/propertyService'
-import type { Property } from '../models/types'
+import { fetchListings } from '../services/propertyService'
+import type { PropertyListing } from '../models/types'
 
 export function useProperties() {
-  const [list, setList] = useState<Property[]>([])
+  const [list, setList] = useState<PropertyListing[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchProperties()
+    fetchListings()
       .then(setList)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))

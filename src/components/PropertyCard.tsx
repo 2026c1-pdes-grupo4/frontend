@@ -1,14 +1,21 @@
-import type { Property } from '../models/types'
+import type { PropertyListing } from '../models/types'
 import './PropertyCard.css'
 
 interface Props {
-  property: Property
+  listing: PropertyListing
 }
 
-export default function PropertyCard({ property: p }: Props) {
+export default function PropertyCard({ listing }: Props) {
+  const { property: p, listedPrice, pictures } = listing
+  const firstPicture = pictures[0]?.url
+
   return (
     <div className="property-card">
-      <div className="property-image">no image</div>
+      <div className="property-image">
+        {firstPicture
+          ? <img src={firstPicture} alt={p.address} />
+          : 'no image'}
+      </div>
 
       <div className="property-body">
         <div className="property-info">
@@ -23,7 +30,7 @@ export default function PropertyCard({ property: p }: Props) {
 
         <div className="property-price-box">
           <span className="type">{p.propertyType}</span>
-          <span className="price">${p.price.toLocaleString()}</span>
+          <span className="price">${listedPrice.toLocaleString()}</span>
           <span className={p.available ? 'availability' : 'availability unavailable'}>
             {p.available ? 'Available' : 'Sold'}
           </span>

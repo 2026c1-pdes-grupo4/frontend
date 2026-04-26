@@ -11,8 +11,8 @@ export default function PropertiesPage() {
   return (
     <div className="properties-list-wrapper">
       <div className="properties-list">
-        {list.map((p) => (
-          <PropertyCard key={p.propertyId} property={p} />
+        {list.map((listing) => (
+          <PropertyCard key={listing.agencyPropertyId} listing={listing} />
         ))}
       </div>
     </div>

@@ -1,9 +1,15 @@
-import { properties as fixtureData } from '../models/fixtures'
-import type { Property } from '../models/types'
+import { properties as fixtureProperties, agencyProperties } from '../models/fixtures'
+import type { PropertyListing } from '../models/types'
 
-export async function fetchProperties(): Promise<Property[]> {
+export async function fetchListings(): Promise<PropertyListing[]> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') {
-    return fixtureData
+    return agencyProperties.map((ap) => ({
+      agencyPropertyId: ap.agencyPropertyId,
+      listedPrice: ap.listedPrice,
+      listedDate: ap.listedDate,
+      pictures: ap.pictures,
+      property: fixtureProperties.find((p) => p.propertyId === ap.propertyId)!,
+    }))
   }
 
   const res = await fetch(`${import.meta.env.VITE_API_URL}/properties`)
