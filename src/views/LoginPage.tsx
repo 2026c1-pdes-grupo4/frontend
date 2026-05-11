@@ -11,8 +11,11 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await handleLogin(username, password)
-    navigate('/properties')
+    const role = await handleLogin(username, password)
+    if (!role) return
+    if (role === 'ROLE_ADMIN') navigate('/admin')
+    else if (role === 'ROLE_AGENCY') navigate('/agency')
+    else navigate('/properties')
   }
 
   return (
