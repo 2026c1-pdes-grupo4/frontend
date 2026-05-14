@@ -1,0 +1,134 @@
+.fav-page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.fav-page h2 {
+  font-size: 22px;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+.fav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fav-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fav-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fav-property-id {
+  font-weight: bold;
+  font-size: 15px;
+  color: #222;
+}
+
+.fav-score {
+  font-size: 14px;
+  color: #2a7ae2;
+  font-weight: bold;
+}
+
+.fav-comment {
+  font-size: 13px;
+  color: #444;
+  margin: 0;
+}
+
+.fav-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.fav-empty {
+  text-align: center;
+  color: #888;
+  margin-top: 60px;
+}
+
+.fav-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fav-action-btn {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid #2a7ae2;
+  background: #fff;
+  color: #2a7ae2;
+  cursor: pointer;
+}
+
+.fav-action-btn--delete {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.fav-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+.fav-edit-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  color: #444;
+  gap: 4px;
+}
+
+.fav-edit-form textarea {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.fav-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.fav-form-actions button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.fav-form-actions button[type='submit'] {
+  background: #003366;
+  color: #fff;
+}
+
+.fav-form-actions button[type='button'] {
+  background: #eee;
+  color: #444;
+}
