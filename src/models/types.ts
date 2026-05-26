@@ -1,5 +1,5 @@
 export type ProfileType = 'buyer' | 'seller' | 'admin'
-export type PropertyType = 'house' | 'apartment' | 'land' | 'commercial'
+export type PropertyType = 'house' | 'apartment'
 
 export interface User {
   userId: number
@@ -47,6 +47,15 @@ export interface Purchase {
   propertyId: number
   purchasePrice: number
   purchaseDate: string
+}
+
+export interface PropertyFilter {
+  city?: string
+  province?: string
+  propertyType?: PropertyType | ''
+  minPrice?: number
+  maxPrice?: number
+  minRooms?: number
 }
 
 export interface LoginRequest {
