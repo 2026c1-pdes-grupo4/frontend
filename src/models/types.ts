@@ -49,6 +49,12 @@ export interface Purchase {
   purchaseDate: string
 }
 
+export interface AgencyClient {
+  userId: number
+  username: string
+  email: string
+}
+
 export interface LoginRequest {
   username: string
   password: string
