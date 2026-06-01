@@ -1,0 +1,95 @@
+.agency-dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.agency-dashboard h1 {
+  font-size: 28px;
+  margin: 0 0 20px;
+  color: #08060d;
+}
+
+.agency-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #e5e4e7;
+  margin-bottom: 24px;
+}
+
+.agency-tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: #6b6375;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 4px 4px 0 0;
+}
+
+.agency-tabs button.active {
+  color: #003366;
+  border-bottom-color: #003366;
+  font-weight: 600;
+}
+
+.tab-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.btn-primary {
+  align-self: flex-start;
+  padding: 8px 18px;
+  background: #003366;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.property-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.data-table th {
+  background: #f4f3ec;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b6375;
+}
+
+.data-table td {
+  padding: 10px 14px;
+  border-top: 1px solid #e5e4e7;
+  color: #08060d;
+}
+
+.loading {
+  color: #6b6375;
+  font-size: 14px;
+}
+
+.error {
+  color: #c62828;
+  font-size: 14px;
+}

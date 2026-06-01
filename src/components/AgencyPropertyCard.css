@@ -1,0 +1,81 @@
+.agency-property-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.agency-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agency-card-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #08060d;
+}
+
+.agency-card-location {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.agency-card-meta {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+.agency-card-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2a7ae2;
+  margin: 4px 0 0;
+}
+
+.agency-card-status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.agency-card-status.available {
+  background: #e6f4ea;
+  color: #2e7d32;
+}
+
+.agency-card-status.sold {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.agency-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agency-card-actions button {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  background: #003366;
+  color: #fff;
+  min-width: 80px;
+}
+
+.agency-card-actions .btn-danger {
+  background: #c62828;
+}
