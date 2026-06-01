@@ -6,6 +6,7 @@ import LoginPage from './views/LoginPage'
 import PropertiesPage from './views/PropertiesPage'
 import FavoritesPage from './views/FavoritesPage'
 import AgencyDashboardPage from './views/AgencyDashboardPage'
+import AdminPage from './views/AdminPage'
 
 function AppRoutes() {
   const { token, role } = useAuthContext()
@@ -19,7 +20,7 @@ function AppRoutes() {
         <Route path="/login" element={!token ? <LoginPage /> : <Navigate to={defaultPath} />} />
         <Route path="/properties" element={token && role === 'ROLE_BUYER' ? <PropertiesPage /> : <Navigate to={token ? defaultPath : '/login'} />} />
         <Route path="/favorites" element={token && role === 'ROLE_BUYER' ? <FavoritesPage /> : <Navigate to={token ? defaultPath : '/login'} />} />
-        <Route path="/admin" element={token && role === 'ROLE_ADMIN' ? <div>Panel Admin</div> : <Navigate to="/login" />} />
+        <Route path="/admin" element={token && role === 'ROLE_ADMIN' ? <AdminPage /> : <Navigate to="/login" />} />
         <Route path="/agency" element={token && role === 'ROLE_AGENCY' ? <AgencyDashboardPage /> : <Navigate to="/login" />} />
         <Route path="*" element={<Navigate to={token ? defaultPath : '/login'} />} />
       </Routes>
