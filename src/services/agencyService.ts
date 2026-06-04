@@ -1,5 +1,6 @@
 import type { AgencyProperty, Purchase, AgencyClient, PropertyInput } from '../models/types'
 import { agencyProperties as agencyPropFixtures, purchases as purchaseFixtures, agencyClients as clientFixtures } from '../models/fixtures'
+import { apiFetch } from './http'
 
 const API = import.meta.env.VITE_API_URL
 const USE_FIXTURES = import.meta.env.VITE_USE_FIXTURES === 'true'
@@ -10,8 +11,7 @@ function authHeaders(token: string) {
 
 export async function fetchAgencyProperties(token: string): Promise<AgencyProperty[]> {
   if (USE_FIXTURES) return agencyPropFixtures
-  const res = await fetch(`${API}/agency-properties/agency/me`, { headers: authHeaders(token) })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const res = await apiFetch(`${API}/agency-properties/agency/me`, { headers: authHeaders(token) })
   return res.json()
 }
 
@@ -30,20 +30,18 @@ export async function createProperty(token: string, data: PropertyInput): Promis
       agencyName: 'ritondo_propiedades',
     }
   }
-  const propRes = await fetch(`${API}/properties`, {
+  const propRes = await apiFetch(`${API}/properties`, {
     method: 'POST',
     headers: authHeaders(token),
     body: JSON.stringify(data),
   })
-  if (!propRes.ok) throw new Error(`HTTP ${propRes.status}`)
   const property = await propRes.json() as { id: number }
 
-  const listingRes = await fetch(`${API}/agency-properties`, {
+  const listingRes = await apiFetch(`${API}/agency-properties`, {
     method: 'POST',
     headers: authHeaders(token),
     body: JSON.stringify({ propertyId: property.id, listedPrice: data.price }),
   })
-  if (!listingRes.ok) throw new Error(`HTTP ${listingRes.status}`)
   return listingRes.json()
 }
 
@@ -52,39 +50,35 @@ export async function updateProperty(token: string, agencyPropertyId: number, pr
     const found = agencyPropFixtures.find(p => p.id === agencyPropertyId)
     return { ...found!, ...data, listedPrice: data.price ?? found!.listedPrice }
   }
-  await fetch(`${API}/properties/${propertyId}`, {
+  await apiFetch(`${API}/properties/${propertyId}`, {
     method: 'PUT',
     headers: authHeaders(token),
     body: JSON.stringify(data),
   })
-  const res = await fetch(`${API}/agency-properties/${agencyPropertyId}`, {
+  const res = await apiFetch(`${API}/agency-properties/${agencyPropertyId}`, {
     method: 'PUT',
     headers: authHeaders(token),
     body: JSON.stringify({ propertyId, listedPrice: data.price }),
   })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
 }
 
 export async function deleteProperty(token: string, id: number): Promise<void> {
   if (USE_FIXTURES) return
-  const res = await fetch(`${API}/agency-properties/${id}`, {
+  await apiFetch(`${API}/agency-properties/${id}`, {
     method: 'DELETE',
     headers: authHeaders(token),
   })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
 }
 
 export async function fetchAgencyPurchases(token: string): Promise<Purchase[]> {
   if (USE_FIXTURES) return purchaseFixtures
-  const res = await fetch(`${API}/purchases/agency/me`, { headers: authHeaders(token) })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const res = await apiFetch(`${API}/purchases/agency/me`, { headers: authHeaders(token) })
   return res.json()
 }
 
 export async function fetchAgencyClients(token: string): Promise<AgencyClient[]> {
   if (USE_FIXTURES) return clientFixtures
-  const res = await fetch(`${API}/agencies/me/clients`, { headers: authHeaders(token) })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const res = await apiFetch(`${API}/agencies/me/clients`, { headers: authHeaders(token) })
   return res.json()
 }

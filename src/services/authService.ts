@@ -1,11 +1,11 @@
 import type { LoginRequest, LoginResponse } from '../models/types'
+import { apiFetch } from './http'
 
 export async function login(req: LoginRequest): Promise<LoginResponse> {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+  const res = await apiFetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
   })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
 }

@@ -1,5 +1,6 @@
 import { properties as fixtureData } from '../models/fixtures'
 import type { Property, PropertyFilter } from '../models/types'
+import { apiFetch } from './http'
 
 export async function fetchProperties(filter: PropertyFilter = {}, token?: string | null): Promise<Property[]> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') {
@@ -10,8 +11,7 @@ export async function fetchProperties(filter: PropertyFilter = {}, token?: strin
   const query = params.toString() ? `?${params}` : ''
   const headers: Record<string, string> = {}
   if (token) headers['Authorization'] = `Bearer ${token}`
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/search${query}`, { headers })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const res = await apiFetch(`${import.meta.env.VITE_API_URL}/properties/search${query}`, { headers })
   return res.json()
 }
 
