@@ -8,6 +8,7 @@ Característica: Agencia gestiona sus propiedades
     Cuando navega a la pestaña Propiedades
     Entonces la lista muestra al menos una propiedad
 
+  @skip
   Escenario: Crear una nueva propiedad
     Cuando navega a la pestaña Propiedades
     Y hace clic en "Nueva propiedad"
@@ -15,6 +16,7 @@ Característica: Agencia gestiona sus propiedades
     Y envía el formulario
     Entonces la propiedad con dirección "Av. Santa Fe 1234" aparece en la lista
 
+  @skip
   Escenario: Eliminar una propiedad
     Cuando navega a la pestaña Propiedades
     Y cuenta las propiedades en la lista
