@@ -1,12 +1,21 @@
 import { Given } from '@cucumber/cucumber'
 import { CustomWorld } from '../support/world.ts'
 
-// JWT with payload { roles: ['ROLE_AGENCY'] } — fixture-mode only
-const AGENCY_TOKEN = `eyJhbGciOiJIUzI1NiJ9.${Buffer.from('{"roles":["ROLE_AGENCY"]}').toString('base64')}.fake`
-
 Given('que la agencia está autenticada en el panel', async function (this: CustomWorld) {
+  const apiUrl = process.env.VITE_API_URL ?? 'http://localhost:8080'
+  const username = process.env.E2E_AGENCY_USER ?? ''
+  const password = process.env.E2E_AGENCY_PASS ?? ''
+
+  const res = await fetch(`${apiUrl}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+  if (!res.ok) throw new Error(`Login failed: HTTP ${res.status}`)
+  const { token } = await res.json() as { token: string }
+
   await this.page.goto(this.baseUrl)
-  await this.page.evaluate((token: string) => localStorage.setItem('token', token), AGENCY_TOKEN)
+  await this.page.evaluate((t: string) => localStorage.setItem('token', t), token)
   await this.page.goto(`${this.baseUrl}/agency`)
   await this.page.waitForSelector('[data-testid="agency-tabs"]')
 })
