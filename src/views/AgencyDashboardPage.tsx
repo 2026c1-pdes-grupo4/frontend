@@ -44,6 +44,7 @@ export default function AgencyDashboardPage() {
   }
 
   return (
+    <div className="agency-dashboard-wrapper">
     <div className="agency-dashboard">
       <h1>Panel de Agencia</h1>
 
@@ -156,6 +157,7 @@ export default function AgencyDashboardPage() {
           </table>
         </section>
       )}
+    </div>
     </div>
   )
 }

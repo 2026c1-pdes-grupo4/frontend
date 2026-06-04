@@ -48,6 +48,7 @@ export default function AdminPage() {
   const current = { users, agencies, favorites, purchases }[tab]
 
   return (
+    <div className="admin-page-wrapper">
     <div className="admin-page">
       <h2>Admin Panel</h2>
 
@@ -80,6 +81,7 @@ export default function AdminPage() {
           <PurchasesTable rows={purchases.data as Purchase[]} />
         )}
       </div>
+    </div>
     </div>
   )
 }
