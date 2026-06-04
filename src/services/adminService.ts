@@ -24,10 +24,10 @@ export async function fetchAllAgencies(token: string): Promise<Agency[]> {
 
 export async function fetchAllFavorites(token: string): Promise<Favorite[]> {
   if (USE_FIXTURES) return favorites
-  return authGet('/favorites/all', token)
+  return authGet('/admin/favorites', token)
 }
 
 export async function fetchAllPurchases(token: string): Promise<Purchase[]> {
   if (USE_FIXTURES) return purchases
-  return authGet('/purchases/all', token)
+  return authGet('/admin/purchases', token)
 }

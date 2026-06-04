@@ -9,7 +9,7 @@ function authHeaders(token: string) {
 
 export async function fetchAgencyProperties(token: string): Promise<Property[]> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') return propFixtures.filter(p => p.agencyId === 1)
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/agencies/me/properties`, { headers: authHeaders(token) })
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/agency-properties/agency/me`, { headers: authHeaders(token) })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
 }
@@ -32,7 +32,7 @@ export async function updateProperty(token: string, id: number, data: Partial<Pr
     return { propertyId: id, available: true, agencyId: 1, propertyType: 'apartment', price: 0, address: '', city: '', province: '', areaSq: 0, rooms: 0, description: '', ...data }
   }
   const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: authHeaders(token),
     body: JSON.stringify(data),
   })
@@ -51,7 +51,7 @@ export async function deleteProperty(token: string, id: number): Promise<void> {
 
 export async function fetchAgencyPurchases(token: string): Promise<Purchase[]> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') return purchaseFixtures
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/purchases`, { headers: authHeaders(token) })
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/purchases/agency/me`, { headers: authHeaders(token) })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
 }

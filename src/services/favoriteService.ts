@@ -6,7 +6,7 @@ export async function fetchFavorites(token: string): Promise<Favorite[]> {
     return fixtureData
   }
 
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/favorites`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/favorites/me`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -54,7 +54,7 @@ export async function updateFavorite(
   }
 
   const res = await fetch(`${import.meta.env.VITE_API_URL}/favorites/${favoriteId}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
