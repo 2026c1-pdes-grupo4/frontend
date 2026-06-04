@@ -1,19 +1,19 @@
-import type { User, Agency, Property, Favorite, Purchase, AgencyClient } from './types'
+import type { User, Agency, Property, AgencyProperty, Favorite, Purchase, AgencyClient } from './types'
 
 export const users: User[] = [
-  { userId: 1, username: 'manuel', email: 'manuel@argentina.gob', password: '1234', profileType: 'buyer' },
-  { userId: 2, username: 'claudia', email: 'claudia@mail.com', password: 'abcd', profileType: 'seller' },
-  { userId: 3, username: 'karina', email: 'karina@argentina.gob', password: 'efgh', profileType: 'admin' },
+  { id: 1, username: 'manuel', email: 'manuel@argentina.gob', profileType: 'BUYER' },
+  { id: 2, username: 'claudia', email: 'claudia@mail.com', profileType: 'BUYER' },
+  { id: 3, username: 'karina', email: 'karina@argentina.gob', profileType: 'ADMIN' },
 ]
 
 export const agencies: Agency[] = [
-  { agencyId: 1, username: 'ritondo_propiedades', email: 'ritondo@propiedades.com', password: 'ijkl', adminUserId: 2 },
+  { id: 1, username: 'ritondo_propiedades', email: 'ritondo@propiedades.com' },
 ]
 
 export const properties: Property[] = [
   {
-    propertyId: 1,
-    propertyType: 'apartment',
+    id: 1,
+    propertyType: 'APARTMENT',
     price: 230000,
     address: 'Miró 548',
     city: 'Ciudad de Buenos Aires',
@@ -25,8 +25,8 @@ export const properties: Property[] = [
     agencyId: 1,
   },
   {
-    propertyId: 2,
-    propertyType: 'house',
+    id: 2,
+    propertyType: 'HOUSE',
     price: 200000,
     address: 'Indio Cua 380',
     city: 'Exaltación de la Cruz',
@@ -39,23 +39,52 @@ export const properties: Property[] = [
   },
 ]
 
+export const agencyProperties: AgencyProperty[] = [
+  {
+    id: 1,
+    propertyId: 1,
+    address: 'Miró 548',
+    city: 'Ciudad de Buenos Aires',
+    propertyType: 'APARTMENT',
+    listedPrice: 230000,
+    listedDate: '2025-01-01',
+    available: true,
+    agencyId: 1,
+    agencyName: 'ritondo_propiedades',
+  },
+  {
+    id: 2,
+    propertyId: 2,
+    address: 'Indio Cua 380',
+    city: 'Exaltación de la Cruz',
+    propertyType: 'HOUSE',
+    listedPrice: 200000,
+    listedDate: '2025-01-15',
+    available: false,
+    agencyId: 1,
+    agencyName: 'ritondo_propiedades',
+  },
+]
+
 export const favorites: Favorite[] = [
   {
-    favoriteId: 1,
-    userId: 1,
-    propertyId: 1,
-    savedDate: '2025-04-01',
-    savedPrice: 340000,
+    id: 1,
+    agencyPropertyId: 1,
+    propertyAddress: 'Miró 548',
+    city: 'Ciudad de Buenos Aires',
+    agencyName: 'ritondo_propiedades',
     score: 5,
     comment: 'Faltan renovaciones, buscar financiamiento',
+    savedPrice: 340000,
+    savedDate: '2025-04-01',
   },
 ]
 
 export const purchases: Purchase[] = [
   {
-    purchaseId: 1,
-    userId: 1,
-    propertyId: 2,
+    id: 1,
+    propertyAddress: 'Indio Cua 380',
+    agencyName: 'ritondo_propiedades',
     purchasePrice: 150000,
     purchaseDate: '2024-03-15',
   },
