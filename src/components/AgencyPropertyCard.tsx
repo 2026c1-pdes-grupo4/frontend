@@ -16,12 +16,12 @@ export default function AgencyPropertyCard({ property, onEdit, onDelete }: Props
         <p className="agency-card-meta">{property.propertyType}</p>
         <p className="agency-card-price">USD {property.listedPrice.toLocaleString()}</p>
         <span className={`agency-card-status ${property.available ? 'available' : 'sold'}`}>
-          {property.available ? 'Disponible' : 'Vendido'}
+          {property.available ? 'Available' : 'Sold'}
         </span>
       </div>
       <div className="agency-card-actions">
-        <button onClick={() => onEdit(property)} data-testid="btn-edit-property">Editar</button>
-        <button className="btn-danger" onClick={() => onDelete(property.id)} data-testid="btn-delete-property">Eliminar</button>
+        <button onClick={() => onEdit(property)} data-testid="btn-edit-property">Edit</button>
+        <button className="btn-danger" onClick={() => onDelete(property.id)} data-testid="btn-delete-property">Delete</button>
       </div>
     </div>
   )
