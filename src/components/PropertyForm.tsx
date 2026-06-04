@@ -33,7 +33,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
   return (
     <form className="property-form" onSubmit={handleSubmit} data-testid="property-form">
       <div className="form-group">
-        <label>Tipo</label>
+        <label>Type</label>
         <select
           value={form.propertyType}
           onChange={e => set('propertyType', e.target.value)}
@@ -43,7 +43,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
         </select>
       </div>
       <div className="form-group">
-        <label>Dirección</label>
+        <label>Address</label>
         <input
           value={form.address}
           onChange={e => set('address', e.target.value)}
@@ -52,7 +52,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
         />
       </div>
       <div className="form-group">
-        <label>Ciudad</label>
+        <label>City</label>
         <input
           value={form.city}
           onChange={e => set('city', e.target.value)}
@@ -61,7 +61,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
         />
       </div>
       <div className="form-group">
-        <label>Provincia</label>
+        <label>Province</label>
         <input
           value={form.province}
           onChange={e => set('province', e.target.value)}
@@ -71,7 +71,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
       </div>
       <div className="form-row">
         <div className="form-group">
-          <label>Precio (USD)</label>
+          <label>Price (USD)</label>
           <input
             type="number"
             value={form.price}
@@ -82,7 +82,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
           />
         </div>
         <div className="form-group">
-          <label>Superficie (m²)</label>
+          <label>Area (m²)</label>
           <input
             type="number"
             value={form.areaSq}
@@ -93,7 +93,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
           />
         </div>
         <div className="form-group">
-          <label>Ambientes</label>
+          <label>Rooms</label>
           <input
             type="number"
             value={form.rooms}
@@ -105,7 +105,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
         </div>
       </div>
       <div className="form-group">
-        <label>Descripción</label>
+        <label>Description</label>
         <textarea
           value={form.description}
           onChange={e => set('description', e.target.value)}
@@ -113,8 +113,8 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
         />
       </div>
       <div className="form-actions">
-        <button type="submit" data-testid="btn-submit-property">Guardar</button>
-        <button type="button" onClick={onCancel} data-testid="btn-cancel-property">Cancelar</button>
+        <button type="submit" data-testid="btn-submit-property">Save</button>
+        <button type="button" onClick={onCancel} data-testid="btn-cancel-property">Cancel</button>
       </div>
     </form>
   )
