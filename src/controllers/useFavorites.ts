@@ -17,24 +17,24 @@ export function useFavorites() {
       .finally(() => setLoading(false))
   }, [token])
 
-  const addFavorite = async (propertyId: number, score: number, comment: string) => {
+  const addFavorite = async (agencyPropertyId: number, score: number, comment: string) => {
     if (!token) return
-    const saved = await saveFavorite(token, propertyId, score, comment)
+    const saved = await saveFavorite(token, agencyPropertyId, score, comment)
     setList((prev) => [...prev, saved])
   }
 
-  const isFavorite = (propertyId: number) => list.some((f) => f.propertyId === propertyId)
+  const isFavorite = (agencyPropertyId: number) => list.some((f) => f.agencyPropertyId === agencyPropertyId)
 
   const editFavorite = async (favoriteId: number, score: number, comment: string) => {
     if (!token) return
     const updated = await updateFavorite(token, favoriteId, score, comment)
-    setList((prev) => prev.map((f) => (f.favoriteId === favoriteId ? { ...f, ...updated } : f)))
+    setList((prev) => prev.map((f) => (f.id === favoriteId ? { ...f, ...updated } : f)))
   }
 
   const removeFavorite = async (favoriteId: number) => {
     if (!token) return
     await deleteFavorite(token, favoriteId)
-    setList((prev) => prev.filter((f) => f.favoriteId !== favoriteId))
+    setList((prev) => prev.filter((f) => f.id !== favoriteId))
   }
 
   return { list, loading, error, addFavorite, isFavorite, editFavorite, removeFavorite }

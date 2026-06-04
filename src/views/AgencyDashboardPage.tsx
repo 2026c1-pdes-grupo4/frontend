@@ -4,16 +4,15 @@ import { useAgencyPurchases } from '../controllers/useAgencyPurchases'
 import { useAgencyClients } from '../controllers/useAgencyClients'
 import AgencyPropertyCard from '../components/AgencyPropertyCard'
 import PropertyForm from '../components/PropertyForm'
-import type { Property } from '../models/types'
+import type { AgencyProperty, PropertyInput } from '../models/types'
 import './AgencyDashboardPage.css'
 
 type Tab = 'properties' | 'sales' | 'clients'
-type PropertyInput = Omit<Property, 'propertyId' | 'available' | 'agencyId'>
 
 export default function AgencyDashboardPage() {
   const [tab, setTab] = useState<Tab>('properties')
   const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState<Property | null>(null)
+  const [editing, setEditing] = useState<AgencyProperty | null>(null)
 
   const { list: properties, loading: propLoading, error: propError, add, edit, remove } = useAgencyProperties()
   const { list: purchases, loading: salesLoading, error: salesError } = useAgencyPurchases()
@@ -21,7 +20,7 @@ export default function AgencyDashboardPage() {
 
   const handleSubmit = async (data: PropertyInput) => {
     if (editing) {
-      await edit(editing.propertyId, data)
+      await edit(editing, data)
     } else {
       await add(data)
     }
@@ -29,7 +28,7 @@ export default function AgencyDashboardPage() {
     setEditing(null)
   }
 
-  const handleEdit = (property: Property) => {
+  const handleEdit = (property: AgencyProperty) => {
     setEditing(property)
     setShowForm(true)
   }
@@ -45,6 +44,7 @@ export default function AgencyDashboardPage() {
   }
 
   return (
+    <div className="agency-dashboard-wrapper">
     <div className="agency-dashboard">
       <h1>Panel de Agencia</h1>
 
@@ -81,16 +81,12 @@ export default function AgencyDashboardPage() {
           )}
           {showForm && (
             <PropertyForm
-              key={editing?.propertyId ?? 'new'}
+              key={editing?.id ?? 'new'}
               initial={editing ? {
                 propertyType: editing.propertyType,
-                price: editing.price,
+                price: editing.listedPrice,
                 address: editing.address,
                 city: editing.city,
-                province: editing.province,
-                areaSq: editing.areaSq,
-                rooms: editing.rooms,
-                description: editing.description,
               } : undefined}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
@@ -100,7 +96,7 @@ export default function AgencyDashboardPage() {
           {propError && <p className="error">{propError}</p>}
           <div className="property-list" data-testid="property-list">
             {properties.map(p => (
-              <AgencyPropertyCard key={p.propertyId} property={p} onEdit={handleEdit} onDelete={remove} />
+              <AgencyPropertyCard key={p.id} property={p} onEdit={handleEdit} onDelete={remove} />
             ))}
           </div>
         </section>
@@ -116,24 +112,21 @@ export default function AgencyDashboardPage() {
               <tr>
                 <th>#</th>
                 <th>Propiedad</th>
-                <th>Comprador</th>
+                <th>Agencia</th>
                 <th>Precio</th>
                 <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
-              {purchases.map(s => {
-                const prop = properties.find(p => p.propertyId === s.propertyId)
-                return (
-                  <tr key={s.purchaseId} data-testid="sale-row">
-                    <td>{s.purchaseId}</td>
-                    <td>{prop?.address ?? `Propiedad #${s.propertyId}`}</td>
-                    <td>{s.userId}</td>
-                    <td>USD {s.purchasePrice.toLocaleString()}</td>
-                    <td>{s.purchaseDate}</td>
-                  </tr>
-                )
-              })}
+              {purchases.map(s => (
+                <tr key={s.id} data-testid="sale-row">
+                  <td>{s.id}</td>
+                  <td>{s.propertyAddress}</td>
+                  <td>{s.agencyName}</td>
+                  <td>USD {s.purchasePrice.toLocaleString()}</td>
+                  <td>{s.purchaseDate}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
@@ -164,6 +157,7 @@ export default function AgencyDashboardPage() {
           </table>
         </section>
       )}
+    </div>
     </div>
   )
 }

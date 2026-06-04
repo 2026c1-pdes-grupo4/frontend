@@ -1,7 +1,15 @@
+.agency-dashboard-wrapper {
+  min-height: 100vh;
+  padding: 24px 0;
+}
+
 .agency-dashboard {
   max-width: 900px;
   margin: 0 auto;
   padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .agency-dashboard h1 {

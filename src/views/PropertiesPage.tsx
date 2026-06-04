@@ -78,10 +78,10 @@ export default function PropertiesPage() {
       <div className="properties-list">
         {list.map((p) => (
           <PropertyCard
-            key={p.propertyId}
+            key={p.id}
             property={p}
             onFavorite={addFavorite}
-            isFavorite={isFavorite(p.propertyId)}
+            isFavorite={isFavorite(p.id)}
           />
         ))}
       </div>

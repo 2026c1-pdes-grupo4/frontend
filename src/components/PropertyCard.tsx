@@ -16,7 +16,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite }: Pr
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onFavorite?.(p.propertyId, score, comment)
+    onFavorite?.(p.id, score, comment)
     setOpen(false)
   }
 

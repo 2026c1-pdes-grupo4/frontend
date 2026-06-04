@@ -30,28 +30,28 @@ export default function FavoritesPage() {
       <h2>My Favorites</h2>
       <ul className="fav-list">
         {list.map((f) => (
-          <li key={f.favoriteId} className="fav-item">
+          <li key={f.id} className="fav-item">
             <div className="fav-item-header">
-              <span className="fav-property-id">Property #{f.propertyId}</span>
+              <span className="fav-property-id">{f.propertyAddress} · {f.city}</span>
               <div className="fav-item-actions">
                 <span className="fav-score">{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</span>
                 <button
                   className="fav-action-btn"
-                  onClick={() => openEdit(f.favoriteId, f.score, f.comment)}
+                  onClick={() => openEdit(f.id, f.score, f.comment)}
                 >
                   Edit
                 </button>
                 <button
                   className="fav-action-btn fav-action-btn--delete"
-                  onClick={() => removeFavorite(f.favoriteId)}
+                  onClick={() => removeFavorite(f.id)}
                 >
                   Delete
                 </button>
               </div>
             </div>
 
-            {editingId === f.favoriteId ? (
-              <form className="fav-edit-form" onSubmit={(e) => handleEditSubmit(e, f.favoriteId)}>
+            {editingId === f.id ? (
+              <form className="fav-edit-form" onSubmit={(e) => handleEditSubmit(e, f.id)}>
                 <label>
                   Score
                   <StarRating value={editScore} onChange={setEditScore} />

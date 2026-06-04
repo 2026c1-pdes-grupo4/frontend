@@ -1,25 +1,22 @@
-export type ProfileType = 'buyer' | 'seller' | 'admin'
-export type PropertyType = 'house' | 'apartment'
-
 export interface User {
-  userId: number
+  id: number
   username: string
   email: string
-  password: string
-  profileType: ProfileType
+  profileType: string
 }
 
 export interface Agency {
-  agencyId: number
+  id: number
   username: string
   email: string
-  password: string
-  adminUserId: number
 }
 
+export type PropertyType = 'house' | 'apartment'
+
 export interface Property {
-  propertyId: number
-  propertyType: PropertyType
+  id: number
+  agencyPropertyId?: number
+  propertyType: string
   price: number
   address: string
   city: string
@@ -28,23 +25,40 @@ export interface Property {
   rooms: number
   description: string
   available: boolean
+  listedPrice?: number
+  agencyId?: number
+  agencyName?: string
+}
+
+export interface AgencyProperty {
+  id: number
+  propertyId: number
+  address: string
+  city: string
+  propertyType: string
+  listedPrice: number
+  listedDate: string
+  available: boolean
   agencyId: number
+  agencyName: string
 }
 
 export interface Favorite {
-  favoriteId: number
-  userId: number
-  propertyId: number
-  savedDate: string
-  savedPrice: number
+  id: number
+  agencyPropertyId: number
+  propertyAddress: string
+  city: string
+  agencyName: string
   score: number
   comment: string
+  savedPrice: number
+  savedDate: string
 }
 
 export interface Purchase {
-  purchaseId: number
-  userId: number
-  propertyId: number
+  id: number
+  propertyAddress: string
+  agencyName: string
   purchasePrice: number
   purchaseDate: string
 }
@@ -58,10 +72,37 @@ export interface AgencyClient {
 export interface PropertyFilter {
   city?: string
   province?: string
-  propertyType?: PropertyType | ''
+  propertyType?: string
   minPrice?: number
   maxPrice?: number
   minRooms?: number
+}
+
+export interface PropertyInput {
+  propertyType: string
+  price: number
+  address: string
+  city: string
+  province: string
+  areaSq: number
+  rooms: number
+  description: string
+}
+
+export type AdminFavoriteRaw = {
+  favoriteId: number
+  agencyProperty: { agencyPropertyId: number; property: { address: string; city: string }; agency: { username: string } }
+  savedDate: string
+  savedPrice: number
+  score: number
+  comment: string
+}
+
+export type AdminPurchaseRaw = {
+  purchaseId: number
+  agencyProperty: { property: { address: string }; agency: { username: string } }
+  purchasePrice: number
+  purchaseDate: string
 }
 
 export interface LoginRequest {
