@@ -1,13 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchAgencyProperties, createProperty, updateProperty, deleteProperty } from '../services/agencyService'
 import { useAuthContext } from '../context/AuthContext'
-import type { Property } from '../models/types'
-
-type PropertyInput = Omit<Property, 'propertyId' | 'available' | 'agencyId'>
+import type { AgencyProperty, PropertyInput } from '../models/types'
 
 export function useAgencyProperties() {
   const { token } = useAuthContext()
-  const [list, setList] = useState<Property[]>([])
+  const [list, setList] = useState<AgencyProperty[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,16 +23,16 @@ export function useAgencyProperties() {
     setList(prev => [...prev, created])
   }, [token])
 
-  const edit = useCallback(async (id: number, data: Partial<PropertyInput>) => {
+  const edit = useCallback(async (ap: AgencyProperty, data: Partial<PropertyInput>) => {
     if (!token) return
-    const updated = await updateProperty(token, id, data)
-    setList(prev => prev.map(p => p.propertyId === id ? { ...p, ...updated } : p))
+    const updated = await updateProperty(token, ap.id, ap.propertyId, data)
+    setList(prev => prev.map(p => p.id === ap.id ? updated : p))
   }, [token])
 
   const remove = useCallback(async (id: number) => {
     if (!token) return
     await deleteProperty(token, id)
-    setList(prev => prev.filter(p => p.propertyId !== id))
+    setList(prev => prev.filter(p => p.id !== id))
   }, [token])
 
   return { list, loading, error, add, edit, remove }

@@ -1,20 +1,18 @@
 import { useState } from 'react'
-import type { Property, PropertyType } from '../models/types'
+import type { PropertyInput } from '../models/types'
 import './PropertyForm.css'
 
-type PropertyInput = Omit<Property, 'propertyId' | 'available' | 'agencyId'>
-
 interface Props {
-  initial?: PropertyInput
+  initial?: Partial<PropertyInput>
   onSubmit: (data: PropertyInput) => void
   onCancel: () => void
 }
 
-const PROPERTY_TYPES: PropertyType[] = ['apartment', 'house', 'land', 'commercial']
+const PROPERTY_TYPES = ['APARTMENT', 'HOUSE', 'LAND', 'COMMERCIAL']
 
 export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<PropertyInput>({
-    propertyType: initial?.propertyType ?? 'apartment',
+    propertyType: initial?.propertyType ?? 'APARTMENT',
     price: initial?.price ?? 0,
     address: initial?.address ?? '',
     city: initial?.city ?? '',
@@ -38,7 +36,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
         <label>Tipo</label>
         <select
           value={form.propertyType}
-          onChange={e => set('propertyType', e.target.value as PropertyType)}
+          onChange={e => set('propertyType', e.target.value)}
           data-testid="input-propertyType"
         >
           {PROPERTY_TYPES.map(t => <option key={t} value={t}>{t}</option>)}

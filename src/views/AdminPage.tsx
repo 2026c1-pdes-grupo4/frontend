@@ -95,8 +95,8 @@ function UsersTable({ rows }: { rows: User[] }) {
       </thead>
       <tbody>
         {rows.map((u) => (
-          <tr key={u.userId}>
-            <td>{u.userId}</td>
+          <tr key={u.id}>
+            <td>{u.id}</td>
             <td>{u.username}</td>
             <td>{u.email}</td>
             <td><span className={`admin-badge admin-badge--${u.profileType}`}>{u.profileType}</span></td>
@@ -118,8 +118,8 @@ function AgenciesTable({ rows }: { rows: Agency[] }) {
       </thead>
       <tbody>
         {rows.map((a) => (
-          <tr key={a.agencyId}>
-            <td>{a.agencyId}</td>
+          <tr key={a.id}>
+            <td>{a.id}</td>
             <td>{a.username}</td>
             <td>{a.email}</td>
           </tr>
@@ -135,15 +135,15 @@ function FavoritesTable({ rows }: { rows: Favorite[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>User</th><th>Property</th><th>Score</th><th>Comment</th><th>Date</th><th>Price</th>
+          <th>ID</th><th>Property</th><th>Agency</th><th>Score</th><th>Comment</th><th>Date</th><th>Price</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((f) => (
-          <tr key={f.favoriteId}>
-            <td>{f.favoriteId}</td>
-            <td>{f.userId}</td>
-            <td>{f.propertyId}</td>
+          <tr key={f.id}>
+            <td>{f.id}</td>
+            <td>{f.propertyAddress}</td>
+            <td>{f.agencyName}</td>
             <td>{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</td>
             <td>{f.comment || '—'}</td>
             <td>{f.savedDate}</td>
@@ -161,15 +161,15 @@ function PurchasesTable({ rows }: { rows: Purchase[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>User</th><th>Property</th><th>Price</th><th>Date</th>
+          <th>ID</th><th>Property</th><th>Agency</th><th>Price</th><th>Date</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((p) => (
-          <tr key={p.purchaseId}>
-            <td>{p.purchaseId}</td>
-            <td>{p.userId}</td>
-            <td>{p.propertyId}</td>
+          <tr key={p.id}>
+            <td>{p.id}</td>
+            <td>{p.propertyAddress}</td>
+            <td>{p.agencyName}</td>
             <td>${p.purchasePrice.toLocaleString()}</td>
             <td>{p.purchaseDate}</td>
           </tr>
