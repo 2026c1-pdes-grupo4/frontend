@@ -1,4 +1,4 @@
-process.loadEnvFile('.env')
+try { process.loadEnvFile('.env') } catch { /* not present in CI */ }
 
 export default {
   paths: ['e2e/features/**/*.feature'],

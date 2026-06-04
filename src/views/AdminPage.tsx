@@ -152,7 +152,7 @@ function FavoritesTable({ rows }: { rows: Favorite[] }) {
             <td>{f.propertyAddress}</td>
             <td>{f.agencyName}</td>
             <td>{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</td>
-            <td>{f.comment || '—'}</td>
+            <td>{f.comment || '-'}</td>
             <td>{f.savedDate}</td>
             <td>${f.savedPrice.toLocaleString()}</td>
           </tr>
