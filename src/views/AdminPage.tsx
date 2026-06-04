@@ -18,6 +18,12 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'purchases', label: 'Purchases' },
 ]
 
+function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
+  if (loading) return <p className="admin-status">Loading...</p>
+  if (error) return <p className="admin-status admin-status--error">Error: {error}</p>
+  return null
+}
+
 function useAdminData<T>(fetcher: (token: string) => Promise<T[]>, token: string, active: boolean) {
   const [data, setData] = useState<T[]>([])
   const [loading, setLoading] = useState(false)
@@ -65,8 +71,7 @@ export default function AdminPage() {
       </div>
 
       <div className="admin-content">
-        {current.loading && <p className="admin-status">Loading...</p>}
-        {current.error && <p className="admin-status admin-status--error">Error: {current.error}</p>}
+        <TabStatus loading={current.loading} error={current.error} />
 
         {!current.loading && !current.error && tab === 'users' && (
           <UsersTable rows={users.data as User[]} />

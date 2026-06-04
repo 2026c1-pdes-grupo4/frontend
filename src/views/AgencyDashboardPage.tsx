@@ -9,6 +9,12 @@ import './AgencyDashboardPage.css'
 
 type Tab = 'properties' | 'sales' | 'clients'
 
+function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
+  if (loading) return <p className="loading">Loading...</p>
+  if (error) return <p className="error">{error}</p>
+  return null
+}
+
 export default function AgencyDashboardPage() {
   const [tab, setTab] = useState<Tab>('properties')
   const [showForm, setShowForm] = useState(false)
@@ -46,7 +52,7 @@ export default function AgencyDashboardPage() {
   return (
     <div className="agency-dashboard-wrapper">
     <div className="agency-dashboard">
-      <h1>Panel de Agencia</h1>
+      <h1>Agency Panel</h1>
 
       <nav className="agency-tabs" data-testid="agency-tabs">
         <button
@@ -54,21 +60,21 @@ export default function AgencyDashboardPage() {
           onClick={() => setTab('properties')}
           data-testid="tab-properties"
         >
-          Propiedades
+          Properties
         </button>
         <button
           className={tab === 'sales' ? 'active' : ''}
           onClick={() => setTab('sales')}
           data-testid="tab-sales"
         >
-          Ventas
+          Sales
         </button>
         <button
           className={tab === 'clients' ? 'active' : ''}
           onClick={() => setTab('clients')}
           data-testid="tab-clients"
         >
-          Clientes
+          Clients
         </button>
       </nav>
 
@@ -76,7 +82,7 @@ export default function AgencyDashboardPage() {
         <section className="tab-section">
           {!showForm && (
             <button className="btn-primary" onClick={openNewForm} data-testid="btn-new-property">
-              + Nueva propiedad
+              + New property
             </button>
           )}
           {showForm && (
@@ -92,8 +98,7 @@ export default function AgencyDashboardPage() {
               onCancel={handleCancel}
             />
           )}
-          {propLoading && <p className="loading">Cargando...</p>}
-          {propError && <p className="error">{propError}</p>}
+          <TabStatus loading={propLoading} error={propError} />
           <div className="property-list" data-testid="property-list">
             {properties.map(p => (
               <AgencyPropertyCard key={p.id} property={p} onEdit={handleEdit} onDelete={remove} />
@@ -104,17 +109,16 @@ export default function AgencyDashboardPage() {
 
       {tab === 'sales' && (
         <section className="tab-section">
-          <h2>Ventas</h2>
-          {salesLoading && <p className="loading">Cargando...</p>}
-          {salesError && <p className="error">{salesError}</p>}
+          <h2>Sales</h2>
+          <TabStatus loading={salesLoading} error={salesError} />
           <table className="data-table" data-testid="sales-list">
             <thead>
               <tr>
                 <th>#</th>
-                <th>Propiedad</th>
-                <th>Agencia</th>
-                <th>Precio</th>
-                <th>Fecha</th>
+                <th>Property</th>
+                <th>Agency</th>
+                <th>Price</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
@@ -134,14 +138,13 @@ export default function AgencyDashboardPage() {
 
       {tab === 'clients' && (
         <section className="tab-section">
-          <h2>Clientes</h2>
-          {clientsLoading && <p className="loading">Cargando...</p>}
-          {clientsError && <p className="error">{clientsError}</p>}
+          <h2>Clients</h2>
+          <TabStatus loading={clientsLoading} error={clientsError} />
           <table className="data-table" data-testid="clients-list">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Usuario</th>
+                <th>Username</th>
                 <th>Email</th>
               </tr>
             </thead>
