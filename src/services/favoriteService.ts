@@ -21,9 +21,11 @@ export async function saveFavorite(
 ): Promise<Favorite> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') {
     return {
-      favoriteId: Date.now(),
-      userId: 1,
-      propertyId,
+      id: Date.now(),
+      agencyPropertyId: propertyId,
+      propertyAddress: '',
+      city: '',
+      agencyName: '',
       savedDate: new Date().toISOString().split('T')[0],
       savedPrice: 0,
       score,
@@ -37,7 +39,7 @@ export async function saveFavorite(
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ propertyId, score, comment }),
+    body: JSON.stringify({ agencyPropertyId: propertyId, score, comment }),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
@@ -50,7 +52,7 @@ export async function updateFavorite(
   comment: string,
 ): Promise<Favorite> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') {
-    return { favoriteId, userId: 1, propertyId: 0, savedDate: '', savedPrice: 0, score, comment }
+    return { id: favoriteId, agencyPropertyId: 0, propertyAddress: '', city: '', agencyName: '', savedDate: '', savedPrice: 0, score, comment }
   }
 
   const res = await fetch(`${import.meta.env.VITE_API_URL}/favorites/${favoriteId}`, {
