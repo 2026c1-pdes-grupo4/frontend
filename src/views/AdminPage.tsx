@@ -5,17 +5,19 @@ import {
   fetchAllAgencies,
   fetchAllFavorites,
   fetchAllPurchases,
+  fetchTopBuyers,
 } from '../services/adminService'
-import type { User, Agency, Favorite, Purchase } from '../models/types'
+import type { User, Agency, Favorite, Purchase, TopBuyer } from '../models/types'
 import './AdminPage.css'
 
-type Tab = 'users' | 'agencies' | 'favorites' | 'purchases'
+type Tab = 'users' | 'agencies' | 'favorites' | 'purchases' | 'reports'
 
-const TABS: { key: Tab; label: string }[] = [
-  { key: 'users', label: 'Users' },
-  { key: 'agencies', label: 'Agencies' },
-  { key: 'favorites', label: 'Favorites' },
-  { key: 'purchases', label: 'Purchases' },
+const TABS: { key: Tab; label: string; testId: string }[] = [
+  { key: 'users', label: 'Users', testId: 'tab-users' },
+  { key: 'agencies', label: 'Agencies', testId: 'tab-agencies' },
+  { key: 'favorites', label: 'Favorites', testId: 'tab-favorites' },
+  { key: 'purchases', label: 'Purchases', testId: 'tab-purchases' },
+  { key: 'reports', label: 'Reportes', testId: 'tab-reports' },
 ]
 
 function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
@@ -50,8 +52,9 @@ export default function AdminPage() {
   const agencies = useAdminData(fetchAllAgencies, token!, tab === 'agencies')
   const favorites = useAdminData(fetchAllFavorites, token!, tab === 'favorites')
   const purchases = useAdminData(fetchAllPurchases, token!, tab === 'purchases')
+  const topBuyersData = useAdminData(fetchTopBuyers, token!, tab === 'reports')
 
-  const current = { users, agencies, favorites, purchases }[tab]
+  const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
   return (
     <div className="admin-page-wrapper">
@@ -62,6 +65,7 @@ export default function AdminPage() {
         {TABS.map((t) => (
           <button
             key={t.key}
+            data-testid={t.testId}
             className={`admin-tab${tab === t.key ? ' admin-tab--active' : ''}`}
             onClick={() => setTab(t.key)}
           >
@@ -84,6 +88,11 @@ export default function AdminPage() {
         )}
         {!current.loading && !current.error && tab === 'purchases' && (
           <PurchasesTable rows={purchases.data as Purchase[]} />
+        )}
+        {!current.loading && !current.error && tab === 'reports' && (
+          <div data-testid="reports-section">
+            <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
+          </div>
         )}
       </div>
     </div>
@@ -183,5 +192,29 @@ function PurchasesTable({ rows }: { rows: Purchase[] }) {
         ))}
       </tbody>
     </table>
+  )
+}
+
+function TopBuyersTable({ rows }: { rows: TopBuyer[] }) {
+  if (rows.length === 0) return <p className="admin-status">No data.</p>
+  return (
+    <>
+      <h3>Top 5 compradores</h3>
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>Usuario</th><th>Compras</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((b) => (
+            <tr key={b.userId} data-testid="top-buyer-row">
+              <td>{b.username}</td>
+              <td>{b.purchases}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   )
 }

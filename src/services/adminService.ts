@@ -1,5 +1,5 @@
-import { users, agencies, favorites, purchases } from '../models/fixtures'
-import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw } from '../models/types'
+import { users, agencies, favorites, purchases, topBuyers } from '../models/fixtures'
+import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer } from '../models/types'
 import { apiFetch } from './http'
 
 const BASE = import.meta.env.VITE_API_URL
@@ -36,6 +36,11 @@ export async function fetchAllFavorites(token: string): Promise<Favorite[]> {
     savedPrice: f.savedPrice,
     savedDate: String(f.savedDate),
   }))
+}
+
+export async function fetchTopBuyers(token: string): Promise<TopBuyer[]> {
+  if (USE_FIXTURES) return topBuyers
+  return authGet('/admin/reports/top-buyers', token)
 }
 
 export async function fetchAllPurchases(token: string): Promise<Purchase[]> {
