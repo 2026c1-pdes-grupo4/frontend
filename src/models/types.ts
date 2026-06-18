@@ -105,6 +105,12 @@ export type AdminPurchaseRaw = {
   purchaseDate: string
 }
 
+export interface TopBuyer {
+  userId: number
+  username: string
+  purchases: number
+}
+
 export interface LoginRequest {
   username: string
   password: string

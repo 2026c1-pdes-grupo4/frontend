@@ -1,4 +1,4 @@
-import type { User, Agency, Property, AgencyProperty, Favorite, Purchase, AgencyClient } from './types'
+import type { User, Agency, Property, AgencyProperty, Favorite, Purchase, AgencyClient, TopBuyer } from './types'
 
 export const users: User[] = [
   { id: 1, username: 'manuel', email: 'manuel@argentina.gob', profileType: 'BUYER' },
@@ -92,4 +92,9 @@ export const purchases: Purchase[] = [
 
 export const agencyClients: AgencyClient[] = [
   { userId: 1, username: 'manuel', email: 'manuel@argentina.gob' },
+]
+
+export const topBuyers: TopBuyer[] = [
+  { userId: 1, username: 'manuel', purchases: 3 },
+  { userId: 2, username: 'claudia', purchases: 1 },
 ]
