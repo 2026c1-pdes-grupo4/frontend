@@ -34,3 +34,17 @@ Then('cada fila de propiedad tiene dirección y puntaje promedio', async functio
     await expect(cells.nth(1)).not.toBeEmpty()
   }
 })
+
+Then('la tabla de top inmobiliarias muestra al menos una fila', async function (this: CustomWorld) {
+  await expect(this.page.locator('[data-testid="top-agency-row"]').first()).toBeVisible()
+})
+
+Then('cada fila de inmobiliaria tiene nombre y cantidad de ventas', async function (this: CustomWorld) {
+  const rows = this.page.locator('[data-testid="top-agency-row"]')
+  const count = await rows.count()
+  for (let i = 0; i < count; i++) {
+    const cells = rows.nth(i).locator('td')
+    await expect(cells.nth(0)).not.toBeEmpty()
+    await expect(cells.nth(1)).not.toBeEmpty()
+  }
+})

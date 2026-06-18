@@ -7,8 +7,9 @@ import {
   fetchAllPurchases,
   fetchTopBuyers,
   fetchTopRankedProperties,
+  fetchTopAgenciesSales,
 } from '../services/adminService'
-import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty } from '../models/types'
+import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
 import './AdminPage.css'
 
 type Tab = 'users' | 'agencies' | 'favorites' | 'purchases' | 'reports'
@@ -55,6 +56,7 @@ export default function AdminPage() {
   const purchases = useAdminData(fetchAllPurchases, token!, tab === 'purchases')
   const topBuyersData = useAdminData(fetchTopBuyers, token!, tab === 'reports')
   const topPropertiesData = useAdminData(fetchTopRankedProperties, token!, tab === 'reports')
+  const topAgenciesData = useAdminData(fetchTopAgenciesSales, token!, tab === 'reports')
 
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
@@ -95,6 +97,7 @@ export default function AdminPage() {
           <div data-testid="reports-section">
             <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
             <TopRankedPropertiesTable rows={topPropertiesData.data as TopRankedProperty[]} />
+            <TopAgenciesSalesTable rows={topAgenciesData.data as TopAgencySales[]} />
           </div>
         )}
       </div>
@@ -195,6 +198,30 @@ function PurchasesTable({ rows }: { rows: Purchase[] }) {
         ))}
       </tbody>
     </table>
+  )
+}
+
+function TopAgenciesSalesTable({ rows }: { rows: TopAgencySales[] }) {
+  if (rows.length === 0) return <p className="admin-status">No data.</p>
+  return (
+    <>
+      <h3>Top 5 inmobiliarias por ventas</h3>
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>Inmobiliaria</th><th>Ventas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((a) => (
+            <tr key={a.agencyId} data-testid="top-agency-row">
+              <td>{a.username}</td>
+              <td>{a.sales}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   )
 }
 

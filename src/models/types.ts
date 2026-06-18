@@ -118,6 +118,12 @@ export interface TopRankedProperty {
   ratings: number
 }
 
+export interface TopAgencySales {
+  agencyId: number
+  username: string
+  sales: number
+}
+
 export interface LoginRequest {
   username: string
   password: string
