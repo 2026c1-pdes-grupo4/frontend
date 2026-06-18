@@ -58,7 +58,7 @@ export default function AdminPage() {
     <div className="admin-page">
       <h2>Admin Panel</h2>
 
-      <div className="admin-tabs">
+      <div className="admin-tabs" data-testid="admin-tabs">
         {TABS.map((t) => (
           <button
             key={t.key}
