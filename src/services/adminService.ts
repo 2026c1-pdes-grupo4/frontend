@@ -1,5 +1,5 @@
-import { users, agencies, favorites, purchases, topBuyers } from '../models/fixtures'
-import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer } from '../models/types'
+import { users, agencies, favorites, purchases, topBuyers, topRankedProperties } from '../models/fixtures'
+import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer, TopRankedProperty } from '../models/types'
 import { apiFetch } from './http'
 
 const BASE = import.meta.env.VITE_API_URL
@@ -41,6 +41,11 @@ export async function fetchAllFavorites(token: string): Promise<Favorite[]> {
 export async function fetchTopBuyers(token: string): Promise<TopBuyer[]> {
   if (USE_FIXTURES) return topBuyers
   return authGet('/admin/reports/top-buyers', token)
+}
+
+export async function fetchTopRankedProperties(token: string): Promise<TopRankedProperty[]> {
+  if (USE_FIXTURES) return topRankedProperties
+  return authGet('/admin/reports/top-ranked-properties', token)
 }
 
 export async function fetchAllPurchases(token: string): Promise<Purchase[]> {

@@ -111,6 +111,13 @@ export interface TopBuyer {
   purchases: number
 }
 
+export interface TopRankedProperty {
+  propertyId: number
+  address: string
+  averageScore: number
+  ratings: number
+}
+
 export interface LoginRequest {
   username: string
   password: string

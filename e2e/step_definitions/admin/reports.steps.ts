@@ -20,3 +20,17 @@ Then('cada fila de comprador tiene usuario y cantidad de compras', async functio
     await expect(cells.nth(1)).not.toBeEmpty()
   }
 })
+
+Then('la tabla de propiedades mejor puntuadas muestra al menos una fila', async function (this: CustomWorld) {
+  await expect(this.page.locator('[data-testid="top-property-row"]').first()).toBeVisible()
+})
+
+Then('cada fila de propiedad tiene dirección y puntaje promedio', async function (this: CustomWorld) {
+  const rows = this.page.locator('[data-testid="top-property-row"]')
+  const count = await rows.count()
+  for (let i = 0; i < count; i++) {
+    const cells = rows.nth(i).locator('td')
+    await expect(cells.nth(0)).not.toBeEmpty()
+    await expect(cells.nth(1)).not.toBeEmpty()
+  }
+})

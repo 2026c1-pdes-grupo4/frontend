@@ -6,8 +6,9 @@ import {
   fetchAllFavorites,
   fetchAllPurchases,
   fetchTopBuyers,
+  fetchTopRankedProperties,
 } from '../services/adminService'
-import type { User, Agency, Favorite, Purchase, TopBuyer } from '../models/types'
+import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty } from '../models/types'
 import './AdminPage.css'
 
 type Tab = 'users' | 'agencies' | 'favorites' | 'purchases' | 'reports'
@@ -53,6 +54,7 @@ export default function AdminPage() {
   const favorites = useAdminData(fetchAllFavorites, token!, tab === 'favorites')
   const purchases = useAdminData(fetchAllPurchases, token!, tab === 'purchases')
   const topBuyersData = useAdminData(fetchTopBuyers, token!, tab === 'reports')
+  const topPropertiesData = useAdminData(fetchTopRankedProperties, token!, tab === 'reports')
 
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
@@ -92,6 +94,7 @@ export default function AdminPage() {
         {!current.loading && !current.error && tab === 'reports' && (
           <div data-testid="reports-section">
             <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
+            <TopRankedPropertiesTable rows={topPropertiesData.data as TopRankedProperty[]} />
           </div>
         )}
       </div>
@@ -192,6 +195,31 @@ function PurchasesTable({ rows }: { rows: Purchase[] }) {
         ))}
       </tbody>
     </table>
+  )
+}
+
+function TopRankedPropertiesTable({ rows }: { rows: TopRankedProperty[] }) {
+  if (rows.length === 0) return <p className="admin-status">No data.</p>
+  return (
+    <>
+      <h3>Top 5 propiedades mejor puntuadas</h3>
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>Dirección</th><th>Puntaje promedio</th><th>Valoraciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((p) => (
+            <tr key={p.propertyId} data-testid="top-property-row">
+              <td>{p.address}</td>
+              <td>{p.averageScore.toFixed(1)}</td>
+              <td>{p.ratings}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   )
 }
 
