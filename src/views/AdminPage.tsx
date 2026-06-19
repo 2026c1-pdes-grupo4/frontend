@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuthContext } from '../context/AuthContext'
-import { usePagination } from '../hooks/usePagination'
+import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import { Pager } from '../components/Pager'
 import {
   fetchAllUsers,
   fetchAllAgencies,
@@ -61,7 +62,11 @@ export default function AdminPage() {
 
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
-  const usersPagination = usePagination(users.data)
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
+  const usersPagination = usePagination(users.data, pageSize)
+  const agenciesPagination = usePagination(agencies.data, pageSize)
+  const favoritesPagination = usePagination(favorites.data, pageSize)
+  const purchasesPagination = usePagination(purchases.data, pageSize)
 
   return (
     <div className="admin-page-wrapper">
@@ -85,21 +90,26 @@ export default function AdminPage() {
           {!current.loading && !current.error && tab === 'users' && (
             <>
               <UsersTable rows={usersPagination.pagedData as User[]} />
-              <div className="pagination">
-                <button data-testid="btn-prev-page" disabled={usersPagination.page === 1} onClick={usersPagination.prev}><span className="material-icons">chevron_left</span></button>
-                <span data-testid="page-indicator">{usersPagination.page} / {usersPagination.totalPages}</span>
-                <button data-testid="btn-next-page" disabled={usersPagination.page === usersPagination.totalPages} onClick={usersPagination.next}><span className="material-icons">chevron_right</span></button>
-              </div>
+              <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
             </>
           )}
           {!current.loading && !current.error && tab === 'agencies' && (
-            <AgenciesTable rows={agencies.data as Agency[]} />
+            <>
+              <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} />
+              <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
           )}
           {!current.loading && !current.error && tab === 'favorites' && (
-            <FavoritesTable rows={favorites.data as Favorite[]} />
+            <>
+              <FavoritesTable rows={favoritesPagination.pagedData as Favorite[]} />
+              <Pager p={favoritesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
           )}
           {!current.loading && !current.error && tab === 'purchases' && (
-            <PurchasesTable rows={purchases.data as Purchase[]} />
+            <>
+              <PurchasesTable rows={purchasesPagination.pagedData as Purchase[]} />
+              <Pager p={purchasesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
           )}
           {!current.loading && !current.error && tab === 'reports' && (
             <div data-testid="reports-section">
@@ -281,3 +291,4 @@ function TopBuyersTable({ rows }: { rows: TopBuyer[] }) {
     </>
   )
 }
+

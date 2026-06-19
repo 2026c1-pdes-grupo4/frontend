@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useProperties } from '../controllers/useProperties'
 import { useFavorites } from '../controllers/useFavorites'
 import PropertyCard from '../components/PropertyCard'
+import { Pager } from '../components/Pager'
+import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import type { PropertyFilter, PropertyType } from '../models/types'
 import './PropertiesPage.css'
 
@@ -9,8 +11,10 @@ const PROPERTY_TYPES: PropertyType[] = ['house', 'apartment']
 
 export default function PropertiesPage() {
   const [filter, setFilter] = useState<PropertyFilter>({})
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const { list, loading, error } = useProperties(filter)
   const { addFavorite, isFavorite } = useFavorites()
+  const pagination = usePagination(list, pageSize)
 
   const set = (field: keyof PropertyFilter, value: string | number) =>
     setFilter((prev) => ({ ...prev, [field]: value === '' ? undefined : value }))
@@ -76,7 +80,7 @@ export default function PropertiesPage() {
       )}
 
       <div className="properties-list">
-        {list.map((p) => (
+        {pagination.pagedData.map((p) => (
           <PropertyCard
             key={p.id}
             property={p}
@@ -85,6 +89,7 @@ export default function PropertiesPage() {
           />
         ))}
       </div>
+      <Pager p={pagination} pageSize={pageSize} onPageSize={setPageSize} />
     </div>
   )
 }

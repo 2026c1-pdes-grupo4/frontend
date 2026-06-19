@@ -3,7 +3,7 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 20px;
+  margin: 0 auto 20px;
   max-width: 600px;
 }
 
@@ -42,6 +42,18 @@
 
 .form-row .form-group {
   flex: 1;
+  min-width: 0;
+}
+
+.form-row input,
+.form-row select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.form-group--narrow {
+  flex: 0.4 !important;
 }
 
 .form-actions {
