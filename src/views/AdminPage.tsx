@@ -19,7 +19,7 @@ const TABS: { key: Tab; label: string; testId: string }[] = [
   { key: 'agencies', label: 'Agencies', testId: 'tab-agencies' },
   { key: 'favorites', label: 'Favorites', testId: 'tab-favorites' },
   { key: 'purchases', label: 'Purchases', testId: 'tab-purchases' },
-  { key: 'reports', label: 'Reportes', testId: 'tab-reports' },
+  { key: 'reports', label: 'Reports', testId: 'tab-reports' },
 ]
 
 function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
@@ -205,11 +205,11 @@ function TopAgenciesSalesTable({ rows }: { rows: TopAgencySales[] }) {
   if (rows.length === 0) return <p className="admin-status">No data.</p>
   return (
     <>
-      <h3>Top 5 inmobiliarias por ventas</h3>
+      <h3>Top 5 sellings agencies</h3>
       <table className="admin-table">
         <thead>
           <tr>
-            <th>Inmobiliaria</th><th>Ventas</th>
+            <th>Agency</th><th>Qty sales</th>
           </tr>
         </thead>
         <tbody>
@@ -229,11 +229,11 @@ function TopRankedPropertiesTable({ rows }: { rows: TopRankedProperty[] }) {
   if (rows.length === 0) return <p className="admin-status">No data.</p>
   return (
     <>
-      <h3>Top 5 propiedades mejor puntuadas</h3>
+      <h3>Top 5 ranked properties</h3>
       <table className="admin-table">
         <thead>
           <tr>
-            <th>Dirección</th><th>Puntaje promedio</th><th>Valoraciones</th>
+            <th>Adress</th><th>Avg score</th><th>Reviews</th>
           </tr>
         </thead>
         <tbody>
@@ -254,11 +254,11 @@ function TopBuyersTable({ rows }: { rows: TopBuyer[] }) {
   if (rows.length === 0) return <p className="admin-status">No data.</p>
   return (
     <>
-      <h3>Top 5 compradores</h3>
+      <h3>Top 5 buyers</h3>
       <table className="admin-table">
         <thead>
           <tr>
-            <th>Usuario</th><th>Compras</th>
+            <th>User</th><th>Purchases</th>
           </tr>
         </thead>
         <tbody>
