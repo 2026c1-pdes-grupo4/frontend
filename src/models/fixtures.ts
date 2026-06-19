@@ -4,6 +4,19 @@ export const users: User[] = [
   { id: 1, username: 'manuel', email: 'manuel@argentina.gob', profileType: 'BUYER' },
   { id: 2, username: 'claudia', email: 'claudia@mail.com', profileType: 'BUYER' },
   { id: 3, username: 'karina', email: 'karina@argentina.gob', profileType: 'ADMIN' },
+  { id: 4, username: 'jorge', email: 'jorge@mail.com', profileType: 'BUYER' },
+  { id: 5, username: 'patricia', email: 'patricia@mail.com', profileType: 'BUYER' },
+  { id: 6, username: 'roberto', email: 'roberto@mail.com', profileType: 'BUYER' },
+  { id: 7, username: 'ana', email: 'ana@mail.com', profileType: 'BUYER' },
+  { id: 8, username: 'diego', email: 'diego@mail.com', profileType: 'BUYER' },
+  { id: 9, username: 'laura', email: 'laura@mail.com', profileType: 'BUYER' },
+  { id: 10, username: 'martin', email: 'martin@mail.com', profileType: 'BUYER' },
+  { id: 11, username: 'sofia', email: 'sofia@mail.com', profileType: 'BUYER' },
+  { id: 12, username: 'lucas', email: 'lucas@mail.com', profileType: 'BUYER' },
+  { id: 13, username: 'valentina', email: 'valentina@mail.com', profileType: 'BUYER' },
+  { id: 14, username: 'nicolas', email: 'nicolas@mail.com', profileType: 'BUYER' },
+  { id: 15, username: 'camila', email: 'camila@mail.com', profileType: 'BUYER' },
+  { id: 16, username: 'admin123', email: 'admin@cth.com', profileType: 'ADMIN' },
 ]
 
 export const agencies: Agency[] = [

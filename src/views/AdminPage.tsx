@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuthContext } from '../context/AuthContext'
+import { usePagination } from '../hooks/usePagination'
 import {
   fetchAllUsers,
   fetchAllAgencies,
@@ -60,10 +61,12 @@ export default function AdminPage() {
 
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
+  const usersPagination = usePagination(users.data)
+
   return (
     <div className="admin-page-wrapper">
       <div className="admin-page">
-        <div className="admin-tabs">
+        <div className="admin-tabs" data-testid="admin-tabs">
           {TABS.map((t) => (
             <button
               key={t.key}
@@ -80,7 +83,14 @@ export default function AdminPage() {
           <TabStatus loading={current.loading} error={current.error} />
 
           {!current.loading && !current.error && tab === 'users' && (
-            <UsersTable rows={users.data as User[]} />
+            <>
+              <UsersTable rows={usersPagination.pagedData as User[]} />
+              <div className="pagination">
+                <button data-testid="btn-prev-page" disabled={usersPagination.page === 1} onClick={usersPagination.prev}><span className="material-icons">chevron_left</span></button>
+                <span data-testid="page-indicator">{usersPagination.page} / {usersPagination.totalPages}</span>
+                <button data-testid="btn-next-page" disabled={usersPagination.page === usersPagination.totalPages} onClick={usersPagination.next}><span className="material-icons">chevron_right</span></button>
+              </div>
+            </>
           )}
           {!current.loading && !current.error && tab === 'agencies' && (
             <AgenciesTable rows={agencies.data as Agency[]} />
@@ -107,7 +117,7 @@ export default function AdminPage() {
 function UsersTable({ rows }: { rows: User[] }) {
   if (rows.length === 0) return <p className="admin-status">No users found.</p>
   return (
-    <table className="admin-table">
+    <table className="admin-table" data-testid="users-table">
       <thead>
         <tr>
           <th>ID</th><th>Username</th><th>Email</th><th>Profile</th>
@@ -115,7 +125,7 @@ function UsersTable({ rows }: { rows: User[] }) {
       </thead>
       <tbody>
         {rows.map((u) => (
-          <tr key={u.id}>
+          <tr key={u.id} data-testid="user-row">
             <td>{u.id}</td>
             <td>{u.username}</td>
             <td>{u.email}</td>
