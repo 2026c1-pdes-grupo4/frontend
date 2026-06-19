@@ -62,46 +62,44 @@ export default function AdminPage() {
 
   return (
     <div className="admin-page-wrapper">
-    <div className="admin-page">
-      <h2>Admin Panel</h2>
+      <div className="admin-page">
+        <div className="admin-tabs">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              data-testid={t.testId}
+              className={`admin-tab${tab === t.key ? ' admin-tab--active' : ''}`}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="admin-tabs" data-testid="admin-tabs">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            data-testid={t.testId}
-            className={`admin-tab${tab === t.key ? ' admin-tab--active' : ''}`}
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
+        <div className="admin-content">
+          <TabStatus loading={current.loading} error={current.error} />
+
+          {!current.loading && !current.error && tab === 'users' && (
+            <UsersTable rows={users.data as User[]} />
+          )}
+          {!current.loading && !current.error && tab === 'agencies' && (
+            <AgenciesTable rows={agencies.data as Agency[]} />
+          )}
+          {!current.loading && !current.error && tab === 'favorites' && (
+            <FavoritesTable rows={favorites.data as Favorite[]} />
+          )}
+          {!current.loading && !current.error && tab === 'purchases' && (
+            <PurchasesTable rows={purchases.data as Purchase[]} />
+          )}
+          {!current.loading && !current.error && tab === 'reports' && (
+            <div data-testid="reports-section">
+              <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
+              <TopRankedPropertiesTable rows={topPropertiesData.data as TopRankedProperty[]} />
+              <TopAgenciesSalesTable rows={topAgenciesData.data as TopAgencySales[]} />
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="admin-content">
-        <TabStatus loading={current.loading} error={current.error} />
-
-        {!current.loading && !current.error && tab === 'users' && (
-          <UsersTable rows={users.data as User[]} />
-        )}
-        {!current.loading && !current.error && tab === 'agencies' && (
-          <AgenciesTable rows={agencies.data as Agency[]} />
-        )}
-        {!current.loading && !current.error && tab === 'favorites' && (
-          <FavoritesTable rows={favorites.data as Favorite[]} />
-        )}
-        {!current.loading && !current.error && tab === 'purchases' && (
-          <PurchasesTable rows={purchases.data as Purchase[]} />
-        )}
-        {!current.loading && !current.error && tab === 'reports' && (
-          <div data-testid="reports-section">
-            <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
-            <TopRankedPropertiesTable rows={topPropertiesData.data as TopRankedProperty[]} />
-            <TopAgenciesSalesTable rows={topAgenciesData.data as TopAgencySales[]} />
-          </div>
-        )}
-      </div>
-    </div>
     </div>
   )
 }

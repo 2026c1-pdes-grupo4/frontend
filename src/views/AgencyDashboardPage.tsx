@@ -52,8 +52,6 @@ export default function AgencyDashboardPage() {
   return (
     <div className="agency-dashboard-wrapper">
     <div className="agency-dashboard">
-      <h1>Agency Panel</h1>
-
       <nav className="agency-tabs" data-testid="agency-tabs">
         <button
           className={tab === 'properties' ? 'active' : ''}
