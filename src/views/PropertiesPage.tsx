@@ -20,7 +20,7 @@ export default function PropertiesPage() {
     setFilter((prev) => ({ ...prev, [field]: value === '' ? undefined : value }))
 
   return (
-    <div className="properties-list-wrapper">
+    <div className="properties-list-wrapper" data-testid="properties-page">
       <div className="properties-filter">
         <input
           className="filter-input"
