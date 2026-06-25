@@ -4,6 +4,8 @@ import { useAgencyPurchases } from '../controllers/useAgencyPurchases'
 import { useAgencyClients } from '../controllers/useAgencyClients'
 import AgencyPropertyCard from '../components/AgencyPropertyCard'
 import PropertyForm from '../components/PropertyForm'
+import { Pager } from '../components/Pager'
+import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import type { AgencyProperty, PropertyInput } from '../models/types'
 import './AgencyDashboardPage.css'
 
@@ -23,6 +25,11 @@ export default function AgencyDashboardPage() {
   const { list: properties, loading: propLoading, error: propError, add, edit, remove } = useAgencyProperties()
   const { list: purchases, loading: salesLoading, error: salesError } = useAgencyPurchases()
   const { list: clients, loading: clientsLoading, error: clientsError } = useAgencyClients()
+
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
+  const propertiesPagination = usePagination(properties, pageSize)
+  const salesPagination = usePagination(purchases, pageSize)
+  const clientsPagination = usePagination(clients, pageSize)
 
   const handleSubmit = async (data: PropertyInput) => {
     if (editing) {
@@ -52,8 +59,6 @@ export default function AgencyDashboardPage() {
   return (
     <div className="agency-dashboard-wrapper">
     <div className="agency-dashboard">
-      <h1>Agency Panel</h1>
-
       <nav className="agency-tabs" data-testid="agency-tabs">
         <button
           className={tab === 'properties' ? 'active' : ''}
@@ -100,10 +105,11 @@ export default function AgencyDashboardPage() {
           )}
           <TabStatus loading={propLoading} error={propError} />
           <div className="property-list" data-testid="property-list">
-            {properties.map(p => (
+            {propertiesPagination.pagedData.map(p => (
               <AgencyPropertyCard key={p.id} property={p} onEdit={handleEdit} onDelete={remove} />
             ))}
           </div>
+          <Pager p={propertiesPagination} pageSize={pageSize} onPageSize={setPageSize} />
         </section>
       )}
 
@@ -122,7 +128,7 @@ export default function AgencyDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {purchases.map(s => (
+              {salesPagination.pagedData.map(s => (
                 <tr key={s.id} data-testid="sale-row">
                   <td>{s.id}</td>
                   <td>{s.propertyAddress}</td>
@@ -133,6 +139,7 @@ export default function AgencyDashboardPage() {
               ))}
             </tbody>
           </table>
+          <Pager p={salesPagination} pageSize={pageSize} onPageSize={setPageSize} />
         </section>
       )}
 
@@ -149,7 +156,7 @@ export default function AgencyDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {clients.map(c => (
+              {clientsPagination.pagedData.map(c => (
                 <tr key={c.userId} data-testid="client-row">
                   <td>{c.userId}</td>
                   <td>{c.username}</td>
@@ -158,6 +165,7 @@ export default function AgencyDashboardPage() {
               ))}
             </tbody>
           </table>
+          <Pager p={clientsPagination} pageSize={pageSize} onPageSize={setPageSize} />
         </section>
       )}
     </div>

@@ -92,7 +92,7 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
             data-testid="input-areaSq"
           />
         </div>
-        <div className="form-group">
+        <div className="form-group form-group--narrow">
           <label>Rooms</label>
           <input
             type="number"

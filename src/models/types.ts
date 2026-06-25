@@ -28,6 +28,7 @@ export interface Property {
   listedPrice?: number
   agencyId?: number
   agencyName?: string
+  imageUrl?: string
 }
 
 export interface AgencyProperty {
@@ -57,6 +58,7 @@ export interface Favorite {
 
 export interface Purchase {
   id: number
+  agencyId: number
   propertyAddress: string
   agencyName: string
   purchasePrice: number
@@ -64,6 +66,7 @@ export interface Purchase {
 }
 
 export interface AgencyClient {
+  agencyId: number
   userId: number
   username: string
   email: string

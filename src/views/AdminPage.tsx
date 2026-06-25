@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuthContext } from '../context/AuthContext'
+import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import { Pager } from '../components/Pager'
 import {
   fetchAllUsers,
   fetchAllAgencies,
@@ -60,48 +62,64 @@ export default function AdminPage() {
 
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
+  const usersPagination = usePagination(users.data, pageSize)
+  const agenciesPagination = usePagination(agencies.data, pageSize)
+  const favoritesPagination = usePagination(favorites.data, pageSize)
+  const purchasesPagination = usePagination(purchases.data, pageSize)
+
   return (
     <div className="admin-page-wrapper">
-    <div className="admin-page">
-      <h2>Admin Panel</h2>
+      <div className="admin-page">
+        <div className="admin-tabs" data-testid="admin-tabs">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              data-testid={t.testId}
+              className={`admin-tab${tab === t.key ? ' admin-tab--active' : ''}`}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="admin-tabs" data-testid="admin-tabs">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            data-testid={t.testId}
-            className={`admin-tab${tab === t.key ? ' admin-tab--active' : ''}`}
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
+        <div className="admin-content">
+          <TabStatus loading={current.loading} error={current.error} />
+
+          {!current.loading && !current.error && tab === 'users' && (
+            <>
+              <UsersTable rows={usersPagination.pagedData as User[]} />
+              <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
+          )}
+          {!current.loading && !current.error && tab === 'agencies' && (
+            <>
+              <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} />
+              <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
+          )}
+          {!current.loading && !current.error && tab === 'favorites' && (
+            <>
+              <FavoritesTable rows={favoritesPagination.pagedData as Favorite[]} />
+              <Pager p={favoritesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
+          )}
+          {!current.loading && !current.error && tab === 'purchases' && (
+            <>
+              <PurchasesTable rows={purchasesPagination.pagedData as Purchase[]} />
+              <Pager p={purchasesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+            </>
+          )}
+          {!current.loading && !current.error && tab === 'reports' && (
+            <div data-testid="reports-section">
+              <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
+              <TopRankedPropertiesTable rows={topPropertiesData.data as TopRankedProperty[]} />
+              <TopAgenciesSalesTable rows={topAgenciesData.data as TopAgencySales[]} />
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="admin-content">
-        <TabStatus loading={current.loading} error={current.error} />
-
-        {!current.loading && !current.error && tab === 'users' && (
-          <UsersTable rows={users.data as User[]} />
-        )}
-        {!current.loading && !current.error && tab === 'agencies' && (
-          <AgenciesTable rows={agencies.data as Agency[]} />
-        )}
-        {!current.loading && !current.error && tab === 'favorites' && (
-          <FavoritesTable rows={favorites.data as Favorite[]} />
-        )}
-        {!current.loading && !current.error && tab === 'purchases' && (
-          <PurchasesTable rows={purchases.data as Purchase[]} />
-        )}
-        {!current.loading && !current.error && tab === 'reports' && (
-          <div data-testid="reports-section">
-            <TopBuyersTable rows={topBuyersData.data as TopBuyer[]} />
-            <TopRankedPropertiesTable rows={topPropertiesData.data as TopRankedProperty[]} />
-            <TopAgenciesSalesTable rows={topAgenciesData.data as TopAgencySales[]} />
-          </div>
-        )}
-      </div>
-    </div>
     </div>
   )
 }
@@ -109,7 +127,7 @@ export default function AdminPage() {
 function UsersTable({ rows }: { rows: User[] }) {
   if (rows.length === 0) return <p className="admin-status">No users found.</p>
   return (
-    <table className="admin-table">
+    <table className="admin-table" data-testid="users-table">
       <thead>
         <tr>
           <th>ID</th><th>Username</th><th>Email</th><th>Profile</th>
@@ -117,7 +135,7 @@ function UsersTable({ rows }: { rows: User[] }) {
       </thead>
       <tbody>
         {rows.map((u) => (
-          <tr key={u.id}>
+          <tr key={u.id} data-testid="user-row">
             <td>{u.id}</td>
             <td>{u.username}</td>
             <td>{u.email}</td>
@@ -273,3 +291,4 @@ function TopBuyersTable({ rows }: { rows: TopBuyer[] }) {
     </>
   )
 }
+

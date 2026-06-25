@@ -1,6 +1,7 @@
 import type { AgencyProperty, Purchase, AgencyClient, PropertyInput } from '../models/types'
 import { agencyProperties as agencyPropFixtures, purchases as purchaseFixtures, agencyClients as clientFixtures } from '../models/fixtures'
 import { apiFetch } from './http'
+import { extractId } from '../context/AuthContext'
 
 const API = import.meta.env.VITE_API_URL
 const USE_FIXTURES = import.meta.env.VITE_USE_FIXTURES === 'true'
@@ -10,7 +11,10 @@ function authHeaders(token: string) {
 }
 
 export async function fetchAgencyProperties(token: string): Promise<AgencyProperty[]> {
-  if (USE_FIXTURES) return agencyPropFixtures
+  if (USE_FIXTURES) {
+    const agencyId = extractId(token)
+    return agencyPropFixtures.filter(p => p.agencyId === agencyId)
+  }
   const res = await apiFetch(`${API}/agency-properties/agency/me`, { headers: authHeaders(token) })
   return res.json()
 }
@@ -72,13 +76,19 @@ export async function deleteProperty(token: string, id: number): Promise<void> {
 }
 
 export async function fetchAgencyPurchases(token: string): Promise<Purchase[]> {
-  if (USE_FIXTURES) return purchaseFixtures
+  if (USE_FIXTURES) {
+    const agencyId = extractId(token)
+    return purchaseFixtures.filter(p => p.agencyId === agencyId)
+  }
   const res = await apiFetch(`${API}/purchases/agency/me`, { headers: authHeaders(token) })
   return res.json()
 }
 
 export async function fetchAgencyClients(token: string): Promise<AgencyClient[]> {
-  if (USE_FIXTURES) return clientFixtures
+  if (USE_FIXTURES) {
+    const agencyId = extractId(token)
+    return clientFixtures.filter(c => c.agencyId === agencyId)
+  }
   const res = await apiFetch(`${API}/agencies/me/clients`, { headers: authHeaders(token) })
   return res.json()
 }
