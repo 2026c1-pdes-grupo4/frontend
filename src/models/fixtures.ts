@@ -72,7 +72,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 5,
+    id: 4,
     propertyType: 'APARTMENT',
     price: 520000,
     address: 'Juana Manso 1100',
@@ -86,7 +86,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 7,
+    id: 5,
     propertyType: 'APARTMENT',
     price: 720000,
     address: 'Posadas 1500',
@@ -100,7 +100,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 8,
+    id: 6,
     propertyType: 'HOUSE',
     price: 430000,
     address: 'Estancia Villa Maria, Lote 8',
@@ -114,7 +114,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 9,
+    id: 7,
     propertyType: 'APARTMENT',
     price: 950000,
     address: 'Av. Alvear 1800',
@@ -128,7 +128,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 11,
+    id: 8,
     propertyType: 'HOUSE',
     price: 580000,
     address: 'Barrio Castores, Lote 112',
@@ -142,7 +142,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 12,
+    id: 9,
     propertyType: 'APARTMENT',
     price: 210000,
     address: 'Juncal 2300',
@@ -156,7 +156,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 13,
+    id: 10,
     propertyType: 'HOUSE',
     price: 115000,
     address: 'Aymonino 300',
@@ -170,7 +170,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 14,
+    id: 11,
     propertyType: 'HOUSE',
     price: 480000,
     address: 'Av. Bustillo Km 4.5',
@@ -184,7 +184,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1449034446853-66c86144b0ad?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 15,
+    id: 12,
     propertyType: 'APARTMENT',
     price: 340000,
     address: 'Ugarteche 3000',
@@ -198,7 +198,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 16,
+    id: 13,
     propertyType: 'HOUSE',
     price: 390000,
     address: 'Club de Campo San Diego, Lote 24',
@@ -206,13 +206,13 @@ export const properties: Property[] = [
     province: 'Buenos Aires',
     areaSq: 420,
     rooms: 6,
-    description: 'Casa de categoría en San Diego Country Club. Amplias comodidades y suite principal.',
+    description: 'Casa de categoría en San Diego Country Club. Amplias comodidades and suite principal.',
     available: true,
     agencyId: 4,
     imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 18,
+    id: 14,
     propertyType: 'APARTMENT',
     price: 280000,
     address: 'Av. Coronel Diaz 2100',
@@ -226,7 +226,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 19,
+    id: 15,
     propertyType: 'APARTMENT',
     price: 850000,
     address: 'Martín Coronado 3200',
@@ -240,7 +240,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 20,
+    id: 16,
     propertyType: 'HOUSE',
     price: 550000,
     address: 'Barrio Highland Park, Los Alamos 45',
@@ -254,7 +254,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 21,
+    id: 17,
     propertyType: 'APARTMENT',
     price: 165000,
     address: 'Boulevard Marítimo 2300',
@@ -268,7 +268,7 @@ export const properties: Property[] = [
     imageUrl: 'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 22,
+    id: 18,
     propertyType: 'HOUSE',
     price: 720000,
     address: 'Ruta 40 Km 2200, Estancia El Desafío',
@@ -284,10 +284,10 @@ export const properties: Property[] = [
 ];
 
 export const agencyProperties: AgencyProperty[] = [
-  // --- PROPIEDADES MULTI-AGENCIA (Misma propiedad, distintas inmobiliarias/precios/fechas) ---
+  // --- PROPIEDADES MULTI-AGENCIA ---
   {
     id: 1,
-    propertyId: 1, // Miró 548 (Original)
+    propertyId: 1, // Miró 548
     address: 'Miró 548',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -299,7 +299,7 @@ export const agencyProperties: AgencyProperty[] = [
   },
   {
     id: 2,
-    propertyId: 1, // Miró 548 (Co-listado con otra agencia, más caro y publicado más tarde)
+    propertyId: 1, // Miró 548
     address: 'Miró 548',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -323,7 +323,7 @@ export const agencyProperties: AgencyProperty[] = [
   },
   {
     id: 4,
-    propertyId: 3, // Barrio La Isla, Lote 45 (Competencia directa Nordelta vs Ritondo)
+    propertyId: 3, // Barrio La Isla, Lote 45
     address: 'Barrio La Isla, Lote 45',
     city: 'Tigre',
     propertyType: 'HOUSE',
@@ -347,7 +347,7 @@ export const agencyProperties: AgencyProperty[] = [
   },
   {
     id: 6,
-    propertyId: 9, // Av. Alvear 1800 (Premium compartido)
+    propertyId: 7, // Av. Alvear 1800
     address: 'Av. Alvear 1800',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -359,7 +359,7 @@ export const agencyProperties: AgencyProperty[] = [
   },
   {
     id: 7,
-    propertyId: 9, // Ritondo también manotea el piso de Recoleta a un precio más agresivo
+    propertyId: 7, // Av. Alvear 1800
     address: 'Av. Alvear 1800',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -371,7 +371,7 @@ export const agencyProperties: AgencyProperty[] = [
   },
   {
     id: 8,
-    propertyId: 16, // San Diego, Lote 24 (Compartido entre Sur e Inmobiliaria Rural/Agro)
+    propertyId: 13, // San Diego, Lote 24
     address: 'Club de Campo San Diego, Lote 24',
     city: 'Moreno',
     propertyType: 'HOUSE',
@@ -383,7 +383,7 @@ export const agencyProperties: AgencyProperty[] = [
   },
   {
     id: 9,
-    propertyId: 16,
+    propertyId: 13, // San Diego, Lote 24
     address: 'Club de Campo San Diego, Lote 24',
     city: 'Moreno',
     propertyType: 'HOUSE',
@@ -394,10 +394,10 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'agro_bienes_raices',
   },
 
-  // --- PROPIEDADES RESTANTES DE RITONDO PROPIEDADES (Completando su cartera) ---
+  // --- CARTERA DE RITONDO PROPIEDADES ---
   {
-    id: 11,
-    propertyId: 12,
+    id: 10,
+    propertyId: 9, // Juncal 2300
     address: 'Juncal 2300',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -408,8 +408,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'ritondo_propiedades',
   },
   {
-    id: 12,
-    propertyId: 15,
+    id: 11,
+    propertyId: 12, // Ugarteche 3000
     address: 'Ugarteche 3000',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -420,8 +420,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'ritondo_propiedades',
   },
   {
-    id: 13,
-    propertyId: 18,
+    id: 12,
+    propertyId: 14, // Av. Coronel Diaz 2100
     address: 'Av. Coronel Diaz 2100',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -432,10 +432,10 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'ritondo_propiedades',
   },
 
-  // --- RESTO DEL MERCADO (Asegurando cobertura de todos los propertyId) ---
+  // --- RESTO DEL MERCADO ---
   {
-    id: 14,
-    propertyId: 5,
+    id: 13,
+    propertyId: 4, // Juana Manso 1100
     address: 'Juana Manso 1100',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -446,8 +446,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'puerto_madero_brokers',
   },
   {
-    id: 15,
-    propertyId: 7,
+    id: 14,
+    propertyId: 5, // Posadas 1500
     address: 'Posadas 1500',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -458,8 +458,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'puerto_madero_brokers',
   },
   {
-    id: 16,
-    propertyId: 8,
+    id: 15,
+    propertyId: 6, // Estancia Villa Maria, Lote 8
     address: 'Estancia Villa Maria, Lote 8',
     city: 'Ezeiza',
     propertyType: 'HOUSE',
@@ -470,8 +470,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'sur_inversiones',
   },
   {
-    id: 18,
-    propertyId: 11,
+    id: 16,
+    propertyId: 8, // Barrio Castores, Lote 112
     address: 'Barrio Castores, Lote 112',
     city: 'Tigre',
     propertyType: 'HOUSE',
@@ -482,8 +482,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'nordelta_propiedades',
   },
   {
-    id: 19,
-    propertyId: 13,
+    id: 17,
+    propertyId: 10, // Aymonino 300
     address: 'Aymonino 300',
     city: 'Rio Gallegos',
     propertyType: 'HOUSE',
@@ -494,8 +494,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'patagonia_bienes',
   },
   {
-    id: 20,
-    propertyId: 14,
+    id: 18,
+    propertyId: 11, // Av. Bustillo Km 4.5
     address: 'Av. Bustillo Km 4.5',
     city: 'San Carlos de Bariloche',
     propertyType: 'HOUSE',
@@ -506,8 +506,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'patagonia_bienes',
   },
   {
-    id: 22,
-    propertyId: 19,
+    id: 19,
+    propertyId: 15, // Martín Coronado 3200
     address: 'Martín Coronado 3200',
     city: 'Ciudad de Buenos Aires',
     propertyType: 'APARTMENT',
@@ -518,8 +518,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'puerto_madero_brokers',
   },
   {
-    id: 23,
-    propertyId: 20,
+    id: 20,
+    propertyId: 16, // Barrio Highland Park, Los Alamos 45
     address: 'Barrio Highland Park, Los Alamos 45',
     city: 'Pilar',
     propertyType: 'HOUSE',
@@ -530,8 +530,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'nordelta_propiedades',
   },
   {
-    id: 24,
-    propertyId: 21,
+    id: 21,
+    propertyId: 17, // Boulevard Marítimo 2300
     address: 'Boulevard Marítimo 2300',
     city: 'Mar del Plata',
     propertyType: 'APARTMENT',
@@ -542,8 +542,8 @@ export const agencyProperties: AgencyProperty[] = [
     agencyName: 'sur_inversiones',
   },
   {
-    id: 25,
-    propertyId: 22,
+    id: 22,
+    propertyId: 18, // Ruta 40 Km 2200, Estancia El Desafío
     address: 'Ruta 40 Km 2200, Estancia El Desafío',
     city: 'San Martín de los Andes',
     propertyType: 'HOUSE',
