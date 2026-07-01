@@ -25,6 +25,10 @@ export interface Property {
   rooms: number
   description: string
   available: boolean
+  circumscription?: string
+  section?: string
+  block?: string
+  parcel?: string
   listedPrice?: number
   agencyId?: number
   agencyName?: string
