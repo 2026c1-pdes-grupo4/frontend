@@ -9,3 +9,8 @@ Característica: Comprador realiza una compra
     Y hace clic en "Comprar" en la primera propiedad disponible
     Y confirma la compra
     Entonces ve el mensaje de confirmación de compra
+
+  Escenario: No puede comprar una propiedad ya vendida
+    Dado que ya compró una propiedad disponible
+    Cuando navega a la página de propiedades
+    Entonces esa propiedad ya no aparece en la lista

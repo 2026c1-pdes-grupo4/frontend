@@ -32,6 +32,7 @@ Given('que el comprador está autenticado en el panel', async function (this: Cu
   })
   if (!res.ok) throw new Error(`Login failed: HTTP ${res.status}`)
   const { token } = await res.json() as { token: string }
+  this.state.token = token
 
   await this.page.goto(this.baseUrl)
   await this.page.evaluate((t: string) => localStorage.setItem('token', t), token)
