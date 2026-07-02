@@ -25,8 +25,83 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start backend stack
+        run: |
+          docker network create cth-net
+
+          docker run -d --name cth-mysql --network cth-net \
+            -e MYSQL_DATABASE=cth \
+            -e MYSQL_USER=cth \
+            -e MYSQL_PASSWORD=1234 \
+            -e MYSQL_ROOT_PASSWORD=rootpass \
+            mysql:8.4
+
+          echo "Waiting for MySQL..."
+          for i in $(seq 1 30); do
+            if docker exec cth-mysql mysqladmin ping -h localhost -uroot -prootpass --silent; then
+              echo "MySQL ready after ${i} attempts"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "MySQL never became ready"
+              docker logs cth-mysql
+              exit 1
+            fi
+            sleep 2
+          done
+
+          docker run -d --name cth-api --network cth-net -p 8080:8080 \
+            -e SPRING_PROFILES_ACTIVE=mysql \
+            -e SPRING_DATASOURCE_URL="jdbc:mysql://cth-mysql:3306/cth?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&sslMode=DISABLED" \
+            -e SPRING_DATASOURCE_USERNAME=cth \
+            -e SPRING_DATASOURCE_PASSWORD=1234 \
+            ghcr.io/2026c1-pdes-grupo4/backend:develop
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for API (max 5 min)..."
+          for i in $(seq 1 60); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "API ready after ${i} attempts"
+              echo "Waiting 15s for DataInitializer to seed data..."
+              sleep 15
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "API never became ready. Last HTTP status: ${STATUS}"
+              docker logs cth-api
+              exit 1
+            fi
+            sleep 5
+          done
+
       - name: Run e2e tests
         run: npm run e2e:ci
         env:
           BASE_URL: http://localhost:5173
-          VITE_USE_FIXTURES: true
+          VITE_API_URL: http://localhost:8080
+          VITE_USE_FIXTURES: false
+          E2E_ADMIN_USER: admin123
+          E2E_ADMIN_PASS: admin123
+          E2E_BUYER_USER: buyer1
+          E2E_BUYER_PASS: buyer123
+          E2E_AGENCY_USER: inmo1
+          E2E_AGENCY_PASS: agency123
+
+      - name: Backend logs
+        if: always()
+        run: docker logs cth-api
+
+      - name: Stop backend stack
+        if: always()
+        run: |
+          docker rm -f cth-api cth-mysql || true
+          docker network rm cth-net || true
