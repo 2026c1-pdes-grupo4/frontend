@@ -10,8 +10,6 @@ export function useProperties(filter: PropertyFilter = {}) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setLoading(true)
-    setError(null)
     fetchProperties(filter, token)
       .then(setList)
       .catch((err) => setError(err.message))

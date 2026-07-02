@@ -34,16 +34,25 @@ function useAdminData<T>(fetcher: (token: string) => Promise<T[]>, token: string
   const [data, setData] = useState<T[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [prevActive, setPrevActive] = useState(active)
+  const [prevToken, setPrevToken] = useState(token)
+
+  if (active !== prevActive || token !== prevToken) {
+    setPrevActive(active)
+    setPrevToken(token)
+    if (active && token) {
+      setLoading(true)
+      setError(null)
+    }
+  }
 
   useEffect(() => {
     if (!active || !token) return
-    setLoading(true)
-    setError(null)
     fetcher(token)
       .then(setData)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [active, token])
+  }, [active, token, fetcher])
 
   return { data, loading, error }
 }
