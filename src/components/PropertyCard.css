@@ -1,7 +1,7 @@
 .property-card {
   display: flex;
   flex-direction: row;
-  height: 120px;
+  min-height: 120px;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
@@ -126,6 +126,21 @@
 .property-card__status--sold {
   background: #fdecea;
   color: #c62828;
+}
+
+.property-card__buy-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2a7ae2;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.property-card__buy-btn:hover {
+  background: #1f5fb8;
 }
 
 .fav-form {
