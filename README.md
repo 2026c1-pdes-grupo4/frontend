@@ -10,79 +10,62 @@ Integrantes
 - Juan Hualampa
 - Sofia Justiniano
 
+---
+
+## Roles
+
+| Rol | Ruta |
+|---|---|
+| Comprador | `/properties`, `/favorites` |
+| Agencia | `/agency` |
+| Admin | `/admin` |
 
 ---
 
-# React + TypeScript + Vite
+## Ejecución
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Requisitos
+- Node 22+
+- Backend corriendo en `http://localhost:8080`
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Instalar dependencias
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Modo desarrollo
+```bash
+npm run dev
 ```
+
+### docker
+```bash
+docker compose up
+```
+
+---
+
+## Variables de entorno
+En un archivo .env
+
+| Variable | Descripción | Por defecto |
+|---|---|---|
+| `VITE_API_URL` | URL base del backend | `http://localhost:8080` |
+| `VITE_USE_FIXTURES` | Usar datos locales en lugar del backend real | `false` |
+| `BASE_URL` | URL del frontend usada por los tests E2E | `http://localhost:5173` |
+| `E2E_AGENCY_USER` | Usuario de agencia para login en E2E | `inmo3` |
+| `E2E_AGENCY_PASS` | Contraseña de agencia para login en E2E | `agency123` |
+
+---
+
+## Tests E2E
+```bash
+# tests solamente
+npm run e2e
+
+# dev mode & tests
+npm run e2e:ci
+```
+
+En CI se ejecuta con `VITE_USE_FIXTURES=true`, no requiere backend.
+
