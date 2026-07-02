@@ -104,3 +104,11 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}

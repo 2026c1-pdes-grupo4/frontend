@@ -1,5 +1,5 @@
-import { users, agencies, favorites, purchases } from '../models/fixtures'
-import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw } from '../models/types'
+import { users, agencies, favorites, purchases, topBuyers, topRankedProperties, topAgenciesSales } from '../models/fixtures'
+import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
 import { apiFetch } from './http'
 
 const BASE = import.meta.env.VITE_API_URL
@@ -38,14 +38,33 @@ export async function fetchAllFavorites(token: string): Promise<Favorite[]> {
   }))
 }
 
+export async function fetchTopBuyers(token: string): Promise<TopBuyer[]> {
+  if (USE_FIXTURES) return topBuyers
+  return authGet('/admin/reports/top-buyers', token)
+}
+
+export async function fetchTopRankedProperties(token: string): Promise<TopRankedProperty[]> {
+  if (USE_FIXTURES) return topRankedProperties
+  return authGet('/admin/reports/top-ranked-properties', token)
+}
+
+export async function fetchTopAgenciesSales(token: string): Promise<TopAgencySales[]> {
+  if (USE_FIXTURES) return topAgenciesSales
+  return authGet('/admin/reports/top-agencies-sales', token)
+}
+
 export async function fetchAllPurchases(token: string): Promise<Purchase[]> {
   if (USE_FIXTURES) return purchases
   const raw = await authGet<AdminPurchaseRaw[]>('/admin/purchases', token)
   return raw.map((p) => ({
     id: p.purchaseId,
+    agencyId: p.agencyProperty.agency.agencyId,
     propertyAddress: p.agencyProperty.property.address,
     agencyName: p.agencyProperty.agency.username,
     purchasePrice: p.purchasePrice,
     purchaseDate: String(p.purchaseDate),
+    buyerId: p.user.userId,
+    buyerUsername: p.user.username,
+    buyerEmail: p.user.email,
   }))
 }

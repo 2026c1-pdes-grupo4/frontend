@@ -25,9 +25,14 @@ export interface Property {
   rooms: number
   description: string
   available: boolean
+  circumscription?: string
+  section?: string
+  block?: string
+  parcel?: string
   listedPrice?: number
   agencyId?: number
   agencyName?: string
+  imageUrl?: string
 }
 
 export interface AgencyProperty {
@@ -57,13 +62,18 @@ export interface Favorite {
 
 export interface Purchase {
   id: number
+  agencyId: number
   propertyAddress: string
   agencyName: string
   purchasePrice: number
   purchaseDate: string
+  buyerId: number
+  buyerUsername: string
+  buyerEmail: string
 }
 
 export interface AgencyClient {
+  agencyId: number
   userId: number
   username: string
   email: string
@@ -100,9 +110,29 @@ export type AdminFavoriteRaw = {
 
 export type AdminPurchaseRaw = {
   purchaseId: number
-  agencyProperty: { property: { address: string }; agency: { username: string } }
+  agencyProperty: { property: { address: string }; agency: { agencyId: number; username: string } }
   purchasePrice: number
   purchaseDate: string
+  user: { userId: number; username: string; email: string }
+}
+
+export interface TopBuyer {
+  userId: number
+  username: string
+  purchases: number
+}
+
+export interface TopRankedProperty {
+  propertyId: number
+  address: string
+  averageScore: number
+  ratings: number
+}
+
+export interface TopAgencySales {
+  agencyId: number
+  username: string
+  sales: number
 }
 
 export interface LoginRequest {

@@ -1,14 +1,22 @@
 import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
 
-function extractRole(token: string | null): string | null {
+function parsePayload(token: string | null): Record<string, unknown> | null {
   if (!token) return null
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.roles?.[0] ?? null
+    return JSON.parse(atob(token.split('.')[1]))
   } catch {
     return null
   }
+}
+
+function extractRole(token: string | null): string | null {
+  return (parsePayload(token)?.roles as string[])?.[0] ?? null
+}
+
+export function extractId(token: string | null): number | null {
+  const id = parsePayload(token)?.id
+  return typeof id === 'number' ? id : null
 }
 
 interface AuthContextType {

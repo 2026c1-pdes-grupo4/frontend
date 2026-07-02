@@ -52,7 +52,8 @@ When('cuenta las propiedades en la lista', async function (this: CustomWorld) {
 })
 
 When('elimina la primera propiedad', async function (this: CustomWorld) {
-  await this.page.locator('[data-testid="btn-delete-property"]').first().click()
+  const availableCard = this.page.locator('[data-testid="property-card"]').filter({ hasNotText: 'Sold' }).first()
+  await availableCard.locator('[data-testid="btn-delete-property"]').click()
 })
 
 Then('la lista tiene una propiedad menos', async function (this: CustomWorld) {

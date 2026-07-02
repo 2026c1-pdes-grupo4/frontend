@@ -7,12 +7,15 @@ interface Props {
   property: Property
   onFavorite?: (propertyId: number, score: number, comment: string) => void
   isFavorite?: boolean
+  onBuy?: (agencyPropertyId: number) => Promise<void>
 }
 
-export default function PropertyCard({ property: p, onFavorite, isFavorite }: Props) {
+export default function PropertyCard({ property: p, onFavorite, isFavorite, onBuy }: Props) {
   const [open, setOpen] = useState(false)
   const [score, setScore] = useState(3)
   const [comment, setComment] = useState('')
+  const [confirmBuy, setConfirmBuy] = useState(false)
+  const [purchased, setPurchased] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,38 +23,90 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite }: Pr
     setOpen(false)
   }
 
+  const handleFavClick = () => {
+    if (!onFavorite) return
+    if (isFavorite) return
+    setOpen(v => !v)
+  }
+
+  const handleConfirmBuy = async () => {
+    if (!onBuy || !p.agencyPropertyId) return
+    try {
+      await onBuy(p.agencyPropertyId)
+      setPurchased(true)
+    } finally {
+      setConfirmBuy(false)
+    }
+  }
+
   return (
     <div className="property-card">
-      <div className="property-image">no image</div>
+      <div className="property-card__image">
+        {p.imageUrl
+          ? <img src={p.imageUrl} alt={p.address} />
+          : <span>no image</span>}
+      </div>
+      <div className="property-card__body">
 
-      <div className="property-body">
-        <div className="property-info">
-          <h2>{p.address}</h2>
-          <h3 className="location">{p.city}, {p.province}</h3>
-          <p className="description">{p.description}</p>
-          <div className="property-meta">
+        <div className="property-card__row">
+          <span className="property-card__address">{p.address}</span>
+          <div className="property-card__meta">
             <span>{p.areaSq} m²</span>
             <span>{p.rooms} rooms</span>
+            <span className="property-card__type">{p.propertyType}</span>
+            {onFavorite && (
+              <button
+                className="property-card__fav-btn"
+                onClick={handleFavClick}
+                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              >
+                {isFavorite ? '★' : '☆'}
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="property-price-box">
-          <span className="type">{p.propertyType}</span>
-          <span className="price">${p.price.toLocaleString()}</span>
-          <span className={p.available ? 'availability' : 'availability unavailable'}>
+        <div className="property-card__row">
+          <span className="property-card__city">{p.city}, {p.province}</span>
+          <span className="property-card__price">${p.price.toLocaleString()}</span>
+        </div>
+
+        <div className="property-card__row">
+          <p className="property-card__description">{p.description}</p>
+          <span className={`property-card__status${p.available ? '' : ' property-card__status--sold'}`}>
             {p.available ? 'Available' : 'Sold'}
           </span>
-          {onFavorite && (
-            <button
-              className={`fav-btn${isFavorite ? ' fav-btn--saved' : ''}`}
-              onClick={() => !isFavorite && setOpen((v) => !v)}
-              disabled={isFavorite}
-            >
-              {isFavorite ? '★ Saved' : '☆ Favorite'}
-            </button>
-          )}
         </div>
+
+        {onBuy && p.available && !purchased && (
+          <div className="property-card__row">
+            <button
+              className="property-card__buy-btn"
+              data-testid="btn-buy-property"
+              onClick={() => setConfirmBuy(true)}
+            >
+              Buy
+            </button>
+          </div>
+        )}
+
+        {purchased && (
+          <p className="property-card__purchase-success" data-testid="purchase-success-message">
+            Purchase confirmed!
+          </p>
+        )}
+
       </div>
+
+      {confirmBuy && (
+        <div className="buy-confirm-dialog" data-testid="buy-confirm-dialog">
+          <p>Confirm purchase of {p.address} for ${p.price.toLocaleString()}?</p>
+          <div className="fav-form-actions">
+            <button data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>Confirm</button>
+            <button onClick={() => setConfirmBuy(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       {open && (
         <form className="fav-form" onSubmit={handleSubmit}>
@@ -61,11 +116,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite }: Pr
           </label>
           <label>
             Comment
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              rows={2}
-            />
+            <textarea value={comment} onChange={e => setComment(e.target.value)} rows={2} />
           </label>
           <div className="fav-form-actions">
             <button type="submit">Save</button>

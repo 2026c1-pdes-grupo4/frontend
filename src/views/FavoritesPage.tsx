@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { useFavorites } from '../controllers/useFavorites'
 import StarRating from '../components/StarRating'
+import { Pager } from '../components/Pager'
+import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import '../components/PropertyCard.css'
 import './FavoritesPage.css'
 
 export default function FavoritesPage() {
   const { list, loading, error, editFavorite, removeFavorite } = useFavorites()
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
+  const pagination = usePagination(list, pageSize)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editScore, setEditScore] = useState(1)
   const [editComment, setEditComment] = useState('')
@@ -28,29 +33,34 @@ export default function FavoritesPage() {
   return (
     <div className="fav-page">
       <h2>My Favorites</h2>
-      <ul className="fav-list">
-        {list.map((f) => (
-          <li key={f.id} className="fav-item">
-            <div className="fav-item-header">
-              <span className="fav-property-id">{f.propertyAddress} · {f.city}</span>
-              <div className="fav-item-actions">
-                <span className="fav-score">{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</span>
-                <button
-                  className="fav-action-btn"
-                  onClick={() => openEdit(f.id, f.score, f.comment)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="fav-action-btn fav-action-btn--delete"
-                  onClick={() => removeFavorite(f.id)}
-                >
-                  Delete
-                </button>
+      <div className="fav-list">
+        {pagination.pagedData.map((f) => (
+          <div key={f.id} className="property-card">
+            <div className="property-card__body">
+              <div className="property-card__row">
+                <span className="property-card__address">{f.propertyAddress}</span>
+                <div className="property-card__meta">
+                  <span>{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</span>
+                </div>
+              </div>
+
+              <div className="property-card__row">
+                <span className="property-card__city">{f.city} · {f.agencyName}</span>
+                <span className="property-card__price">${f.savedPrice.toLocaleString()}</span>
+              </div>
+
+              <div className="property-card__row">
+                <span className="fav-comment">{f.comment || <em>No comment</em>}</span>
+                <span className="fav-date">{f.savedDate}</span>
               </div>
             </div>
 
-            {editingId === f.id ? (
+            <div className="fav-actions">
+              <button className="fav-action-btn" onClick={() => openEdit(f.id, f.score, f.comment)}>Edit</button>
+              <button className="fav-action-btn fav-action-btn--delete" onClick={() => removeFavorite(f.id)}>Delete</button>
+            </div>
+
+            {editingId === f.id && (
               <form className="fav-edit-form" onSubmit={(e) => handleEditSubmit(e, f.id)}>
                 <label>
                   Score
@@ -58,26 +68,18 @@ export default function FavoritesPage() {
                 </label>
                 <label>
                   Comment
-                  <textarea
-                    value={editComment}
-                    onChange={(e) => setEditComment(e.target.value)}
-                    rows={2}
-                  />
+                  <textarea value={editComment} onChange={(e) => setEditComment(e.target.value)} rows={2} />
                 </label>
                 <div className="fav-form-actions">
                   <button type="submit">Save</button>
                   <button type="button" onClick={() => setEditingId(null)}>Cancel</button>
                 </div>
               </form>
-            ) : (
-              <>
-                {f.comment && <p className="fav-comment">{f.comment}</p>}
-                <span className="fav-date">{f.savedDate} · ${f.savedPrice.toLocaleString()}</span>
-              </>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
+      <Pager p={pagination} pageSize={pageSize} onPageSize={setPageSize} />
     </div>
   )
 }

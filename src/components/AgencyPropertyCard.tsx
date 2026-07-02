@@ -1,4 +1,5 @@
 import type { AgencyProperty } from '../models/types'
+import './PropertyCard.css'
 import './AgencyPropertyCard.css'
 
 interface Props {
@@ -7,21 +8,35 @@ interface Props {
   onDelete: (id: number) => void
 }
 
-export default function AgencyPropertyCard({ property, onEdit, onDelete }: Props) {
+export default function AgencyPropertyCard({ property: p, onEdit, onDelete }: Props) {
   return (
-    <div className="agency-property-card" data-testid="property-card">
-      <div className="agency-card-info">
-        <h3>{property.address}</h3>
-        <p className="agency-card-location">{property.city}</p>
-        <p className="agency-card-meta">{property.propertyType}</p>
-        <p className="agency-card-price">USD {property.listedPrice.toLocaleString()}</p>
-        <span className={`agency-card-status ${property.available ? 'available' : 'sold'}`}>
-          {property.available ? 'Available' : 'Sold'}
-        </span>
+    <div className="property-card" data-testid="property-card">
+      <div className="property-card__image">
+        <span>no image</span>
       </div>
+
+      <div className="property-card__body">
+        <div className="property-card__row">
+          <span className="property-card__address">{p.address}</span>
+          <span className="property-card__type">{p.propertyType}</span>
+        </div>
+
+        <div className="property-card__row">
+          <span className="property-card__city">{p.city}</span>
+          <span className="property-card__price">USD {p.listedPrice.toLocaleString()}</span>
+        </div>
+
+        <div className="property-card__row">
+          <span className="agency-card__date">Listed {p.listedDate}</span>
+          <span className={`property-card__status${p.available ? '' : ' property-card__status--sold'}`}>
+            {p.available ? 'Available' : 'Sold'}
+          </span>
+        </div>
+      </div>
+
       <div className="agency-card-actions">
-        <button onClick={() => onEdit(property)} data-testid="btn-edit-property">Edit</button>
-        <button className="btn-danger" onClick={() => onDelete(property.id)} data-testid="btn-delete-property">Delete</button>
+        <button onClick={() => onEdit(p)} data-testid="btn-edit-property">Edit</button>
+        <button className="btn-danger" onClick={() => onDelete(p.id)} data-testid="btn-delete-property">Delete</button>
       </div>
     </div>
   )

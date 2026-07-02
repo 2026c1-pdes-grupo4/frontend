@@ -1,21 +1,17 @@
-import { useState, useEffect } from 'react'
-import { fetchAgencyClients } from '../services/agencyService'
-import { useAuthContext } from '../context/AuthContext'
+import { useAgencyPurchases } from './useAgencyPurchases'
 import type { AgencyClient } from '../models/types'
 
 export function useAgencyClients() {
-  const { token } = useAuthContext()
-  const [list, setList] = useState<AgencyClient[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { list: purchases, loading, error } = useAgencyPurchases()
 
-  useEffect(() => {
-    if (!token) return
-    fetchAgencyClients(token)
-      .then(setList)
-      .catch((e: Error) => setError(e.message))
-      .finally(() => setLoading(false))
-  }, [token])
+  const list: AgencyClient[] = Array.from(
+    new Map(purchases.map((p) => [p.buyerId, p])).values()
+  ).map((p) => ({
+    agencyId: p.agencyId,
+    userId: p.buyerId,
+    username: p.buyerUsername,
+    email: p.buyerEmail,
+  }))
 
   return { list, loading, error }
 }
