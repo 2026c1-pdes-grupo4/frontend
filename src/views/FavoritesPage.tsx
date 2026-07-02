@@ -40,7 +40,7 @@ export default function FavoritesPage() {
               <div className="property-card__row">
                 <span className="property-card__address">{f.propertyAddress}</span>
                 <div className="property-card__meta">
-                  <span>{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</span>
+                  <span>{'★'.repeat(Math.min(f.score, 5))}{'☆'.repeat(Math.max(0, 5 - f.score))}</span>
                 </div>
               </div>
 
