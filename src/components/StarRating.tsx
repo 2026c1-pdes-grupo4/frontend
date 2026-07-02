@@ -14,6 +14,7 @@ export default function StarRating({ value, onChange }: Props) {
       {[1, 2, 3, 4, 5].map((star) => (
         <span
           key={star}
+          data-testid={`star-${star}`}
           className={`star ${star <= (hovered || value) ? 'star--filled' : ''}`}
           onClick={() => onChange(star)}
           onMouseEnter={() => setHovered(star)}

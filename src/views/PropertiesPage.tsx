@@ -87,7 +87,7 @@ export default function PropertiesPage() {
             key={p.id}
             property={p}
             onFavorite={addFavorite}
-            isFavorite={isFavorite(p.id)}
+            isFavorite={!!p.agencyPropertyId && isFavorite(p.agencyPropertyId)}
             onBuy={buyProperty}
           />
         ))}
