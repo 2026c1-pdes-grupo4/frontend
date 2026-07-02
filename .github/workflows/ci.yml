@@ -1,4 +1,4 @@
-name: E2E Tests
+name: Frontend CI
 
 on:
   push:
@@ -28,6 +28,31 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Explain why SonarCloud CI analysis is skipped
+        if: ${{ vars.SONAR_CI_ANALYSIS_ENABLED != 'true' }}
+        run: |
+          echo "Skipping CI-based SonarCloud analysis."
+          echo "This project currently uses SonarCloud Automatic Analysis, which conflicts with a CI-based scan."
+          echo "Disable Automatic Analysis in SonarCloud and set SONAR_CI_ANALYSIS_ENABLED=true to re-enable this step."
+
+      - name: Checkout (full history)
+        if: ${{ vars.SONAR_CI_ANALYSIS_ENABLED == 'true' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SonarCloud analysis
+        if: ${{ vars.SONAR_CI_ANALYSIS_ENABLED == 'true' }}
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   e2e:
     needs: build
