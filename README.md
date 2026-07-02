@@ -56,19 +56,23 @@ Usa el target `dev` del `Dockerfile` (`node:22-slim`, corre `npm run dev` dentro
 
 ### Opción 3: Docker, target `production` (build real, sin nodejs ni hot-reload)
 
-Requisitos: Docker.
+Requisitos: Docker, y `dist/` ya compilado (el target `production` no compila nada, sólo empaqueta).
 
 ```bash
+npm install
+npm run build
 docker build --target production -t cth-frontend .
 docker run -p 8081:80 cth-frontend
 ```
 
-Este target compila la app (`tsc -b && vite build`), siendo la imagen final `nginx:1.27-alpine` sirviendo el compilado de `dist/` en el puerto `80` del contenedor (mapeado a `8081`).
+La imagen final es sólo `nginx:1.27-alpine` sirviendo el contenido de `dist/` en el puerto `80` del contenedor (mapeado a `8081`).
 
 > [!NOTE]
-> A diferencia de las opciones 1 y 2, `VITE_API_URL` queda fijo dentro del bundle en el momento del `docker build`, no se puede cambiar después con una variable de entorno al hacer `docker run`.
+> A diferencia de las opciones 1 y 2, `VITE_API_URL` queda fijo dentro del bundle en el momento del `npm run build`, no se puede cambiar después con una variable de entorno al hacer `docker run`.
 
-En CI, el job **Push Image to GHCR** publica `production` en `ghcr.io/2026c1-pdes-grupo4/frontend`.
+En CI:
+1. **Build & Lint** compila `dist/` y lo sube como artifact
+2. **Push Image to GHCR** lo descarga y arma la imagen, publicándola en `ghcr.io/2026c1-pdes-grupo4/frontend`.
 ---
 
 ## Variables de entorno (.env)
