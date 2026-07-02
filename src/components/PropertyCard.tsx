@@ -7,12 +7,15 @@ interface Props {
   property: Property
   onFavorite?: (propertyId: number, score: number, comment: string) => void
   isFavorite?: boolean
+  onBuy?: (agencyPropertyId: number) => Promise<void>
 }
 
-export default function PropertyCard({ property: p, onFavorite, isFavorite }: Props) {
+export default function PropertyCard({ property: p, onFavorite, isFavorite, onBuy }: Props) {
   const [open, setOpen] = useState(false)
   const [score, setScore] = useState(3)
   const [comment, setComment] = useState('')
+  const [confirmBuy, setConfirmBuy] = useState(false)
+  const [purchased, setPurchased] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,6 +27,16 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite }: Pr
     if (!onFavorite) return
     if (isFavorite) return
     setOpen(v => !v)
+  }
+
+  const handleConfirmBuy = async () => {
+    if (!onBuy || !p.agencyPropertyId) return
+    try {
+      await onBuy(p.agencyPropertyId)
+      setPurchased(true)
+    } finally {
+      setConfirmBuy(false)
+    }
   }
 
   return (
@@ -65,7 +78,35 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite }: Pr
           </span>
         </div>
 
+        {onBuy && p.available && !purchased && (
+          <div className="property-card__row">
+            <button
+              className="property-card__buy-btn"
+              data-testid="btn-buy-property"
+              onClick={() => setConfirmBuy(true)}
+            >
+              Buy
+            </button>
+          </div>
+        )}
+
+        {purchased && (
+          <p className="property-card__purchase-success" data-testid="purchase-success-message">
+            Purchase confirmed!
+          </p>
+        )}
+
       </div>
+
+      {confirmBuy && (
+        <div className="buy-confirm-dialog" data-testid="buy-confirm-dialog">
+          <p>Confirm purchase of {p.address} for ${p.price.toLocaleString()}?</p>
+          <div className="fav-form-actions">
+            <button data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>Confirm</button>
+            <button onClick={() => setConfirmBuy(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       {open && (
         <form className="fav-form" onSubmit={handleSubmit}>

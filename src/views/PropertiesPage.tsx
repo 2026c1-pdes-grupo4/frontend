@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useProperties } from '../controllers/useProperties'
 import { useFavorites } from '../controllers/useFavorites'
+import { usePurchases } from '../controllers/usePurchases'
 import PropertyCard from '../components/PropertyCard'
 import { Pager } from '../components/Pager'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
@@ -14,13 +15,14 @@ export default function PropertiesPage() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const { list, loading, error } = useProperties(filter)
   const { addFavorite, isFavorite } = useFavorites()
+  const { buyProperty } = usePurchases()
   const pagination = usePagination(list, pageSize)
 
   const set = (field: keyof PropertyFilter, value: string | number) =>
     setFilter((prev) => ({ ...prev, [field]: value === '' ? undefined : value }))
 
   return (
-    <div className="properties-list-wrapper">
+    <div className="properties-list-wrapper" data-testid="properties-page">
       <div className="properties-filter">
         <input
           className="filter-input"
@@ -86,6 +88,7 @@ export default function PropertiesPage() {
             property={p}
             onFavorite={addFavorite}
             isFavorite={isFavorite(p.id)}
+            onBuy={buyProperty}
           />
         ))}
       </div>
