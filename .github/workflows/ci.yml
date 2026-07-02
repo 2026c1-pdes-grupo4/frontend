@@ -80,7 +80,7 @@ jobs:
 
       - name: Run SonarCloud analysis
         if: ${{ vars.SONAR_CI_ANALYSIS_ENABLED == 'true' }}
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
