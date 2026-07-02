@@ -1,0 +1,6 @@
+.git
+.gitignore
+node_modules
+dist
+e2e-report.html
+*.log
