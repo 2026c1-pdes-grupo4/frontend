@@ -1,24 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
-
-function parsePayload(token: string | null): Record<string, unknown> | null {
-  if (!token) return null
-  try {
-    return JSON.parse(atob(token.split('.')[1]))
-  } catch {
-    return null
-  }
-}
-
-function extractRole(token: string | null): string | null {
-  return (parsePayload(token)?.roles as string[])?.[0] ?? null
-}
-
-// eslint-disable-next-line react-refresh/only-export-components -- shared with AuthProvider in this file
-export function extractId(token: string | null): number | null {
-  const id = parsePayload(token)?.id
-  return typeof id === 'number' ? id : null
-}
+import { extractRole } from '../models/jwt'
 
 interface AuthContextType {
   token: string | null

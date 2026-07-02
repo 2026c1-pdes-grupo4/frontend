@@ -1,7 +1,7 @@
 import type { AgencyProperty, Purchase, PropertyInput } from '../models/types'
 import { agencyProperties as agencyPropFixtures, purchases as purchaseFixtures } from '../models/fixtures'
 import { apiFetch } from './http'
-import { extractId } from '../context/AuthContext'
+import { extractId } from '../models/jwt'
 
 const API = import.meta.env.VITE_API_URL
 const USE_FIXTURES = import.meta.env.VITE_USE_FIXTURES === 'true'
