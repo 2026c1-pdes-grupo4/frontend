@@ -15,7 +15,7 @@ export function useAuth() {
       setToken(res.token)
       const payload = JSON.parse(atob(res.token.split('.')[1]))
       return payload.roles?.[0] ?? null
-    } catch (err) {
+    } catch {
       setError('Invalid credentials')
       return null
     } finally {

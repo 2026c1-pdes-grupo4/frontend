@@ -1,12 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export const PAGE_SIZE_OPTIONS = [5, 10, 20] as const
 export const DEFAULT_PAGE_SIZE = 10
 
 export function usePagination<T>(data: T[], pageSize: number = DEFAULT_PAGE_SIZE) {
   const [page, setPage] = useState(1)
+  const [prevPageSize, setPrevPageSize] = useState(pageSize)
 
-  useEffect(() => { setPage(1) }, [pageSize])
+  if (pageSize !== prevPageSize) {
+    setPrevPageSize(pageSize)
+    setPage(1)
+  }
 
   const totalPages = Math.max(1, Math.ceil(data.length / pageSize))
   const pagedData = data.slice((page - 1) * pageSize, page * pageSize)

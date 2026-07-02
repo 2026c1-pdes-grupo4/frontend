@@ -14,6 +14,7 @@ function extractRole(token: string | null): string | null {
   return (parsePayload(token)?.roles as string[])?.[0] ?? null
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- shared with AuthProvider in this file
 export function extractId(token: string | null): number | null {
   const id = parsePayload(token)?.id
   return typeof id === 'number' ? id : null
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- shared with AuthProvider in this file
 export function useAuthContext() {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuthContext must be used inside AuthProvider')
