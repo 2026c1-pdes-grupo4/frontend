@@ -122,7 +122,7 @@ export default function AgencyDashboardPage() {
               <tr>
                 <th>#</th>
                 <th>Property</th>
-                <th>Agency</th>
+                <th>Buyer</th>
                 <th>Price</th>
                 <th>Date</th>
               </tr>
@@ -132,7 +132,7 @@ export default function AgencyDashboardPage() {
                 <tr key={s.id} data-testid="sale-row">
                   <td>{s.id}</td>
                   <td>{s.propertyAddress}</td>
-                  <td>{s.agencyName}</td>
+                  <td>{s.buyerUsername}</td>
                   <td>USD {s.purchasePrice.toLocaleString()}</td>
                   <td>{s.purchaseDate}</td>
                 </tr>

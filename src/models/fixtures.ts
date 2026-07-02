@@ -1,4 +1,4 @@
-import type { User, Agency, Property, AgencyProperty, Favorite, Purchase, AgencyClient, TopBuyer, TopRankedProperty, TopAgencySales } from './types'
+import type { User, Agency, Property, AgencyProperty, Favorite, Purchase, TopBuyer, TopRankedProperty, TopAgencySales } from './types'
 
 export const users: User[] = [
   { id: 1, username: 'manuel', email: 'manuel@argentina.gob', profileType: 'BUYER' },
@@ -655,11 +655,10 @@ export const purchases: Purchase[] = [
     agencyName: 'ritondo_propiedades',
     purchasePrice: 150000,
     purchaseDate: '2024-03-15',
+    buyerId: 1,
+    buyerUsername: 'manuel',
+    buyerEmail: 'manuel@argentina.gob',
   },
-]
-
-export const agencyClients: AgencyClient[] = [
-  { agencyId: 1, userId: 1, username: 'manuel', email: 'manuel@argentina.gob' },
 ]
 
 export const topBuyers: TopBuyer[] = [

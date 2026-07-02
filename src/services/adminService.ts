@@ -58,9 +58,13 @@ export async function fetchAllPurchases(token: string): Promise<Purchase[]> {
   const raw = await authGet<AdminPurchaseRaw[]>('/admin/purchases', token)
   return raw.map((p) => ({
     id: p.purchaseId,
+    agencyId: p.agencyProperty.agency.agencyId,
     propertyAddress: p.agencyProperty.property.address,
     agencyName: p.agencyProperty.agency.username,
     purchasePrice: p.purchasePrice,
     purchaseDate: String(p.purchaseDate),
+    buyerId: p.user.userId,
+    buyerUsername: p.user.username,
+    buyerEmail: p.user.email,
   }))
 }

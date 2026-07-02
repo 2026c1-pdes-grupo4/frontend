@@ -67,6 +67,9 @@ export interface Purchase {
   agencyName: string
   purchasePrice: number
   purchaseDate: string
+  buyerId: number
+  buyerUsername: string
+  buyerEmail: string
 }
 
 export interface AgencyClient {
@@ -107,9 +110,10 @@ export type AdminFavoriteRaw = {
 
 export type AdminPurchaseRaw = {
   purchaseId: number
-  agencyProperty: { property: { address: string }; agency: { username: string } }
+  agencyProperty: { property: { address: string }; agency: { agencyId: number; username: string } }
   purchasePrice: number
   purchaseDate: string
+  user: { userId: number; username: string; email: string }
 }
 
 export interface TopBuyer {

@@ -13,6 +13,9 @@ export async function createPurchase(token: string, agencyPropertyId: number): P
       agencyName: '',
       purchasePrice: 0,
       purchaseDate: new Date().toISOString().split('T')[0],
+      buyerId: 0,
+      buyerUsername: '',
+      buyerEmail: '',
     }
   }
 
