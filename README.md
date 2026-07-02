@@ -92,6 +92,22 @@ En CI:
 
 ---
 
+## Unit tests
+
+```bash
+npm run test
+
+# watch mode
+npm run test:watch
+
+# coverage report (coverage/lcov.info)
+npm run test:coverage
+```
+
+Corre como parte del job **Build & Lint** en CI.
+
+---
+
 ## Tests E2E
 ```bash
 # tests solamente
@@ -121,5 +137,42 @@ Usa [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser) para 
 | `services-no-upward-deps` | `services/` no puede depender de `controllers/`, `views/`, `components/` ni `context/` |
 | `models-are-leaf` | `models/` no puede depender de ninguna otra capa |
 
-Corre como parte del job **Build & Lint** en CI (bloqueante).
+Corre como parte del job **Build & Lint** en CI.
+
+---
+
+## Git Flow
+
+```
+| main            producción
+├─ develop        integración
+| | └ feature/*   nuevas funcionalidades
+└ └ fix/*         fixes (de develop o main)
+```
+
+**Flujo de trabajo:**
+
+```
+feature/* -> PR -> develop -> PR -> main
+```
+> [!IMPORTANT]
+> develop & main disparan pipeline completo
+> (build + arch tests + sonar opcional + e2e + push + deploy)
+
+
+---
+
+## Pipeline CI/CD (`.github/workflows/ci.yml`)
+```
+Job 1: Build & Lint -> Job 2: SonarCloud -> Job 3: e2e (Playwright)
+    (lint + arch tests + build)
+        │
+Job 4: Push GHCR (solo push a main/develop)
+        │
+   (solo main)
+        |
+Job 5: Deploy (TO-DO)
+```
+
+La imagen Docker se publica en `ghcr.io/2026c1-pdes-grupo4/frontend`.
 
