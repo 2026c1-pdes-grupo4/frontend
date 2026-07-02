@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../controllers/useAuth'
-import { useAuthContext } from '../context/AuthContext'
 import './Header.css'
 
-export default function Header() {
-  const { handleLogout } = useAuth()
-  const { role } = useAuthContext()
+interface HeaderProps {
+  role: string | null
+  onLogout: () => void
+}
 
+export default function Header({ role, onLogout }: HeaderProps) {
   return (
     <header className="app-header">
       <h1 className="app-title">Compra Tu Hogar</h1>
@@ -24,7 +24,7 @@ export default function Header() {
           <Link to="/admin">Admin</Link>
         )}
       </nav>
-      <button className="logout-btn" onClick={handleLogout}>Logout</button>
+      <button className="logout-btn" onClick={onLogout}>Logout</button>
     </header>
   )
 }

@@ -103,3 +103,23 @@ npm run e2e:ci
 
 En CI (job `e2e`) se ejecuta con `VITE_USE_FIXTURES=false` contra un backend real (MySQL + API en Docker).
 
+---
+
+## Tests de Arquitectura
+
+```bash
+npm run test:arch
+```
+
+Usa [`dependency-cruiser`](https://github.com/sverweij/dependency-cruiser) para validar las reglas de capas definidas en `.dependency-cruiser.cjs`:
+
+| Regla | Descripción |
+|---|---|
+| `no-circular` | Sin dependencias circulares |
+| `views-must-go-through-controllers` | `views/` no puede importar `services/` directamente |
+| `components-stay-presentational` | `components/` no puede depender de `services/`, `views/` ni `controllers/` |
+| `services-no-upward-deps` | `services/` no puede depender de `controllers/`, `views/`, `components/` ni `context/` |
+| `models-are-leaf` | `models/` no puede depender de ninguna otra capa |
+
+Corre como parte del job **Build & Lint** en CI (bloqueante).
+

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { useAuthContext } from './context/AuthContext'
+import { useAuth } from './controllers/useAuth'
 import Header from './components/Header'
 import LoginPage from './views/LoginPage'
 import PropertiesPage from './views/PropertiesPage'
@@ -10,12 +11,13 @@ import AdminPage from './views/AdminPage'
 
 function AppRoutes() {
   const { token, role } = useAuthContext()
+  const { handleLogout } = useAuth()
 
   const defaultPath = role === 'ROLE_ADMIN' ? '/admin' : role === 'ROLE_AGENCY' ? '/agency' : '/properties'
 
   return (
     <>
-      {token && <Header />}
+      {token && <Header role={role} onLogout={handleLogout} />}
       <Routes>
         <Route path="/login" element={!token ? <LoginPage /> : <Navigate to={defaultPath} />} />
         <Route path="/properties" element={token && role === 'ROLE_BUYER' ? <PropertiesPage /> : <Navigate to={token ? defaultPath : '/login'} />} />

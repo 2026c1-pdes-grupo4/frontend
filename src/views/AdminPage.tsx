@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuthContext } from '../context/AuthContext'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import { Pager } from '../components/Pager'
 import {
+  useAdminData,
   fetchAllUsers,
   fetchAllAgencies,
   fetchAllFavorites,
@@ -10,7 +11,7 @@ import {
   fetchTopBuyers,
   fetchTopRankedProperties,
   fetchTopAgenciesSales,
-} from '../services/adminService'
+} from '../controllers/useAdmin'
 import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
 import './AdminPage.css'
 
@@ -28,33 +29,6 @@ function TabStatus({ loading, error }: { loading: boolean; error: string | null 
   if (loading) return <p className="admin-status">Loading...</p>
   if (error) return <p className="admin-status admin-status--error">Error: {error}</p>
   return null
-}
-
-function useAdminData<T>(fetcher: (token: string) => Promise<T[]>, token: string, active: boolean) {
-  const [data, setData] = useState<T[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [prevActive, setPrevActive] = useState(active)
-  const [prevToken, setPrevToken] = useState(token)
-
-  if (active !== prevActive || token !== prevToken) {
-    setPrevActive(active)
-    setPrevToken(token)
-    if (active && token) {
-      setLoading(true)
-      setError(null)
-    }
-  }
-
-  useEffect(() => {
-    if (!active || !token) return
-    fetcher(token)
-      .then(setData)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [active, token, fetcher])
-
-  return { data, loading, error }
 }
 
 export default function AdminPage() {

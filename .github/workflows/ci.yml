@@ -29,6 +29,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Architecture tests
+        run: npm run test:arch
+
       - name: Build
         run: npm run build
 
@@ -220,5 +223,5 @@ jobs:
     steps:
       - name: Deploy placeholder
         run: |
-          echo "🚀 Deploy step pending — configure target environment"
+          echo "🚀 Deploy step pending - configure target environment"
           echo "Image: ghcr.io/${{ github.repository }}:${{ github.sha }}"
