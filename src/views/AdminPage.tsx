@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { useAuthContext } from '../context/AuthContext'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
@@ -61,14 +61,24 @@ export default function AdminPage() {
   const [showAgencyForm, setShowAgencyForm] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [editingAgency, setEditingAgency] = useState<Agency | null>(null)
+  const [usersLoaded, setUsersLoaded] = useState(false)
+  const [agenciesLoaded, setAgenciesLoaded] = useState(false)
 
-  useEffect(() => {
-    if (!users.loading) setUsersList(users.data)
-  }, [users.data, users.loading])
+  if (tab === 'users' && !users.loading && !usersLoaded) {
+    setUsersList(users.data)
+    setUsersLoaded(true)
+  }
+  if (tab !== 'users' && usersLoaded) {
+    setUsersLoaded(false)
+  }
 
-  useEffect(() => {
-    if (!agencies.loading) setAgenciesList(agencies.data)
-  }, [agencies.data, agencies.loading])
+  if (tab === 'agencies' && !agencies.loading && !agenciesLoaded) {
+    setAgenciesList(agencies.data)
+    setAgenciesLoaded(true)
+  }
+  if (tab !== 'agencies' && agenciesLoaded) {
+    setAgenciesLoaded(false)
+  }
 
   const usersPagination = usePagination(usersList, pageSize)
   const agenciesPagination = usePagination(agenciesList, pageSize)
