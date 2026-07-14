@@ -39,7 +39,7 @@ When('completa el formulario de inmobiliaria y lo guarda', async function (this:
 })
 
 Then('el nuevo usuario aparece en la tabla de usuarios', async function (this: CustomWorld) {
-  await expect(this.page.getByText(this.state.newUsername as string)).toBeVisible()
+  await expect(this.page.getByText(this.state.newUsername as string, { exact: true })).toBeVisible()
 })
 
 Then('el formulario de usuario ya no está visible', async function (this: CustomWorld) {
@@ -47,5 +47,5 @@ Then('el formulario de usuario ya no está visible', async function (this: Custo
 })
 
 Then('la nueva inmobiliaria aparece en la tabla de inmobiliarias', async function (this: CustomWorld) {
-  await expect(this.page.getByText(this.state.newAgencyUsername as string)).toBeVisible()
+  await expect(this.page.getByText(this.state.newAgencyUsername as string, { exact: true })).toBeVisible()
 })
