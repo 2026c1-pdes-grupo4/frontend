@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { useFavorites } from '../controllers/useFavorites'
 import StarRating from '../components/StarRating'
 import { Pager } from '../components/Pager'
@@ -31,6 +32,7 @@ export default function FavoritesPage() {
   }
 
   return (
+    <div className="fav-page-wrapper">
     <div className="fav-page">
       <h2>My Favorites</h2>
       <div className="fav-list">
@@ -56,8 +58,22 @@ export default function FavoritesPage() {
             </div>
 
             <div className="fav-actions">
-              <button className="fav-action-btn" onClick={() => openEdit(f.id, f.score, f.comment)}>Edit</button>
-              <button className="fav-action-btn fav-action-btn--delete" onClick={() => removeFavorite(f.id)}>Delete</button>
+              <button
+                className="fav-action-btn"
+                data-testid="btn-edit-favorite"
+                title="Edit"
+                onClick={() => openEdit(f.id, f.score, f.comment)}
+              >
+                <Pencil size={16} />
+              </button>
+              <button
+                className="fav-action-btn fav-action-btn--delete"
+                data-testid="btn-delete-favorite"
+                title="Delete"
+                onClick={() => removeFavorite(f.id)}
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
 
             {editingId === f.id && (
@@ -80,6 +96,7 @@ export default function FavoritesPage() {
         ))}
       </div>
       <Pager p={pagination} pageSize={pageSize} onPageSize={setPageSize} />
+    </div>
     </div>
   )
 }

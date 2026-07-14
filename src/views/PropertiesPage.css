@@ -1,6 +1,6 @@
 .properties-list-wrapper {
   flex: 1;
-  padding: 24px 0;
+  padding: 24px 16px;
 }
 
 .properties-filter {
@@ -50,7 +50,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 24px;
   max-width: 900px;
   margin: 0 auto;
 }
@@ -59,4 +58,10 @@
   text-align: center;
   color: #888;
   margin-top: 40px;
+}
+
+.properties-list-wrapper .pagination {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }

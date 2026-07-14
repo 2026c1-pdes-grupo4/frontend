@@ -55,7 +55,7 @@ describe('FavoritesPage', () => {
     setupMocks({ removeFavorite })
     render(<FavoritesPage />)
 
-    fireEvent.click(screen.getByText('Delete'))
+    fireEvent.click(screen.getByTestId('btn-delete-favorite'))
 
     expect(removeFavorite).toHaveBeenCalledWith(1)
   })
@@ -65,7 +65,7 @@ describe('FavoritesPage', () => {
     setupMocks({ editFavorite })
     render(<FavoritesPage />)
 
-    fireEvent.click(screen.getByText('Edit'))
+    fireEvent.click(screen.getByTestId('btn-edit-favorite'))
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'updated comment' } })
     fireEvent.click(screen.getByText('Save'))
 
@@ -77,7 +77,7 @@ describe('FavoritesPage', () => {
     setupMocks({ editFavorite })
     render(<FavoritesPage />)
 
-    fireEvent.click(screen.getByText('Edit'))
+    fireEvent.click(screen.getByTestId('btn-edit-favorite'))
     fireEvent.click(screen.getByText('Cancel'))
 
     expect(editFavorite).not.toHaveBeenCalled()
