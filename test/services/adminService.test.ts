@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { fetchAllUsers, fetchAllFavorites, fetchAllPurchases, createUser, createAgency } from '../../src/services/adminService'
+import { fetchAllUsers, fetchAllFavorites, fetchAllPurchases, createUser, createAgency, updateUser, deleteUser, updateAgency, deleteAgency } from '../../src/services/adminService'
 import { apiFetch } from '../../src/services/http'
 import type { AdminFavoriteRaw, AdminPurchaseRaw, UserInput, AgencyInput } from '../../src/models/types'
 
@@ -61,6 +61,72 @@ describe('createAgency', () => {
       },
     )
     expect(result).toEqual(created)
+  })
+})
+
+describe('updateUser', () => {
+  it('PUTs to /users/:id with auth header and body', async () => {
+    const updated = { id: 5, username: 'edited', email: 'edited@cth.com', profileType: 'BUYER' }
+    vi.mocked(apiFetch).mockResolvedValue({ json: () => Promise.resolve(updated) } as Response)
+
+    const input: UserInput = { username: 'edited', email: 'edited@cth.com', password: 'secret123', profileType: 'BUYER' }
+    const result = await updateUser('tok', 5, input)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/users/5'),
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' },
+        body: JSON.stringify(input),
+      },
+    )
+    expect(result).toEqual(updated)
+  })
+})
+
+describe('deleteUser', () => {
+  it('DELETEs to /users/:id with auth header', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({} as Response)
+
+    await deleteUser('tok', 5)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/users/5'),
+      { method: 'DELETE', headers: { Authorization: 'Bearer tok' } },
+    )
+  })
+})
+
+describe('updateAgency', () => {
+  it('PUTs to /agencies/:id with auth header and body', async () => {
+    const updated = { id: 3, username: 'edited_inmo', email: 'edited@cth.com' }
+    vi.mocked(apiFetch).mockResolvedValue({ json: () => Promise.resolve(updated) } as Response)
+
+    const input: AgencyInput = { username: 'edited_inmo', email: 'edited@cth.com', password: 'secret123' }
+    const result = await updateAgency('tok', 3, input)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/agencies/3'),
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' },
+        body: JSON.stringify(input),
+      },
+    )
+    expect(result).toEqual(updated)
+  })
+})
+
+describe('deleteAgency', () => {
+  it('DELETEs to /agencies/:id with auth header', async () => {
+    vi.mocked(apiFetch).mockResolvedValue({} as Response)
+
+    await deleteAgency('tok', 3)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/agencies/3'),
+      { method: 'DELETE', headers: { Authorization: 'Bearer tok' } },
+    )
   })
 })
 
