@@ -1,5 +1,5 @@
 import { users, agencies, favorites, purchases, topBuyers, topRankedProperties, topAgenciesSales } from '../models/fixtures'
-import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
+import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer, TopRankedProperty, TopAgencySales, UserInput, AgencyInput } from '../models/types'
 import { apiFetch } from './http'
 
 const BASE = import.meta.env.VITE_API_URL
@@ -17,9 +17,37 @@ export async function fetchAllUsers(token: string): Promise<User[]> {
   return authGet('/admin/users', token)
 }
 
+export async function createUser(token: string, data: UserInput): Promise<User> {
+  if (USE_FIXTURES) {
+    const created: User = { id: Date.now(), username: data.username, email: data.email, profileType: data.profileType }
+    users.push(created)
+    return created
+  }
+  const res = await apiFetch(`${BASE}/users`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
 export async function fetchAllAgencies(token: string): Promise<Agency[]> {
   if (USE_FIXTURES) return agencies
   return authGet('/admin/agencies', token)
+}
+
+export async function createAgency(token: string, data: AgencyInput): Promise<Agency> {
+  if (USE_FIXTURES) {
+    const created: Agency = { id: Date.now(), username: data.username, email: data.email }
+    agencies.push(created)
+    return created
+  }
+  const res = await apiFetch(`${BASE}/agencies`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  return res.json()
 }
 
 export async function fetchAllFavorites(token: string): Promise<Favorite[]> {

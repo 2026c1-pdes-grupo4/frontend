@@ -1,5 +1,5 @@
 .properties-list-wrapper {
-  min-height: 100vh;
+  flex: 1;
   padding: 24px 0;
 }
 

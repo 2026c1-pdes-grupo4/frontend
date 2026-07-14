@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Plus } from 'lucide-react'
 import { useAuthContext } from '../context/AuthContext'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import { Pager } from '../components/Pager'
@@ -11,7 +12,11 @@ import {
   fetchTopBuyers,
   fetchTopRankedProperties,
   fetchTopAgenciesSales,
+  createUser,
+  createAgency,
 } from '../controllers/useAdmin'
+import UserForm from '../components/UserForm'
+import AgencyForm from '../components/AgencyForm'
 import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
 import './AdminPage.css'
 
@@ -46,10 +51,30 @@ export default function AdminPage() {
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
-  const usersPagination = usePagination(users.data, pageSize)
-  const agenciesPagination = usePagination(agencies.data, pageSize)
+  const [newUsers, setNewUsers] = useState<User[]>([])
+  const [newAgencies, setNewAgencies] = useState<Agency[]>([])
+  const [showUserForm, setShowUserForm] = useState(false)
+  const [showAgencyForm, setShowAgencyForm] = useState(false)
+
+  const allUsers = [...newUsers, ...users.data]
+  const allAgencies = [...newAgencies, ...agencies.data]
+
+  const usersPagination = usePagination(allUsers, pageSize)
+  const agenciesPagination = usePagination(allAgencies, pageSize)
   const favoritesPagination = usePagination(favorites.data, pageSize)
   const purchasesPagination = usePagination(purchases.data, pageSize)
+
+  const handleCreateUser = async (data: Parameters<typeof createUser>[1]) => {
+    const created = await createUser(token!, data)
+    setNewUsers(prev => [created, ...prev])
+    setShowUserForm(false)
+  }
+
+  const handleCreateAgency = async (data: Parameters<typeof createAgency>[1]) => {
+    const created = await createAgency(token!, data)
+    setNewAgencies(prev => [created, ...prev])
+    setShowAgencyForm(false)
+  }
 
   return (
     <div className="admin-page-wrapper">
@@ -72,14 +97,44 @@ export default function AdminPage() {
 
           {!current.loading && !current.error && tab === 'users' && (
             <>
+              {showUserForm && (
+                <UserForm onSubmit={handleCreateUser} onCancel={() => setShowUserForm(false)} />
+              )}
               <UsersTable rows={usersPagination.pagedData as User[]} />
-              <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
+              <div className="admin-toolbar">
+                <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
+                {!showUserForm && (
+                  <button
+                    className="admin-fab"
+                    data-testid="btn-new-user"
+                    title="New Buyer"
+                    onClick={() => setShowUserForm(true)}
+                  >
+                    <Plus size={22} strokeWidth={2.5} />
+                  </button>
+                )}
+              </div>
             </>
           )}
           {!current.loading && !current.error && tab === 'agencies' && (
             <>
+              {showAgencyForm && (
+                <AgencyForm onSubmit={handleCreateAgency} onCancel={() => setShowAgencyForm(false)} />
+              )}
               <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} />
-              <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+              <div className="admin-toolbar">
+                <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+                {!showAgencyForm && (
+                  <button
+                    className="admin-fab"
+                    data-testid="btn-new-agency"
+                    title="New Agency"
+                    onClick={() => setShowAgencyForm(true)}
+                  >
+                    <Plus size={22} strokeWidth={2.5} />
+                  </button>
+                )}
+              </div>
             </>
           )}
           {!current.loading && !current.error && tab === 'favorites' && (
@@ -113,13 +168,12 @@ function UsersTable({ rows }: { rows: User[] }) {
     <table className="admin-table" data-testid="users-table">
       <thead>
         <tr>
-          <th>ID</th><th>Username</th><th>Email</th><th>Profile</th>
+          <th>Username</th><th>Email</th><th>Profile</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((u) => (
           <tr key={u.id} data-testid="user-row">
-            <td>{u.id}</td>
             <td>{u.username}</td>
             <td>{u.email}</td>
             <td><span className={`admin-badge admin-badge--${u.profileType}`}>{u.profileType}</span></td>
@@ -136,13 +190,12 @@ function AgenciesTable({ rows }: { rows: Agency[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>Username</th><th>Email</th>
+          <th>Username</th><th>Email</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((a) => (
           <tr key={a.id}>
-            <td>{a.id}</td>
             <td>{a.username}</td>
             <td>{a.email}</td>
           </tr>
@@ -158,13 +211,12 @@ function FavoritesTable({ rows }: { rows: Favorite[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>Property</th><th>Agency</th><th>Score</th><th>Comment</th><th>Date</th><th>Price</th>
+          <th>Property</th><th>Agency</th><th>Score</th><th>Comment</th><th>Date</th><th>Price</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((f) => (
           <tr key={f.id}>
-            <td>{f.id}</td>
             <td>{f.propertyAddress}</td>
             <td>{f.agencyName}</td>
             <td>{'★'.repeat(Math.min(f.score, 5))}{'☆'.repeat(Math.max(0, 5 - f.score))}</td>
@@ -184,13 +236,12 @@ function PurchasesTable({ rows }: { rows: Purchase[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>Property</th><th>Agency</th><th>Price</th><th>Date</th>
+          <th>Property</th><th>Agency</th><th>Price</th><th>Date</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((p) => (
           <tr key={p.id}>
-            <td>{p.id}</td>
             <td>{p.propertyAddress}</td>
             <td>{p.agencyName}</td>
             <td>${p.purchasePrice.toLocaleString()}</td>

@@ -7,6 +7,8 @@ import {
   fetchTopBuyers,
   fetchTopRankedProperties,
   fetchTopAgenciesSales,
+  createUser,
+  createAgency,
 } from '../services/adminService'
 
 export {
@@ -17,6 +19,8 @@ export {
   fetchTopBuyers,
   fetchTopRankedProperties,
   fetchTopAgenciesSales,
+  createUser,
+  createAgency,
 }
 
 export function useAdminData<T>(fetcher: (token: string) => Promise<T[]>, token: string, active: boolean) {
