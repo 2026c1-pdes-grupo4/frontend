@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Plus } from 'lucide-react'
 import { useAuthContext } from '../context/AuthContext'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import { Pager } from '../components/Pager'
@@ -96,26 +97,44 @@ export default function AdminPage() {
 
           {!current.loading && !current.error && tab === 'users' && (
             <>
-              {!showUserForm && (
-                <button data-testid="btn-new-user" onClick={() => setShowUserForm(true)}>New Buyer</button>
-              )}
               {showUserForm && (
                 <UserForm onSubmit={handleCreateUser} onCancel={() => setShowUserForm(false)} />
               )}
               <UsersTable rows={usersPagination.pagedData as User[]} />
-              <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
+              <div className="admin-toolbar">
+                <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
+                {!showUserForm && (
+                  <button
+                    className="admin-fab"
+                    data-testid="btn-new-user"
+                    title="New Buyer"
+                    onClick={() => setShowUserForm(true)}
+                  >
+                    <Plus size={22} strokeWidth={2.5} />
+                  </button>
+                )}
+              </div>
             </>
           )}
           {!current.loading && !current.error && tab === 'agencies' && (
             <>
-              {!showAgencyForm && (
-                <button data-testid="btn-new-agency" onClick={() => setShowAgencyForm(true)}>New Agency</button>
-              )}
               {showAgencyForm && (
                 <AgencyForm onSubmit={handleCreateAgency} onCancel={() => setShowAgencyForm(false)} />
               )}
               <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} />
-              <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+              <div className="admin-toolbar">
+                <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
+                {!showAgencyForm && (
+                  <button
+                    className="admin-fab"
+                    data-testid="btn-new-agency"
+                    title="New Agency"
+                    onClick={() => setShowAgencyForm(true)}
+                  >
+                    <Plus size={22} strokeWidth={2.5} />
+                  </button>
+                )}
+              </div>
             </>
           )}
           {!current.loading && !current.error && tab === 'favorites' && (
@@ -149,13 +168,12 @@ function UsersTable({ rows }: { rows: User[] }) {
     <table className="admin-table" data-testid="users-table">
       <thead>
         <tr>
-          <th>ID</th><th>Username</th><th>Email</th><th>Profile</th>
+          <th>Username</th><th>Email</th><th>Profile</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((u) => (
           <tr key={u.id} data-testid="user-row">
-            <td>{u.id}</td>
             <td>{u.username}</td>
             <td>{u.email}</td>
             <td><span className={`admin-badge admin-badge--${u.profileType}`}>{u.profileType}</span></td>
@@ -172,13 +190,12 @@ function AgenciesTable({ rows }: { rows: Agency[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>Username</th><th>Email</th>
+          <th>Username</th><th>Email</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((a) => (
           <tr key={a.id}>
-            <td>{a.id}</td>
             <td>{a.username}</td>
             <td>{a.email}</td>
           </tr>
@@ -194,13 +211,12 @@ function FavoritesTable({ rows }: { rows: Favorite[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>Property</th><th>Agency</th><th>Score</th><th>Comment</th><th>Date</th><th>Price</th>
+          <th>Property</th><th>Agency</th><th>Score</th><th>Comment</th><th>Date</th><th>Price</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((f) => (
           <tr key={f.id}>
-            <td>{f.id}</td>
             <td>{f.propertyAddress}</td>
             <td>{f.agencyName}</td>
             <td>{'★'.repeat(f.score)}{'☆'.repeat(5 - f.score)}</td>
@@ -220,13 +236,12 @@ function PurchasesTable({ rows }: { rows: Purchase[] }) {
     <table className="admin-table">
       <thead>
         <tr>
-          <th>ID</th><th>Property</th><th>Agency</th><th>Price</th><th>Date</th>
+          <th>Property</th><th>Agency</th><th>Price</th><th>Date</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((p) => (
           <tr key={p.id}>
-            <td>{p.id}</td>
             <td>{p.propertyAddress}</td>
             <td>{p.agencyName}</td>
             <td>${p.purchasePrice.toLocaleString()}</td>

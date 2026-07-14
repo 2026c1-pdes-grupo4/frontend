@@ -1,5 +1,5 @@
 .admin-page-wrapper {
-  min-height: 100vh;
+  flex: 1;
   padding: 24px 0;
 }
 
@@ -107,4 +107,34 @@
 .admin-badge--admin {
   background: #fce4ec;
   color: #880e4f;
+}
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.admin-toolbar .pagination {
+  margin-top: 0;
+}
+
+.admin-fab {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #2E7D33;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: background-color 0.15s ease;
+}
+
+.admin-fab:hover {
+  background: #256b2a;
 }
