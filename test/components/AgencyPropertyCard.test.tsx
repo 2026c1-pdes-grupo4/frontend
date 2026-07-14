@@ -23,6 +23,16 @@ describe('AgencyPropertyCard', () => {
     expect(screen.getByText('Sold')).toBeInTheDocument()
   })
 
+  it('shows "no image" placeholder when there is no imageUrl', () => {
+    render(<AgencyPropertyCard property={listing} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('no image')).toBeInTheDocument()
+  })
+
+  it('renders the image when imageUrl is present', () => {
+    render(<AgencyPropertyCard property={{ ...listing, imageUrl: 'https://example.com/pic.jpg' }} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByRole('img')).toHaveAttribute('src', 'https://example.com/pic.jpg')
+  })
+
   it('calls onEdit with the listing when Edit is clicked', () => {
     const onEdit = vi.fn()
     render(<AgencyPropertyCard property={listing} onEdit={onEdit} onDelete={vi.fn()} />)

@@ -4,15 +4,16 @@ import PropertiesPage from '../../src/views/PropertiesPage'
 import { useProperties } from '../../src/controllers/useProperties'
 import { useFavorites } from '../../src/controllers/useFavorites'
 import { usePurchases } from '../../src/controllers/usePurchases'
-import type { Property } from '../../src/models/types'
+import type { AgencyProperty } from '../../src/models/types'
 
 vi.mock('../../src/controllers/useProperties', () => ({ useProperties: vi.fn() }))
 vi.mock('../../src/controllers/useFavorites', () => ({ useFavorites: vi.fn() }))
 vi.mock('../../src/controllers/usePurchases', () => ({ usePurchases: vi.fn() }))
 
-const property: Property = {
-  id: 1, propertyType: 'HOUSE', price: 1000, address: 'Calle 1', city: 'Quilmes',
+const property: AgencyProperty = {
+  id: 1, propertyId: 1, propertyType: 'HOUSE', listedPrice: 1000, listedDate: '2026-01-01', address: 'Calle 1', city: 'Quilmes',
   province: 'BA', areaSq: 50, rooms: 3, description: 'desc', available: true,
+  agencyId: 2, agencyName: 'ritondo_propiedades',
 }
 
 afterEach(() => {

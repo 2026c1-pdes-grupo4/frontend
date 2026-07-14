@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { fetchProperties } from '../services/propertyService'
 import { useAuthContext } from '../context/AuthContext'
-import type { Property, PropertyFilter } from '../models/types'
+import type { AgencyProperty, PropertyFilter } from '../models/types'
 
 export function useProperties(filter: PropertyFilter = {}) {
   const { token } = useAuthContext()
-  const [list, setList] = useState<Property[]>([])
+  const [list, setList] = useState<AgencyProperty[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

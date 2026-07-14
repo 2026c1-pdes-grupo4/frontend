@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import type { Property } from '../models/types'
+import type { AgencyProperty } from '../models/types'
 import StarRating from './StarRating'
 import './PropertyCard.css'
 
 interface Props {
-  property: Property
+  property: AgencyProperty
   onFavorite?: (propertyId: number, score: number, comment: string) => void
   isFavorite?: boolean
   onBuy?: (agencyPropertyId: number) => Promise<void>
@@ -30,9 +30,9 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
   }
 
   const handleConfirmBuy = async () => {
-    if (!onBuy || !p.agencyPropertyId) return
+    if (!onBuy) return
     try {
-      await onBuy(p.agencyPropertyId)
+      await onBuy(p.id)
       setPurchased(true)
     } finally {
       setConfirmBuy(false)
@@ -68,7 +68,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
 
         <div className="property-card__row">
           <span className="property-card__city">{p.city}, {p.province}</span>
-          <span className="property-card__price">${p.price.toLocaleString()}</span>
+          <span className="property-card__price">${p.listedPrice.toLocaleString()}</span>
         </div>
 
         <div className="property-card__row">
@@ -100,7 +100,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
 
       {confirmBuy && (
         <div className="buy-confirm-dialog" data-testid="buy-confirm-dialog">
-          <p>Confirm purchase of {p.address} for ${p.price.toLocaleString()}?</p>
+          <p>Confirm purchase of {p.address} for ${p.listedPrice.toLocaleString()}?</p>
           <div className="fav-form-actions">
             <button data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>Confirm</button>
             <button onClick={() => setConfirmBuy(false)}>Cancel</button>
