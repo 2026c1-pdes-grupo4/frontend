@@ -135,6 +135,19 @@ export interface TopAgencySales {
   sales: number
 }
 
+export interface UserInput {
+  username: string
+  email: string
+  password: string
+  profileType: string
+}
+
+export interface AgencyInput {
+  username: string
+  email: string
+  password: string
+}
+
 export interface LoginRequest {
   username: string
   password: string

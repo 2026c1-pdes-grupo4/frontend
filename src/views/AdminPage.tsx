@@ -11,7 +11,11 @@ import {
   fetchTopBuyers,
   fetchTopRankedProperties,
   fetchTopAgenciesSales,
+  createUser,
+  createAgency,
 } from '../controllers/useAdmin'
+import UserForm from '../components/UserForm'
+import AgencyForm from '../components/AgencyForm'
 import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
 import './AdminPage.css'
 
@@ -46,10 +50,30 @@ export default function AdminPage() {
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
-  const usersPagination = usePagination(users.data, pageSize)
-  const agenciesPagination = usePagination(agencies.data, pageSize)
+  const [newUsers, setNewUsers] = useState<User[]>([])
+  const [newAgencies, setNewAgencies] = useState<Agency[]>([])
+  const [showUserForm, setShowUserForm] = useState(false)
+  const [showAgencyForm, setShowAgencyForm] = useState(false)
+
+  const allUsers = [...newUsers, ...users.data]
+  const allAgencies = [...newAgencies, ...agencies.data]
+
+  const usersPagination = usePagination(allUsers, pageSize)
+  const agenciesPagination = usePagination(allAgencies, pageSize)
   const favoritesPagination = usePagination(favorites.data, pageSize)
   const purchasesPagination = usePagination(purchases.data, pageSize)
+
+  const handleCreateUser = async (data: Parameters<typeof createUser>[1]) => {
+    const created = await createUser(token!, data)
+    setNewUsers(prev => [created, ...prev])
+    setShowUserForm(false)
+  }
+
+  const handleCreateAgency = async (data: Parameters<typeof createAgency>[1]) => {
+    const created = await createAgency(token!, data)
+    setNewAgencies(prev => [created, ...prev])
+    setShowAgencyForm(false)
+  }
 
   return (
     <div className="admin-page-wrapper">
@@ -72,12 +96,24 @@ export default function AdminPage() {
 
           {!current.loading && !current.error && tab === 'users' && (
             <>
+              {!showUserForm && (
+                <button data-testid="btn-new-user" onClick={() => setShowUserForm(true)}>New Buyer</button>
+              )}
+              {showUserForm && (
+                <UserForm onSubmit={handleCreateUser} onCancel={() => setShowUserForm(false)} />
+              )}
               <UsersTable rows={usersPagination.pagedData as User[]} />
               <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
             </>
           )}
           {!current.loading && !current.error && tab === 'agencies' && (
             <>
+              {!showAgencyForm && (
+                <button data-testid="btn-new-agency" onClick={() => setShowAgencyForm(true)}>New Agency</button>
+              )}
+              {showAgencyForm && (
+                <AgencyForm onSubmit={handleCreateAgency} onCancel={() => setShowAgencyForm(false)} />
+              )}
               <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} />
               <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
             </>

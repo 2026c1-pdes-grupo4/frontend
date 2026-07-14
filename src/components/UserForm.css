@@ -1,0 +1,53 @@
+.user-form {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 0 auto 20px;
+  max-width: 600px;
+}
+
+.user-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.user-form .form-group label {
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
+}
+
+.user-form .form-group input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.user-form .form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.user-form .form-actions button {
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.user-form .form-actions button[type='submit'] {
+  background: #003366;
+  color: #fff;
+}
+
+.user-form .form-actions button[type='button'] {
+  background: #eee;
+  color: #444;
+}

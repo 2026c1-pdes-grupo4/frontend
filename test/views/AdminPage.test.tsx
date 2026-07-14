@@ -11,6 +11,8 @@ import {
   fetchTopBuyers,
   fetchTopRankedProperties,
   fetchTopAgenciesSales,
+  createUser,
+  createAgency,
 } from '../../src/controllers/useAdmin'
 
 vi.mock('../../src/context/AuthContext', () => ({ useAuthContext: vi.fn() }))
@@ -23,6 +25,8 @@ vi.mock('../../src/controllers/useAdmin', () => ({
   fetchTopBuyers: vi.fn(),
   fetchTopRankedProperties: vi.fn(),
   fetchTopAgenciesSales: vi.fn(),
+  createUser: vi.fn(),
+  createAgency: vi.fn(),
 }))
 
 const empty = { data: [], loading: false, error: null }
@@ -31,6 +35,8 @@ const dataByFetcher = new Map<unknown, { data: unknown[]; loading: boolean; erro
 afterEach(() => {
   vi.mocked(useAuthContext).mockReset()
   vi.mocked(useAdminData).mockReset()
+  vi.mocked(createUser).mockReset()
+  vi.mocked(createAgency).mockReset()
   dataByFetcher.clear()
 })
 
@@ -95,6 +101,63 @@ describe('AdminPage', () => {
     render(<AdminPage />)
 
     expect(screen.getByText('Loading...')).toBeInTheDocument()
+  })
+
+  it('opens the new user form and creates a user', async () => {
+    setupMocks()
+    vi.mocked(createUser).mockResolvedValue({ id: 99, username: 'nuevo', email: 'nuevo@cth.com', profileType: 'BUYER' })
+    render(<AdminPage />)
+
+    fireEvent.click(screen.getByTestId('btn-new-user'))
+    expect(screen.getByTestId('user-form')).toBeInTheDocument()
+
+    fireEvent.change(screen.getByTestId('input-username'), { target: { value: 'nuevo' } })
+    fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'nuevo@cth.com' } })
+    fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'secret123' } })
+    fireEvent.click(screen.getByTestId('btn-submit-user'))
+
+    expect(createUser).toHaveBeenCalledWith('tok', {
+      username: 'nuevo',
+      email: 'nuevo@cth.com',
+      password: 'secret123',
+      profileType: 'BUYER',
+    })
+    expect(await screen.findByText('nuevo')).toBeInTheDocument()
+    expect(screen.queryByTestId('user-form')).not.toBeInTheDocument()
+  })
+
+  it('cancels the new user form without creating a user', () => {
+    setupMocks()
+    render(<AdminPage />)
+
+    fireEvent.click(screen.getByTestId('btn-new-user'))
+    fireEvent.click(screen.getByTestId('btn-cancel-user'))
+
+    expect(screen.queryByTestId('user-form')).not.toBeInTheDocument()
+    expect(createUser).not.toHaveBeenCalled()
+  })
+
+  it('opens the new agency form and creates an agency', async () => {
+    setupMocks()
+    vi.mocked(createAgency).mockResolvedValue({ id: 88, username: 'nueva_inmo', email: 'nueva@cth.com' })
+    render(<AdminPage />)
+
+    fireEvent.click(screen.getByTestId('tab-agencies'))
+    fireEvent.click(screen.getByTestId('btn-new-agency'))
+    expect(screen.getByTestId('agency-form')).toBeInTheDocument()
+
+    fireEvent.change(screen.getByTestId('input-username'), { target: { value: 'nueva_inmo' } })
+    fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'nueva@cth.com' } })
+    fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'secret123' } })
+    fireEvent.click(screen.getByTestId('btn-submit-agency'))
+
+    expect(createAgency).toHaveBeenCalledWith('tok', {
+      username: 'nueva_inmo',
+      email: 'nueva@cth.com',
+      password: 'secret123',
+    })
+    expect(await screen.findByText('nueva_inmo')).toBeInTheDocument()
+    expect(screen.queryByTestId('agency-form')).not.toBeInTheDocument()
   })
 
   it('shows an error state', () => {

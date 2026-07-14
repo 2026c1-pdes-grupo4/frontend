@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { fetchAllUsers, fetchAllFavorites, fetchAllPurchases } from '../../src/services/adminService'
+import { fetchAllUsers, fetchAllFavorites, fetchAllPurchases, createUser, createAgency } from '../../src/services/adminService'
 import { apiFetch } from '../../src/services/http'
-import type { AdminFavoriteRaw, AdminPurchaseRaw } from '../../src/models/types'
+import type { AdminFavoriteRaw, AdminPurchaseRaw, UserInput, AgencyInput } from '../../src/models/types'
 
 vi.mock('../../src/services/http', () => ({ apiFetch: vi.fn() }))
 
@@ -21,6 +21,46 @@ describe('fetchAllUsers (API mode)', () => {
       { headers: { Authorization: 'Bearer tok' } },
     )
     expect(result).toEqual([{ id: 1 }])
+  })
+})
+
+describe('createUser', () => {
+  it('POSTs to /users with auth header and body', async () => {
+    const created = { id: 1, username: 'nuevo', email: 'nuevo@cth.com', profileType: 'BUYER' }
+    vi.mocked(apiFetch).mockResolvedValue({ json: () => Promise.resolve(created) } as Response)
+
+    const input: UserInput = { username: 'nuevo', email: 'nuevo@cth.com', password: 'secret123', profileType: 'BUYER' }
+    const result = await createUser('tok', input)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/users'),
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' },
+        body: JSON.stringify(input),
+      },
+    )
+    expect(result).toEqual(created)
+  })
+})
+
+describe('createAgency', () => {
+  it('POSTs to /agencies with auth header and body', async () => {
+    const created = { id: 1, username: 'nueva_inmo', email: 'nueva@cth.com' }
+    vi.mocked(apiFetch).mockResolvedValue({ json: () => Promise.resolve(created) } as Response)
+
+    const input: AgencyInput = { username: 'nueva_inmo', email: 'nueva@cth.com', password: 'secret123' }
+    const result = await createAgency('tok', input)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/agencies'),
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' },
+        body: JSON.stringify(input),
+      },
+    )
+    expect(result).toEqual(created)
   })
 })
 
