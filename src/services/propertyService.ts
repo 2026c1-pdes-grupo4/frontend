@@ -1,8 +1,8 @@
 import { properties as fixtureData } from '../models/fixtures'
-import type { Property, PropertyFilter } from '../models/types'
+import type { AgencyProperty, PropertyFilter } from '../models/types'
 import { apiFetch } from './http'
 
-export async function fetchProperties(filter: PropertyFilter = {}, token?: string | null): Promise<Property[]> {
+export async function fetchProperties(filter: PropertyFilter = {}, token?: string | null): Promise<AgencyProperty[]> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') {
     return applyFilter(fixtureData, filter)
   }
@@ -26,13 +26,13 @@ function buildParams(filter: PropertyFilter): URLSearchParams {
   return p
 }
 
-function applyFilter(list: Property[], filter: PropertyFilter): Property[] {
+function applyFilter(list: AgencyProperty[], filter: PropertyFilter): AgencyProperty[] {
   return list.filter((p) => {
     if (filter.city && !p.city.toLowerCase().includes(filter.city.toLowerCase())) return false
     if (filter.province && !p.province.toLowerCase().includes(filter.province.toLowerCase())) return false
     if (filter.propertyType && p.propertyType !== filter.propertyType) return false
-    if (filter.minPrice != null && p.price < filter.minPrice) return false
-    if (filter.maxPrice != null && p.price > filter.maxPrice) return false
+    if (filter.minPrice != null && p.listedPrice < filter.minPrice) return false
+    if (filter.maxPrice != null && p.listedPrice > filter.maxPrice) return false
     if (filter.minRooms != null && p.rooms < filter.minRooms) return false
     return true
   })

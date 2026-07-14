@@ -12,7 +12,9 @@ export default function AgencyPropertyCard({ property: p, onEdit, onDelete }: Pr
   return (
     <div className="property-card" data-testid="property-card">
       <div className="property-card__image">
-        <span>no image</span>
+        {p.imageUrl
+          ? <img src={p.imageUrl} alt={p.address} />
+          : <span>no image</span>}
       </div>
 
       <div className="property-card__body">

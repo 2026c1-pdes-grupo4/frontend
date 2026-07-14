@@ -13,39 +13,26 @@ export interface Agency {
 
 export type PropertyType = 'house' | 'apartment'
 
-export interface Property {
-  id: number
-  agencyPropertyId?: number
-  propertyType: string
-  price: number
-  address: string
-  city: string
-  province: string
-  areaSq: number
-  rooms: number
-  description: string
-  available: boolean
-  circumscription?: string
-  section?: string
-  block?: string
-  parcel?: string
-  listedPrice?: number
-  agencyId?: number
-  agencyName?: string
-  imageUrl?: string
-}
-
 export interface AgencyProperty {
   id: number
   propertyId: number
   address: string
   city: string
+  province: string
   propertyType: string
+  areaSq: number
+  rooms: number
+  description: string
+  circumscription?: string
+  section?: string
+  block?: string
+  parcel?: string
   listedPrice: number
   listedDate: string
   available: boolean
   agencyId: number
   agencyName: string
+  imageUrl?: string
 }
 
 export interface Favorite {

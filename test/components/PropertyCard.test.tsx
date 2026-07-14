@@ -1,11 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import PropertyCard from '../../src/components/PropertyCard'
-import type { Property } from '../../src/models/types'
+import type { AgencyProperty } from '../../src/models/types'
 
-const property: Property = {
-  id: 1, agencyPropertyId: 5, propertyType: 'HOUSE', price: 1000, address: 'Calle 1',
+const property: AgencyProperty = {
+  id: 5, propertyId: 1, propertyType: 'HOUSE', listedPrice: 1000, listedDate: '2026-01-01', address: 'Calle 1',
   city: 'Quilmes', province: 'BA', areaSq: 50, rooms: 3, description: 'Nice house', available: true,
+  agencyId: 2, agencyName: 'ritondo_propiedades',
 }
 
 describe('PropertyCard', () => {
@@ -38,7 +39,7 @@ describe('PropertyCard', () => {
     fireEvent.change(screen.getByLabelText(/Comment/), { target: { value: 'great place' } })
     fireEvent.click(screen.getByText('Save'))
 
-    expect(onFavorite).toHaveBeenCalledWith(1, 3, 'great place')
+    expect(onFavorite).toHaveBeenCalledWith(5, 3, 'great place')
   })
 
   it('does not reopen the favorite form when already a favorite', () => {
