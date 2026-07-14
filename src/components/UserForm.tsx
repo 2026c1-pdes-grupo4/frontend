@@ -3,16 +3,17 @@ import type { UserInput } from '../models/types'
 import './UserForm.css'
 
 interface Props {
+  initial?: Partial<UserInput>
   onSubmit: (data: UserInput) => void
   onCancel: () => void
 }
 
-export default function UserForm({ onSubmit, onCancel }: Props) {
+export default function UserForm({ initial, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<UserInput>({
-    username: '',
-    email: '',
+    username: initial?.username ?? '',
+    email: initial?.email ?? '',
     password: '',
-    profileType: 'BUYER',
+    profileType: initial?.profileType ?? 'BUYER',
   })
 
   const set = (key: keyof UserInput, value: string) =>

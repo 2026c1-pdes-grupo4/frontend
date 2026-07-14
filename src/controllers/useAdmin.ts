@@ -9,6 +9,10 @@ import {
   fetchTopAgenciesSales,
   createUser,
   createAgency,
+  updateUser,
+  deleteUser,
+  updateAgency,
+  deleteAgency,
 } from '../services/adminService'
 
 export {
@@ -21,6 +25,10 @@ export {
   fetchTopAgenciesSales,
   createUser,
   createAgency,
+  updateUser,
+  deleteUser,
+  updateAgency,
+  deleteAgency,
 }
 
 export function useAdminData<T>(fetcher: (token: string) => Promise<T[]>, token: string, active: boolean) {
