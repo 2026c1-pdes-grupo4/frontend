@@ -101,3 +101,41 @@
   color: #c62828;
   font-size: 14px;
 }
+
+.duplicate-confirm-dialog {
+  background: #fff8e1;
+  border: 1px solid #f0d78c;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 0 auto 20px;
+  max-width: 600px;
+}
+
+.duplicate-confirm-dialog p {
+  margin: 0 0 8px;
+  color: #444;
+}
+
+.duplicate-confirm-dialog .form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.duplicate-confirm-dialog .form-actions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.duplicate-confirm-dialog .form-actions button:first-child {
+  background: #003366;
+  color: #fff;
+}
+
+.duplicate-confirm-dialog .form-actions button:last-child {
+  background: #eee;
+  color: #444;
+}
