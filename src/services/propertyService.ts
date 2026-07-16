@@ -42,7 +42,7 @@ function applyFilter(list: AgencyProperty[], filter: PropertyFilter): AgencyProp
     if (filter.propertyType && p.propertyType !== filter.propertyType) return false
     if (filter.minPrice != null && p.listedPrice < filter.minPrice) return false
     if (filter.maxPrice != null && p.listedPrice > filter.maxPrice) return false
-    if (filter.minRooms != null && p.rooms < filter.minRooms) return false
+    if (filter.minRooms != null && (p.rooms ?? 0) < filter.minRooms) return false
     return true
   })
 }
