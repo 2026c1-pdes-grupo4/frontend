@@ -3,24 +3,24 @@ import { expect } from '@playwright/test'
 import { CustomWorld } from '../../support/world.ts'
 
 // wait for CI
-async function waitForSearchResponse(world: CustomWorld, action: () => Promise<void>) {
+async function waitForSearchResponse(world: CustomWorld, action: () => Promise<void>, urlContains = '/properties/search') {
   await Promise.all([
-    world.page.waitForResponse((res) => res.url().includes('/properties/search') && res.request().method() === 'GET'),
+    world.page.waitForResponse((res) => res.url().includes('/properties/search') && res.url().includes(urlContains) && res.request().method() === 'GET'),
     action(),
   ])
 }
 
 When('filtra por ciudad {string}', async function (this: CustomWorld, city: string) {
-  await waitForSearchResponse(this, () => this.page.getByPlaceholder('City').fill(city))
+  await waitForSearchResponse(this, () => this.page.getByPlaceholder('City').fill(city), 'city=')
 })
 
 When('filtra por precio mínimo {string} y precio máximo {string}', async function (this: CustomWorld, min: string, max: string) {
   await this.page.getByPlaceholder('Min price').fill(min)
-  await waitForSearchResponse(this, () => this.page.getByPlaceholder('Max price').fill(max))
+  await waitForSearchResponse(this, () => this.page.getByPlaceholder('Max price').fill(max), 'priceMax=')
 })
 
 When('cuenta las propiedades del listado de búsqueda', async function (this: CustomWorld) {
-  await this.page.waitForSelector('.property-card, text=No properties found.')
+  await this.page.waitForSelector('.property-card, :text("No properties found.")')
   this.state.initialPropertiesCount = await this.page.locator('.property-card').count()
 })
 
