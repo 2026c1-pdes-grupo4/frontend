@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import './Header.css'
 
 interface HeaderProps {
@@ -13,15 +13,16 @@ export default function Header({ role, onLogout }: HeaderProps) {
       <nav className="app-nav">
         {role === 'ROLE_BUYER' && (
           <>
-            <Link to="/properties">Search</Link>
-            <Link to="/favorites">Favorites</Link>
+            <NavLink to="/properties">Search</NavLink>
+            <NavLink to="/favorites">Favorites</NavLink>
+            <NavLink to="/purchases">My Purchases</NavLink>
           </>
         )}
         {role === 'ROLE_AGENCY' && (
-          <Link to="/agency">Agency</Link>
+          <NavLink to="/agency">Agency</NavLink>
         )}
         {role === 'ROLE_ADMIN' && (
-          <Link to="/admin">Admin</Link>
+          <NavLink to="/admin">Admin</NavLink>
         )}
       </nav>
       <button className="logout-btn" onClick={onLogout}>Logout</button>

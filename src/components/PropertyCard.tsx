@@ -6,11 +6,12 @@ import './PropertyCard.css'
 interface Props {
   property: AgencyProperty
   onFavorite?: (propertyId: number, score: number, comment: string) => void
+  onRemoveFavorite?: (agencyPropertyId: number) => void
   isFavorite?: boolean
   onBuy?: (agencyPropertyId: number) => Promise<void>
 }
 
-export default function PropertyCard({ property: p, onFavorite, isFavorite, onBuy }: Props) {
+export default function PropertyCard({ property: p, onFavorite, onRemoveFavorite, isFavorite, onBuy }: Props) {
   const [open, setOpen] = useState(false)
   const [score, setScore] = useState(3)
   const [comment, setComment] = useState('')
@@ -24,8 +25,11 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
   }
 
   const handleFavClick = () => {
+    if (isFavorite) {
+      onRemoveFavorite?.(p.id)
+      return
+    }
     if (!onFavorite) return
-    if (isFavorite) return
     setOpen(v => !v)
   }
 
@@ -100,11 +104,27 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
       </div>
 
       {confirmBuy && (
-        <div className="buy-confirm-dialog" data-testid="buy-confirm-dialog">
-          <p>Confirm purchase of {p.address} for ${p.listedPrice.toLocaleString('en-US')}?</p>
-          <div className="fav-form-actions">
-            <button data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>Confirm</button>
-            <button onClick={() => setConfirmBuy(false)}>Cancel</button>
+        <div className="buy-confirm-overlay" data-testid="buy-confirm-dialog">
+          <div className="buy-confirm-modal">
+            <p className="buy-confirm-modal__message">
+              Confirm purchase of <strong>{p.address}</strong> for{' '}
+              <strong>${p.listedPrice.toLocaleString('en-US')}</strong>?
+            </p>
+            <div className="buy-confirm-modal__actions">
+              <button
+                className="buy-confirm-modal__btn buy-confirm-modal__btn--cancel"
+                onClick={() => setConfirmBuy(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="buy-confirm-modal__btn buy-confirm-modal__btn--confirm"
+                data-testid="btn-confirm-purchase"
+                onClick={handleConfirmBuy}
+              >
+                Confirm
+              </button>
+            </div>
           </div>
         </div>
       )}

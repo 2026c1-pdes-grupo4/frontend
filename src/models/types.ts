@@ -90,6 +90,7 @@ export interface PropertyFilter {
   minPrice?: number
   maxPrice?: number
   minRooms?: number
+  maxRooms?: number
 }
 
 export interface PagedResult<T> {

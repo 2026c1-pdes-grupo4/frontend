@@ -7,6 +7,12 @@
   overflow: hidden;
   background: #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.property-card:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+  transform: translateY(-2px);
 }
 
 .property-card__image {
@@ -190,4 +196,68 @@
 .fav-form-actions button[type='button'] {
   background: #eee;
   color: #444;
+}
+
+.buy-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.buy-confirm-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.buy-confirm-modal__message {
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.buy-confirm-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.buy-confirm-modal__btn {
+  padding: 9px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.buy-confirm-modal__btn--cancel {
+  background: #eee;
+  color: #444;
+}
+
+.buy-confirm-modal__btn--cancel:hover {
+  background: #ddd;
+}
+
+.buy-confirm-modal__btn--confirm {
+  background: #2a7ae2;
+  color: #fff;
+}
+
+.buy-confirm-modal__btn--confirm:hover {
+  background: #1f5fb8;
 }

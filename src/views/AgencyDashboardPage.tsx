@@ -6,6 +6,7 @@ import AgencyPropertyCard from '../components/AgencyPropertyCard'
 import PropertyForm from '../components/PropertyForm'
 import { Pager } from '../components/Pager'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import ErrorBanner from '../components/ErrorBanner'
 import type { AgencyProperty, PropertyInput, PropertySummary } from '../models/types'
 import './AgencyDashboardPage.css'
 
@@ -13,7 +14,7 @@ type Tab = 'properties' | 'sales' | 'clients'
 
 function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
   if (loading) return <p className="loading">Loading...</p>
-  if (error) return <p className="error">{error}</p>
+  if (error) return <ErrorBanner message={error} />
   return null
 }
 
@@ -22,6 +23,7 @@ export default function AgencyDashboardPage() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<AgencyProperty | null>(null)
   const [duplicateMatch, setDuplicateMatch] = useState<{ found: PropertySummary; pendingPrice: number } | null>(null)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const { list: properties, loading: propLoading, error: propError, add, edit, remove, linkExisting, checkDuplicate } = useAgencyProperties()
   const { list: purchases, loading: salesLoading, error: salesError } = useAgencyPurchases()
@@ -33,31 +35,41 @@ export default function AgencyDashboardPage() {
   const clientsPagination = usePagination(clients, pageSize)
 
   const handleSubmit = async (data: PropertyInput) => {
-    if (editing) {
-      await edit(editing, data)
-      setShowForm(false)
-      setEditing(null)
-      return
-    }
-
-    const { circumscription, section, block, parcel } = data
-    if (circumscription && section && block && parcel) {
-      const found = await checkDuplicate({ circumscription, section, block, parcel })
-      if (found) {
-        setDuplicateMatch({ found, pendingPrice: data.price })
+    setFormError(null)
+    try {
+      if (editing) {
+        await edit(editing, data)
+        setShowForm(false)
+        setEditing(null)
         return
       }
-    }
 
-    await add(data)
-    setShowForm(false)
+      const { circumscription, section, block, parcel } = data
+      if (circumscription && section && block && parcel) {
+        const found = await checkDuplicate({ circumscription, section, block, parcel })
+        if (found) {
+          setDuplicateMatch({ found, pendingPrice: data.price })
+          return
+        }
+      }
+
+      await add(data)
+      setShowForm(false)
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : 'Unexpected error.')
+    }
   }
 
   const handleConfirmListExisting = async () => {
     if (!duplicateMatch) return
-    await linkExisting(duplicateMatch.found.id, duplicateMatch.pendingPrice)
-    setDuplicateMatch(null)
-    setShowForm(false)
+    setFormError(null)
+    try {
+      await linkExisting(duplicateMatch.found.id, duplicateMatch.pendingPrice)
+      setDuplicateMatch(null)
+      setShowForm(false)
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : 'Unexpected error.')
+    }
   }
 
   const handleCancelListExisting = () => {
@@ -72,11 +84,13 @@ export default function AgencyDashboardPage() {
   const handleCancel = () => {
     setShowForm(false)
     setEditing(null)
+    setFormError(null)
   }
 
   const openNewForm = () => {
     setEditing(null)
     setShowForm(true)
+    setFormError(null)
   }
 
   return (
@@ -126,6 +140,7 @@ export default function AgencyDashboardPage() {
               onCancel={handleCancel}
             />
           )}
+          {formError && <ErrorBanner message={formError} />}
           {duplicateMatch && (
             <div className="duplicate-confirm-dialog" data-testid="duplicate-confirm-dialog">
               <p>A property already exists: <strong>{duplicateMatch.found.address}</strong> ({duplicateMatch.found.city}).</p>

@@ -6,6 +6,7 @@ import PropertyCard from '../components/PropertyCard'
 import { Pager } from '../components/Pager'
 import { DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import { useDebounce } from '../hooks/useDebounce'
+import ErrorBanner from '../components/ErrorBanner'
 import type { PropertyFilter, PropertyType } from '../models/types'
 import './PropertiesPage.css'
 
@@ -17,7 +18,12 @@ export default function PropertiesPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const { list, loading, error, totalPages } = useProperties(debouncedFilter, page, pageSize)
-  const { addFavorite, isFavorite } = useFavorites()
+  const { list: favoriteList, addFavorite, isFavorite, removeFavorite } = useFavorites()
+
+  const handleRemoveFavorite = (agencyPropertyId: number) => {
+    const fav = favoriteList.find((f) => f.agencyPropertyId === agencyPropertyId)
+    if (fav) removeFavorite(fav.id)
+  }
   const { buyProperty } = usePurchases()
 
   const set = (field: keyof PropertyFilter, value: string | number) => {
@@ -46,6 +52,7 @@ export default function PropertiesPage() {
 
   return (
     <div className="properties-list-wrapper" data-testid="properties-page">
+      <h2 className="properties-title">Available Properties</h2>
       <div className="properties-filter">
         <input
           className="filter-input"
@@ -95,11 +102,19 @@ export default function PropertiesPage() {
           value={filter.minRooms ?? ''}
           onChange={(e) => set('minRooms', e.target.value === '' ? '' : Number(e.target.value))}
         />
+        <input
+          className="filter-input filter-input--short"
+          type="number"
+          placeholder="Max rooms"
+          min={1}
+          value={filter.maxRooms ?? ''}
+          onChange={(e) => set('maxRooms', e.target.value === '' ? '' : Number(e.target.value))}
+        />
         <button className="filter-clear" onClick={handleClear}>Clear</button>
       </div>
 
       {loading && <p className="properties-status">Loading...</p>}
-      {error && <p className="properties-status">Error: {error}</p>}
+      {error && <ErrorBanner message={error} />}
       {!loading && !error && list.length === 0 && (
         <p className="properties-status">No properties found.</p>
       )}
@@ -110,6 +125,7 @@ export default function PropertiesPage() {
             key={p.id}
             property={p}
             onFavorite={addFavorite}
+            onRemoveFavorite={handleRemoveFavorite}
             isFavorite={isFavorite(p.id)}
             onBuy={buyProperty}
           />

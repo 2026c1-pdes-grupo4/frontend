@@ -33,7 +33,7 @@ describe('FavoritesPage', () => {
   it('shows an error message', () => {
     setupMocks({ error: 'Access denied.', list: [] })
     render(<FavoritesPage />)
-    expect(screen.getByText('Error: Access denied.')).toBeInTheDocument()
+    expect(screen.getByText('Access denied.')).toBeInTheDocument()
   })
 
   it('shows an empty state when there are no favorites', () => {
@@ -66,8 +66,8 @@ describe('FavoritesPage', () => {
     render(<FavoritesPage />)
 
     fireEvent.click(screen.getByText('Edit'))
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'updated comment' } })
-    fireEvent.click(screen.getByText('Save'))
+    fireEvent.change(screen.getByTestId('input-edit-favorite-comment'), { target: { value: 'updated comment' } })
+    fireEvent.click(screen.getByTestId('btn-submit-edit-favorite'))
 
     expect(editFavorite).toHaveBeenCalledWith(1, 4, 'updated comment')
   })
@@ -78,9 +78,9 @@ describe('FavoritesPage', () => {
     render(<FavoritesPage />)
 
     fireEvent.click(screen.getByText('Edit'))
-    fireEvent.click(screen.getByText('Cancel'))
+    fireEvent.click(screen.getByTestId('btn-cancel-edit-favorite'))
 
     expect(editFavorite).not.toHaveBeenCalled()
-    expect(screen.queryByText('Save')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('btn-submit-edit-favorite')).not.toBeInTheDocument()
   })
 })

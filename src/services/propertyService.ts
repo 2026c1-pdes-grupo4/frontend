@@ -31,7 +31,8 @@ function buildParams(filter: PropertyFilter): URLSearchParams {
   if (filter.propertyType) p.set('propertyType', filter.propertyType)
   if (filter.minPrice != null) p.set('priceMin', String(filter.minPrice))
   if (filter.maxPrice != null) p.set('priceMax', String(filter.maxPrice))
-  if (filter.minRooms != null) p.set('rooms', String(filter.minRooms))
+  if (filter.minRooms != null) p.set('roomsMin', String(filter.minRooms))
+  if (filter.maxRooms != null) p.set('roomsMax', String(filter.maxRooms))
   return p
 }
 
@@ -43,6 +44,7 @@ function applyFilter(list: AgencyProperty[], filter: PropertyFilter): AgencyProp
     if (filter.minPrice != null && p.listedPrice < filter.minPrice) return false
     if (filter.maxPrice != null && p.listedPrice > filter.maxPrice) return false
     if (filter.minRooms != null && (p.rooms ?? 0) < filter.minRooms) return false
+    if (filter.maxRooms != null && (p.rooms ?? 0) > filter.maxRooms) return false
     return true
   })
 }

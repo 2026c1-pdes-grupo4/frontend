@@ -49,7 +49,7 @@ describe('PropertiesPage', () => {
   it('shows an error message', () => {
     setupMocks({ error: 'Server error - please try again later.', list: [] })
     render(<PropertiesPage />)
-    expect(screen.getByText('Error: Server error - please try again later.')).toBeInTheDocument()
+    expect(screen.getByText('Server error - please try again later.')).toBeInTheDocument()
   })
 
   it('shows an empty state when there are no properties', () => {
@@ -108,5 +108,98 @@ describe('PropertiesPage', () => {
     fireEvent.change(screen.getByDisplayValue('10 per page'), { target: { value: '20' } })
 
     expect(useProperties).toHaveBeenLastCalledWith({}, 1, 20)
+  })
+
+  it('filters by province', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Province'), { target: { value: 'Buenos Aires' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ province: 'Buenos Aires' }, 1, 10)
+    })
+  })
+
+  it('filters by property type', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getAllByRole('combobox')[0], { target: { value: 'house' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ propertyType: 'house' }, 1, 10)
+    })
+  })
+
+  it('filters by min price', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Min price'), { target: { value: '100000' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ minPrice: 100000 }, 1, 10)
+    })
+  })
+
+  it('filters by max price', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Max price'), { target: { value: '500000' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ maxPrice: 500000 }, 1, 10)
+    })
+  })
+
+  it('filters by min rooms', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Min rooms'), { target: { value: '2' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ minRooms: 2 }, 1, 10)
+    })
+  })
+
+  it('filters by max rooms', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Max rooms'), { target: { value: '4' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ maxRooms: 4 }, 1, 10)
+    })
+  })
+
+  it('clears a numeric filter when input is emptied', () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Min price'), { target: { value: '100000' } })
+    fireEvent.change(screen.getByPlaceholderText('Min price'), { target: { value: '' } })
+
+    expect(useProperties).toHaveBeenLastCalledWith({}, 1, 10)
+  })
+
+  it('removes a favorite when the star is clicked on a favorited property', () => {
+    const removeFavorite = vi.fn()
+    const favoriteList = [{ id: 99, agencyPropertyId: 1, propertyAddress: '', city: '', agencyName: '', score: 5, comment: '', savedPrice: 0, savedDate: '' }]
+    vi.mocked(useProperties).mockReturnValue({ list: [property], loading: false, error: null, totalPages: 1 })
+    vi.mocked(useFavorites).mockReturnValue({
+      list: favoriteList, loading: false, error: null,
+      addFavorite: vi.fn(), isFavorite: vi.fn().mockReturnValue(true),
+      editFavorite: vi.fn(), removeFavorite,
+    })
+    vi.mocked(usePurchases).mockReturnValue({ buyProperty: vi.fn() })
+    render(<PropertiesPage />)
+
+    fireEvent.click(screen.getByTitle('Remove from favorites'))
+
+    expect(removeFavorite).toHaveBeenCalledWith(99)
   })
 })
