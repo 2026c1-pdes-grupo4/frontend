@@ -1,6 +1,6 @@
 import type { AgencyProperty, Purchase, PropertyInput, PropertySummary } from '../models/types'
 import { agencyProperties as agencyPropFixtures, purchases as purchaseFixtures } from '../models/fixtures'
-import { apiFetch } from './http'
+import { apiFetch, ApiError } from './http'
 import { extractId } from '../models/jwt'
 
 const API = import.meta.env.VITE_API_URL
@@ -83,7 +83,7 @@ export async function findPropertyByCadastral(
     })
     return res.json()
   } catch (err) {
-    if (err instanceof Error && err.message === 'Resource not found.') return null
+    if (err instanceof ApiError && err.status === 404) return null
     throw err
   }
 }

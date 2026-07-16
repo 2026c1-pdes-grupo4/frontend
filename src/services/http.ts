@@ -34,6 +34,15 @@ const ERROR_CODE_MESSAGES: Record<string, string> = {
   INTERNAL_ERROR:         'An unexpected server error occurred. Please try again later.',
 }
 
+export class ApiError extends Error {
+  status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.status = status
+  }
+}
+
 export async function apiFetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
   const res = await fetch(input, init)
   if (!res.ok) {
@@ -45,7 +54,7 @@ export async function apiFetch(input: RequestInfo, init?: RequestInit): Promise<
     } catch {
       message = fallbackMessage(res.status)
     }
-    throw new Error(message)
+    throw new ApiError(message, res.status)
   }
   return res
 }
