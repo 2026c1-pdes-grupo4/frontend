@@ -109,7 +109,7 @@ describe('PropertiesPage', () => {
 
     expect(useProperties).toHaveBeenLastCalledWith({}, 1, 20)
   })
-  
+
   it('filters by province', async () => {
     setupMocks()
     render(<PropertiesPage />)
