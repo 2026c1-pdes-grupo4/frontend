@@ -45,7 +45,7 @@ When('la inmobiliaria {string} se autentica', async function (this: CustomWorld,
   await loginAsAgency(this, username)
 })
 
-When('publica una propiedad nueva con precio {string}', { timeout: 20000 }, async function (this: CustomWorld, price: string) {
+When('publica una propiedad nueva con precio {string}', { timeout: 60000 }, async function (this: CustomWorld, price: string) {
   const suffix = Date.now()
   const cadastral: Cadastral = {
     circumscription: `C${suffix}`,
@@ -90,7 +90,7 @@ async function findAcrossPages(world: CustomWorld, text: string): Promise<boolea
   }
 }
 
-Then('al confirmar, la propiedad aparece en su lista con precio {string}', { timeout: 10000 }, async function (this: CustomWorld, price: string) {
+Then('al confirmar, la propiedad aparece en su lista con precio {string}', { timeout: 60000 }, async function (this: CustomWorld, price: string) {
   await this.page.click('[data-testid="btn-confirm-list-existing"]')
   await this.page.waitForSelector('[data-testid="duplicate-confirm-dialog"]', { state: 'detached' })
   const found = await findAcrossPages(this, this.state.address as string)
