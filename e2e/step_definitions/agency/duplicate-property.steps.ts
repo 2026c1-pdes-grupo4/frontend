@@ -72,10 +72,75 @@ Then('se le pide confirmar que ya existe esa propiedad', async function (this: C
   await expect(dialog).toContainText(this.state.address as string)
 })
 
+// New listings are appended at the end of the agency's list, so with enough
+// accumulated test data they can land past whatever page size is selected —
+// page through until found instead of assuming a fixed size covers everything.
+async function findAcrossPages(world: CustomWorld, text: string): Promise<boolean> {
+  await world.page.selectOption('.pagination select', '20')
+  const list = world.page.locator('[data-testid="property-list"]')
+  const nextBtn = world.page.locator('[data-testid="btn-next-page"]')
+  for (;;) {
+    if ((await list.textContent())?.includes(text)) return true
+    if (await nextBtn.isDisabled()) return false
+    await nextBtn.click()
+  }
+}
+
 Then('al confirmar, la propiedad aparece en su lista con precio {string}', { timeout: 10000 }, async function (this: CustomWorld, price: string) {
   await this.page.click('[data-testid="btn-confirm-list-existing"]')
   await this.page.waitForSelector('[data-testid="duplicate-confirm-dialog"]', { state: 'detached' })
+  const found = await findAcrossPages(this, this.state.address as string)
+  expect(found).toBe(true)
   const list = this.page.locator('[data-testid="property-list"]')
-  await expect(list).toContainText(this.state.address as string)
   await expect(list).toContainText(Number(price).toLocaleString())
+})
+
+async function loginAsBuyer(username: string): Promise<string> {
+  const apiUrl = process.env.VITE_API_URL ?? 'http://localhost:8080'
+  const res = await fetch(`${apiUrl}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password: 'buyer123' }),
+  })
+  if (!res.ok) throw new Error(`Login failed: HTTP ${res.status}`)
+  const { token } = await res.json() as { token: string }
+  return token
+}
+
+When('el comprador {string} compra la propiedad publicada por {string}', async function (this: CustomWorld, buyerUsername: string, agencyUsername: string) {
+  const apiUrl = process.env.VITE_API_URL ?? 'http://localhost:8080'
+  const token = await loginAsBuyer(buyerUsername)
+
+  const searchRes = await fetch(`${apiUrl}/properties/search?keyword=${encodeURIComponent(this.state.address as string)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const { content: listings } = await searchRes.json() as { content: { id: number; address: string; agencyName: string }[] }
+  const target = listings.find((l) => l.address === this.state.address && l.agencyName === agencyUsername)
+  if (!target) throw new Error(`No listing found for address "${this.state.address as string}" by agency "${agencyUsername}"`)
+
+  const purchaseRes = await fetch(`${apiUrl}/purchases`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ agencyPropertyId: target.id }),
+  })
+  if (!purchaseRes.ok) throw new Error(`Purchase failed: HTTP ${purchaseRes.status}`)
+})
+
+Then('esa propiedad ya no aparece en los resultados de búsqueda para el comprador {string}', async function (this: CustomWorld, buyerUsername: string) {
+  const apiUrl = process.env.VITE_API_URL ?? 'http://localhost:8080'
+  const token = await loginAsBuyer(buyerUsername)
+
+  const searchRes = await fetch(`${apiUrl}/properties/search?keyword=${encodeURIComponent(this.state.address as string)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const { content: listings } = await searchRes.json() as { content: { address: string }[] }
+  const stillListed = listings.some((l) => l.address === this.state.address)
+  expect(stillListed).toBe(false)
+})
+
+Then('la inmobiliaria {string} todavía la ve en su lista de publicaciones', async function (this: CustomWorld, agencyUsername: string) {
+  await loginAsAgency(this, agencyUsername)
+  await this.page.click('[data-testid="tab-properties"]')
+  const found = await findAcrossPages(this, this.state.address as string)
+  expect(found).toBe(true)
 })

@@ -6,11 +6,10 @@ Given('que ya compró una propiedad disponible', async function (this: CustomWor
   const apiUrl = process.env.VITE_API_URL ?? 'http://localhost:8080'
   const token = this.state.token as string
 
-  const searchRes = await fetch(`${apiUrl}/properties/search`, {
+  const searchRes = await fetch(`${apiUrl}/properties/search?size=100`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  const paged = await searchRes.json() as { content: { address: string; available: boolean; id: number }[] }
-  const properties = paged.content
+  const { content: properties } = await searchRes.json() as { content: { address: string; available: boolean; id: number }[] }
   const target = properties.find((p) => p.available)
   if (!target) throw new Error('No available property found to purchase')
 
