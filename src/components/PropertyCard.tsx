@@ -13,14 +13,14 @@ interface Props {
 
 export default function PropertyCard({ property: p, onFavorite, onRemoveFavorite, isFavorite, onBuy }: Props) {
   const [open, setOpen] = useState(false)
-  const [score, setScore] = useState(3)
+  const [stars, setStars] = useState(3)
   const [comment, setComment] = useState('')
   const [confirmBuy, setConfirmBuy] = useState(false)
   const [purchased, setPurchased] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onFavorite?.(p.id, score, comment)
+    onFavorite?.(p.id, stars * 2, comment)
     setOpen(false)
   }
 
@@ -133,7 +133,7 @@ export default function PropertyCard({ property: p, onFavorite, onRemoveFavorite
         <form className="fav-form" data-testid="favorite-form" onSubmit={handleSubmit}>
           <label>
             Score
-            <StarRating value={score} onChange={setScore} />
+            <StarRating value={stars} onChange={setStars} />
           </label>
           <label>
             Comment

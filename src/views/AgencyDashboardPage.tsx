@@ -135,6 +135,15 @@ export default function AgencyDashboardPage() {
                 price: editing.listedPrice,
                 address: editing.address,
                 city: editing.city,
+                province: editing.province,
+                areaSq: editing.areaSq,
+                rooms: editing.rooms,
+                description: editing.description,
+                circumscription: editing.circumscription,
+                section: editing.section,
+                block: editing.block,
+                parcel: editing.parcel,
+                imageUrl: editing.imageUrl,
               } : undefined}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
