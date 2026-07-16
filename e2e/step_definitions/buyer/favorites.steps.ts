@@ -2,7 +2,7 @@ import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import { CustomWorld } from '../../support/world.ts'
 
-Given('que ya tiene una propiedad guardada como favorita', { timeout: 15000 }, async function (this: CustomWorld) {
+Given('que ya tiene una propiedad guardada como favorita', async function (this: CustomWorld) {
   const apiUrl = process.env.VITE_API_URL ?? 'http://localhost:8080'
   const token = this.state.token as string
 
@@ -31,7 +31,7 @@ Given('que ya tiene una propiedad guardada como favorita', { timeout: 15000 }, a
   this.state.favoriteAddress = target.address
 })
 
-When('hace clic en el botón de favorito de una propiedad disponible', { timeout: 15000 }, async function (this: CustomWorld) {
+When('hace clic en el botón de favorito de una propiedad disponible', async function (this: CustomWorld) {
   const card = this.page.locator('.property-card').filter({
     has: this.page.locator('[data-testid="btn-toggle-favorite"][title="Add to favorites"]'),
   }).first()
@@ -45,24 +45,27 @@ When('completa el formulario de favorito con puntaje {int} y comentario {string}
   await this.page.fill('[data-testid="input-favorite-comment"]', comment)
 })
 
-When('envía el formulario de favorito', { timeout: 15000 }, async function (this: CustomWorld) {
+When('envía el formulario de favorito', async function (this: CustomWorld) {
   await this.page.click('[data-testid="btn-submit-favorite"]')
 })
 
-When('navega a la página de favoritos', { timeout: 15000 }, async function (this: CustomWorld) {
+When('navega a la página de favoritos', async function (this: CustomWorld) {
   await this.page.goto(`${this.baseUrl}/favorites`)
   await this.page.waitForSelector('[data-testid="favorites-list"], .fav-empty')
 })
 
 Then('esa propiedad aparece en la lista de favoritos con puntaje {int} y comentario {string}', async function (this: CustomWorld, score: number, comment: string) {
   const address = this.state.favoriteAddress as string
-  const card = this.page.locator('[data-testid="favorite-card"]').filter({ hasText: address })
+  // .last(): addFavorite appends, and two listings of the same property (see
+  // duplicate-property.feature) can legitimately share address text, so the
+  // most recently added matching card is the one this scenario just created.
+  const card = this.page.locator('[data-testid="favorite-card"]').filter({ hasText: address }).last()
   await expect(card).toBeVisible()
   await expect(card).toContainText('★'.repeat(score) + '☆'.repeat(5 - score))
   await expect(card).toContainText(comment)
 })
 
-When('hace clic en editar el primer favorito', { timeout: 15000 }, async function (this: CustomWorld) {
+When('hace clic en editar el primer favorito', async function (this: CustomWorld) {
   await this.page.locator('[data-testid="btn-edit-favorite"]').first().click()
   await this.page.waitForSelector('[data-testid="favorite-edit-form"]')
 })
@@ -72,7 +75,7 @@ When('cambia el puntaje a {int} y el comentario a {string}', async function (thi
   await this.page.fill('[data-testid="input-edit-favorite-comment"]', comment)
 })
 
-When('guarda los cambios del favorito', { timeout: 15000 }, async function (this: CustomWorld) {
+When('guarda los cambios del favorito', async function (this: CustomWorld) {
   await this.page.click('[data-testid="btn-submit-edit-favorite"]')
   await this.page.waitForSelector('[data-testid="favorite-edit-form"]', { state: 'detached' })
 })
@@ -87,7 +90,7 @@ When('cuenta los favoritos en la lista', async function (this: CustomWorld) {
   this.state.initialFavoritesCount = await this.page.locator('[data-testid="favorite-card"]').count()
 })
 
-When('elimina el primer favorito', { timeout: 15000 }, async function (this: CustomWorld) {
+When('elimina el primer favorito', async function (this: CustomWorld) {
   await this.page.locator('[data-testid="btn-delete-favorite"]').first().click()
 })
 

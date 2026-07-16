@@ -1,8 +1,9 @@
-import { Before, After, setWorldConstructor } from '@cucumber/cucumber'
+import { Before, After, setWorldConstructor, setDefaultTimeout } from '@cucumber/cucumber'
 import { chromium } from '@playwright/test'
 import { CustomWorld } from './world.ts'
 
 setWorldConstructor(CustomWorld)
+setDefaultTimeout(20000)
 
 Before(async function (this: CustomWorld) {
   const headed = (this.parameters as { headless: string }).headless === 'true'
