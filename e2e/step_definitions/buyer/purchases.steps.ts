@@ -9,14 +9,14 @@ Given('que ya compró una propiedad disponible', async function (this: CustomWor
   const searchRes = await fetch(`${apiUrl}/properties/search`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  const properties = await searchRes.json() as { address: string; available: boolean; agencyPropertyId: number }[]
+  const properties = await searchRes.json() as { address: string; available: boolean; id: number }[]
   const target = properties.find((p) => p.available)
   if (!target) throw new Error('No available property found to purchase')
 
   const purchaseRes = await fetch(`${apiUrl}/purchases`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ agencyPropertyId: target.agencyPropertyId }),
+    body: JSON.stringify({ agencyPropertyId: target.id }),
   })
   if (!purchaseRes.ok) throw new Error(`Purchase setup failed: HTTP ${purchaseRes.status}`)
 
