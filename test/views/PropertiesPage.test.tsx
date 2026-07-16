@@ -76,4 +76,31 @@ describe('PropertiesPage', () => {
 
     expect(useProperties).toHaveBeenLastCalledWith({}, 1, 10)
   })
+
+  it('re-fetches with the updated filter when the province input changes', () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Province'), { target: { value: 'BA' } })
+
+    expect(useProperties).toHaveBeenLastCalledWith({ province: 'BA' }, 1, 10)
+  })
+
+  it('re-fetches with the updated filter when the property type changes', () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByDisplayValue('All types'), { target: { value: 'house' } })
+
+    expect(useProperties).toHaveBeenLastCalledWith({ propertyType: 'house' }, 1, 10)
+  })
+
+  it('re-fetches page 1 with the new page size when it changes', () => {
+    setupMocks({ totalPages: 3 })
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByDisplayValue('10 per page'), { target: { value: '20' } })
+
+    expect(useProperties).toHaveBeenLastCalledWith({}, 1, 20)
+  })
 })
