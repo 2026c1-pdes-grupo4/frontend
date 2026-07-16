@@ -1,4 +1,4 @@
-import type { AgencyProperty, Purchase, PropertyInput } from '../models/types'
+import type { AgencyProperty, Purchase, PropertyInput, PropertySummary } from '../models/types'
 import { agencyProperties as agencyPropFixtures, purchases as purchaseFixtures } from '../models/fixtures'
 import { apiFetch } from './http'
 import { extractId } from '../models/jwt'
@@ -66,6 +66,31 @@ export async function createProperty(token: string, data: PropertyInput): Promis
     body: JSON.stringify(listingPayload),
   })
   return listingRes.json()
+}
+
+export async function findPropertyByCadastral(
+  token: string,
+  cadastral: { circumscription: string; section: string; block: string; parcel: string },
+): Promise<PropertySummary | null> {
+  const params = new URLSearchParams(cadastral)
+  try {
+    const res = await apiFetch(`${API}/properties/find-by-cadastral?${params}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.json()
+  } catch (err) {
+    if (err instanceof Error && err.message === 'Resource not found.') return null
+    throw err
+  }
+}
+
+export async function listExistingProperty(token: string, propertyId: number, listedPrice: number): Promise<AgencyProperty> {
+  const res = await apiFetch(`${API}/agency-properties`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify({ propertyId, listedPrice }),
+  })
+  return res.json()
 }
 
 export async function updateProperty(token: string, agencyPropertyId: number, propertyId: number, data: Partial<PropertyInput>): Promise<AgencyProperty> {

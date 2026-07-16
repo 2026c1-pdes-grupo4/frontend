@@ -23,6 +23,8 @@ const client: AgencyClient = { agencyId: 1, userId: 7, username: 'buyer1', email
 let add: ReturnType<typeof vi.fn>
 let edit: ReturnType<typeof vi.fn>
 let remove: ReturnType<typeof vi.fn>
+let linkExisting: ReturnType<typeof vi.fn>
+let checkDuplicate: ReturnType<typeof vi.fn>
 
 afterEach(() => {
   vi.mocked(useAgencyProperties).mockReset()
@@ -34,7 +36,9 @@ function setupMocks() {
   add = vi.fn().mockResolvedValue(undefined)
   edit = vi.fn().mockResolvedValue(undefined)
   remove = vi.fn().mockResolvedValue(undefined)
-  vi.mocked(useAgencyProperties).mockReturnValue({ list: [listing], loading: false, error: null, add, edit, remove })
+  linkExisting = vi.fn().mockResolvedValue(undefined)
+  checkDuplicate = vi.fn().mockResolvedValue(null)
+  vi.mocked(useAgencyProperties).mockReturnValue({ list: [listing], loading: false, error: null, add, edit, remove, linkExisting, checkDuplicate })
   vi.mocked(useAgencyPurchases).mockReturnValue({ list: [sale], loading: false, error: null })
   vi.mocked(useAgencyClients).mockReturnValue({ list: [client], loading: false, error: null })
 }
@@ -79,6 +83,71 @@ describe('AgencyDashboardPage', () => {
     fireEvent.click(screen.getByTestId('btn-submit-property'))
 
     expect(add).toHaveBeenCalledWith(expect.objectContaining({ address: 'Calle 2', city: 'Berazategui' }))
+  })
+
+  it('does not check for duplicates when cadastral data is incomplete', () => {
+    setupMocks()
+    render(<AgencyDashboardPage />)
+
+    fireEvent.click(screen.getByTestId('btn-new-property'))
+    fireEvent.change(screen.getByTestId('input-address'), { target: { value: 'Calle 2' } })
+    fireEvent.change(screen.getByTestId('input-city'), { target: { value: 'Berazategui' } })
+    fireEvent.change(screen.getByTestId('input-province'), { target: { value: 'BA' } })
+    fireEvent.click(screen.getByTestId('btn-submit-property'))
+
+    expect(checkDuplicate).not.toHaveBeenCalled()
+    expect(add).toHaveBeenCalled()
+  })
+
+  it('prompts to confirm when a property with the same cadastral data already exists', async () => {
+    setupMocks()
+    const found = { id: 10, propertyType: 'HOUSE', price: 1000, address: 'Existing 123', city: 'Quilmes', province: 'BA', areaSq: 50, rooms: 3, description: '', available: true }
+    checkDuplicate.mockResolvedValue(found)
+    render(<AgencyDashboardPage />)
+
+    fireEvent.click(screen.getByTestId('btn-new-property'))
+    fireEvent.change(screen.getByTestId('input-address'), { target: { value: 'Calle 2' } })
+    fireEvent.change(screen.getByTestId('input-city'), { target: { value: 'Berazategui' } })
+    fireEvent.change(screen.getByTestId('input-province'), { target: { value: 'BA' } })
+    fireEvent.change(screen.getByTestId('input-price'), { target: { value: '5000' } })
+    fireEvent.change(screen.getByTestId('input-circumscription'), { target: { value: '1' } })
+    fireEvent.change(screen.getByTestId('input-section'), { target: { value: 'A' } })
+    fireEvent.change(screen.getByTestId('input-block'), { target: { value: '10' } })
+    fireEvent.change(screen.getByTestId('input-parcel'), { target: { value: '5' } })
+    fireEvent.click(screen.getByTestId('btn-submit-property'))
+
+    expect(await screen.findByTestId('duplicate-confirm-dialog')).toBeInTheDocument()
+    expect(screen.getByText('Existing 123')).toBeInTheDocument()
+    expect(add).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByTestId('btn-confirm-list-existing'))
+
+    expect(linkExisting).toHaveBeenCalledWith(10, 5000)
+  })
+
+  it('does not create anything when the duplicate prompt is cancelled', async () => {
+    setupMocks()
+    const found = { id: 10, propertyType: 'HOUSE', price: 1000, address: 'Existing 123', city: 'Quilmes', province: 'BA', areaSq: 50, rooms: 3, description: '', available: true }
+    checkDuplicate.mockResolvedValue(found)
+    render(<AgencyDashboardPage />)
+
+    fireEvent.click(screen.getByTestId('btn-new-property'))
+    fireEvent.change(screen.getByTestId('input-address'), { target: { value: 'Calle 2' } })
+    fireEvent.change(screen.getByTestId('input-city'), { target: { value: 'Berazategui' } })
+    fireEvent.change(screen.getByTestId('input-province'), { target: { value: 'BA' } })
+    fireEvent.change(screen.getByTestId('input-circumscription'), { target: { value: '1' } })
+    fireEvent.change(screen.getByTestId('input-section'), { target: { value: 'A' } })
+    fireEvent.change(screen.getByTestId('input-block'), { target: { value: '10' } })
+    fireEvent.change(screen.getByTestId('input-parcel'), { target: { value: '5' } })
+    fireEvent.click(screen.getByTestId('btn-submit-property'))
+
+    expect(await screen.findByTestId('duplicate-confirm-dialog')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('btn-cancel-list-existing'))
+
+    expect(screen.queryByTestId('duplicate-confirm-dialog')).not.toBeInTheDocument()
+    expect(add).not.toHaveBeenCalled()
+    expect(linkExisting).not.toHaveBeenCalled()
   })
 
   it('edits an existing property, pre-filling the form', () => {

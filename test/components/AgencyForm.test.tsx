@@ -27,6 +27,13 @@ describe('AgencyForm', () => {
     })
   })
 
+  it('pre-fills fields from the initial value', () => {
+    render(<AgencyForm initial={{ username: 'existing_inmo', email: 'existing@cth.com' }} onSubmit={vi.fn()} onCancel={vi.fn()} />)
+
+    expect(screen.getByTestId('input-username')).toHaveValue('existing_inmo')
+    expect(screen.getByTestId('input-email')).toHaveValue('existing@cth.com')
+  })
+
   it('calls onCancel when Cancel is clicked', () => {
     const onCancel = vi.fn()
     render(<AgencyForm onSubmit={vi.fn()} onCancel={onCancel} />)

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { useAgencyProperties } from '../../src/controllers/useAgencyProperties'
-import { fetchAgencyProperties, createProperty, updateProperty, deleteProperty } from '../../src/services/agencyService'
+import { fetchAgencyProperties, createProperty, updateProperty, deleteProperty, listExistingProperty, findPropertyByCadastral } from '../../src/services/agencyService'
 import { useAuthContext } from '../../src/context/AuthContext'
 import type { AgencyProperty } from '../../src/models/types'
 
@@ -10,6 +10,8 @@ vi.mock('../../src/services/agencyService', () => ({
   createProperty: vi.fn(),
   updateProperty: vi.fn(),
   deleteProperty: vi.fn(),
+  listExistingProperty: vi.fn(),
+  findPropertyByCadastral: vi.fn(),
 }))
 vi.mock('../../src/context/AuthContext', () => ({ useAuthContext: vi.fn() }))
 
@@ -23,6 +25,8 @@ afterEach(() => {
   vi.mocked(createProperty).mockReset()
   vi.mocked(updateProperty).mockReset()
   vi.mocked(deleteProperty).mockReset()
+  vi.mocked(listExistingProperty).mockReset()
+  vi.mocked(findPropertyByCadastral).mockReset()
   vi.mocked(useAuthContext).mockReset()
 })
 
@@ -49,6 +53,7 @@ describe('useAgencyProperties', () => {
       await result.current.add({
         propertyType: 'HOUSE', price: 1000, address: 'Calle 1', city: 'Quilmes',
         province: 'BA', areaSq: 50, rooms: 3, description: 'desc',
+        circumscription: '', section: '', block: '', parcel: '',
       })
     })
 
@@ -69,6 +74,41 @@ describe('useAgencyProperties', () => {
     })
 
     expect(result.current.list).toEqual([updated])
+  })
+
+  it('adds a listing for an existing property', async () => {
+    vi.mocked(useAuthContext).mockReturnValue({ token: 'tok', role: 'ROLE_AGENCY', setToken: vi.fn() })
+    vi.mocked(fetchAgencyProperties).mockResolvedValue([])
+    vi.mocked(listExistingProperty).mockResolvedValue(listing)
+
+    const { result } = renderHook(() => useAgencyProperties())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    await act(async () => {
+      await result.current.linkExisting(10, 1000)
+    })
+
+    expect(listExistingProperty).toHaveBeenCalledWith('tok', 10, 1000)
+    expect(result.current.list).toEqual([listing])
+  })
+
+  it('checks for a duplicate property by cadastral data', async () => {
+    vi.mocked(useAuthContext).mockReturnValue({ token: 'tok', role: 'ROLE_AGENCY', setToken: vi.fn() })
+    vi.mocked(fetchAgencyProperties).mockResolvedValue([])
+    const found = { id: 10, propertyType: 'HOUSE', price: 1000, address: 'Calle 1', city: 'Quilmes', province: 'BA', areaSq: 50, rooms: 3, description: '', available: true }
+    vi.mocked(findPropertyByCadastral).mockResolvedValue(found)
+
+    const { result } = renderHook(() => useAgencyProperties())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    const cadastral = { circumscription: '1', section: 'A', block: '10', parcel: '5' }
+    let match
+    await act(async () => {
+      match = await result.current.checkDuplicate(cadastral)
+    })
+
+    expect(findPropertyByCadastral).toHaveBeenCalledWith('tok', cadastral)
+    expect(match).toEqual(found)
   })
 
   it('removes a deleted listing from the list', async () => {

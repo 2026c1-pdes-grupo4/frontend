@@ -39,7 +39,35 @@ describe('PropertyForm', () => {
       areaSq: 80,
       rooms: 3,
       description: '',
+      circumscription: '',
+      section: '',
+      block: '',
+      parcel: '',
     })
+  })
+
+  it('submits cadastral data when filled', () => {
+    const onSubmit = vi.fn()
+    render(<PropertyForm onSubmit={onSubmit} onCancel={vi.fn()} />)
+
+    fireEvent.change(screen.getByTestId('input-address'), { target: { value: 'Calle 2' } })
+    fireEvent.change(screen.getByTestId('input-city'), { target: { value: 'Quilmes' } })
+    fireEvent.change(screen.getByTestId('input-province'), { target: { value: 'BA' } })
+    fireEvent.change(screen.getByTestId('input-price'), { target: { value: '2000' } })
+    fireEvent.change(screen.getByTestId('input-areaSq'), { target: { value: '80' } })
+    fireEvent.change(screen.getByTestId('input-rooms'), { target: { value: '3' } })
+    fireEvent.change(screen.getByTestId('input-circumscription'), { target: { value: '1' } })
+    fireEvent.change(screen.getByTestId('input-section'), { target: { value: 'A' } })
+    fireEvent.change(screen.getByTestId('input-block'), { target: { value: '10' } })
+    fireEvent.change(screen.getByTestId('input-parcel'), { target: { value: '5' } })
+    fireEvent.click(screen.getByTestId('btn-submit-property'))
+
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({
+      circumscription: '1',
+      section: 'A',
+      block: '10',
+      parcel: '5',
+    }))
   })
 
   it('calls onCancel when Cancel is clicked', () => {

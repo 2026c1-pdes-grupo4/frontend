@@ -8,7 +8,7 @@ interface Props {
   onCancel: () => void
 }
 
-const PROPERTY_TYPES = ['APARTMENT', 'HOUSE', 'LAND', 'COMMERCIAL']
+const PROPERTY_TYPES = ['APARTMENT', 'HOUSE']
 const TYPES_WITH_ROOMS = ['APARTMENT', 'HOUSE']
 
 export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
@@ -21,6 +21,10 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
     areaSq: initial?.areaSq ?? 0,
     rooms: initial?.rooms ?? 0,
     description: initial?.description ?? '',
+    circumscription: initial?.circumscription ?? '',
+    section: initial?.section ?? '',
+    block: initial?.block ?? '',
+    parcel: initial?.parcel ?? '',
     imageUrl: initial?.imageUrl ?? '',
   })
 
@@ -121,6 +125,40 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
           onChange={e => set('description', e.target.value)}
           data-testid="input-description"
         />
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Circumscription</label>
+          <input
+            value={form.circumscription}
+            onChange={e => set('circumscription', e.target.value)}
+            data-testid="input-circumscription"
+          />
+        </div>
+        <div className="form-group">
+          <label>Section</label>
+          <input
+            value={form.section}
+            onChange={e => set('section', e.target.value)}
+            data-testid="input-section"
+          />
+        </div>
+        <div className="form-group">
+          <label>Block</label>
+          <input
+            value={form.block}
+            onChange={e => set('block', e.target.value)}
+            data-testid="input-block"
+          />
+        </div>
+        <div className="form-group">
+          <label>Parcel</label>
+          <input
+            value={form.parcel}
+            onChange={e => set('parcel', e.target.value)}
+            data-testid="input-parcel"
+          />
+        </div>
       </div>
       <div className="form-group">
         <label>Image URL (optional)</label>

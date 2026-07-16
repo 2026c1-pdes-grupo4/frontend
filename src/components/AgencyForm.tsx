@@ -3,14 +3,15 @@ import type { AgencyInput } from '../models/types'
 import './AgencyForm.css'
 
 interface Props {
+  initial?: Partial<AgencyInput>
   onSubmit: (data: AgencyInput) => void
   onCancel: () => void
 }
 
-export default function AgencyForm({ onSubmit, onCancel }: Props) {
+export default function AgencyForm({ initial, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<AgencyInput>({
-    username: '',
-    email: '',
+    username: initial?.username ?? '',
+    email: initial?.email ?? '',
     password: '',
   })
 

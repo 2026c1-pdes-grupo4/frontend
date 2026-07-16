@@ -35,6 +35,23 @@ export interface AgencyProperty {
   imageUrl?: string
 }
 
+export interface PropertySummary {
+  id: number
+  propertyType: string
+  price: number
+  address: string
+  city: string
+  province: string
+  areaSq: number
+  rooms: number
+  description: string
+  available: boolean
+  circumscription?: string
+  section?: string
+  block?: string
+  parcel?: string
+}
+
 export interface Favorite {
   id: number
   agencyPropertyId: number
@@ -92,6 +109,10 @@ export interface PropertyInput {
   areaSq: number
   rooms?: number
   description: string
+  circumscription: string
+  section: string
+  block: string
+  parcel: string
   imageUrl?: string
 }
 

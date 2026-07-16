@@ -5,6 +5,8 @@ import {
   updateProperty,
   deleteProperty,
   fetchAgencyPurchases,
+  findPropertyByCadastral,
+  listExistingProperty,
 } from '../../src/services/agencyService'
 import { apiFetch } from '../../src/services/http'
 import { agencyProperties as agencyPropFixtures } from '../../src/models/fixtures'
@@ -96,6 +98,45 @@ describe('updateProperty', () => {
       expect.objectContaining({ method: 'PUT', body: JSON.stringify({ propertyId: 10, listedPrice: 2000 }) }),
     )
     expect(result).toEqual({ id: 20, propertyId: 10, listedPrice: 2000 })
+  })
+})
+
+describe('findPropertyByCadastral', () => {
+  it('returns the matching property when found', async () => {
+    vi.stubEnv('VITE_USE_FIXTURES', 'false')
+    vi.mocked(apiFetch).mockResolvedValue({ json: () => Promise.resolve({ id: 10, address: 'Existing 123' }) } as Response)
+
+    const result = await findPropertyByCadastral('tok', { circumscription: '1', section: 'A', block: '10', parcel: '5' })
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/properties/find-by-cadastral?circumscription=1&section=A&block=10&parcel=5'),
+      { headers: { Authorization: 'Bearer tok' } },
+    )
+    expect(result).toEqual({ id: 10, address: 'Existing 123' })
+  })
+
+  it('returns null when no match is found (404)', async () => {
+    vi.stubEnv('VITE_USE_FIXTURES', 'false')
+    vi.mocked(apiFetch).mockRejectedValue(new Error('Resource not found.'))
+
+    const result = await findPropertyByCadastral('tok', { circumscription: '1', section: 'A', block: '10', parcel: '5' })
+
+    expect(result).toBeNull()
+  })
+})
+
+describe('listExistingProperty', () => {
+  it('POSTs to /agency-properties with the existing propertyId and price', async () => {
+    vi.stubEnv('VITE_USE_FIXTURES', 'false')
+    vi.mocked(apiFetch).mockResolvedValue({ json: () => Promise.resolve({ id: 30, propertyId: 10, listedPrice: 5000 }) } as Response)
+
+    const result = await listExistingProperty('tok', 10, 5000)
+
+    expect(apiFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/agency-properties'),
+      expect.objectContaining({ method: 'POST', body: JSON.stringify({ propertyId: 10, listedPrice: 5000 }) }),
+    )
+    expect(result).toEqual({ id: 30, propertyId: 10, listedPrice: 5000 })
   })
 })
 

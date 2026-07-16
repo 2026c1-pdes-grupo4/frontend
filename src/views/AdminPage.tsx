@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { useAuthContext } from '../context/AuthContext'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import { Pager } from '../components/Pager'
@@ -14,6 +14,10 @@ import {
   fetchTopAgenciesSales,
   createUser,
   createAgency,
+  updateUser,
+  deleteUser,
+  updateAgency,
+  deleteAgency,
 } from '../controllers/useAdmin'
 import UserForm from '../components/UserForm'
 import AgencyForm from '../components/AgencyForm'
@@ -52,28 +56,84 @@ export default function AdminPage() {
 
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [newUsers, setNewUsers] = useState<User[]>([])
+  const [editedUsers, setEditedUsers] = useState<Record<number, User>>({})
+  const [deletedUserIds, setDeletedUserIds] = useState<Set<number>>(new Set())
   const [newAgencies, setNewAgencies] = useState<Agency[]>([])
+  const [editedAgencies, setEditedAgencies] = useState<Record<number, Agency>>({})
+  const [deletedAgencyIds, setDeletedAgencyIds] = useState<Set<number>>(new Set())
   const [showUserForm, setShowUserForm] = useState(false)
   const [showAgencyForm, setShowAgencyForm] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editingAgency, setEditingAgency] = useState<Agency | null>(null)
 
-  const allUsers = [...newUsers, ...users.data]
-  const allAgencies = [...newAgencies, ...agencies.data]
+  const usersList = [
+    ...newUsers,
+    ...users.data.filter(u => !deletedUserIds.has(u.id)).map(u => editedUsers[u.id] ?? u),
+  ]
+  const agenciesList = [
+    ...newAgencies,
+    ...agencies.data.filter(a => !deletedAgencyIds.has(a.id)).map(a => editedAgencies[a.id] ?? a),
+  ]
 
-  const usersPagination = usePagination(allUsers, pageSize)
-  const agenciesPagination = usePagination(allAgencies, pageSize)
+  const usersPagination = usePagination(usersList, pageSize)
+  const agenciesPagination = usePagination(agenciesList, pageSize)
   const favoritesPagination = usePagination(favorites.data, pageSize)
   const purchasesPagination = usePagination(purchases.data, pageSize)
 
-  const handleCreateUser = async (data: Parameters<typeof createUser>[1]) => {
-    const created = await createUser(token!, data)
-    setNewUsers(prev => [created, ...prev])
+  const handleSubmitUser = async (data: Parameters<typeof createUser>[1]) => {
+    if (editingUser) {
+      const updated = await updateUser(token!, editingUser.id, data)
+      setEditedUsers(prev => ({ ...prev, [updated.id]: updated }))
+      setEditingUser(null)
+    } else {
+      const created = await createUser(token!, data)
+      setNewUsers(prev => [created, ...prev])
+    }
     setShowUserForm(false)
   }
 
-  const handleCreateAgency = async (data: Parameters<typeof createAgency>[1]) => {
-    const created = await createAgency(token!, data)
-    setNewAgencies(prev => [created, ...prev])
+  const handleSubmitAgency = async (data: Parameters<typeof createAgency>[1]) => {
+    if (editingAgency) {
+      const updated = await updateAgency(token!, editingAgency.id, data)
+      setEditedAgencies(prev => ({ ...prev, [updated.id]: updated }))
+      setEditingAgency(null)
+    } else {
+      const created = await createAgency(token!, data)
+      setNewAgencies(prev => [created, ...prev])
+    }
     setShowAgencyForm(false)
+  }
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user)
+    setShowUserForm(true)
+  }
+
+  const handleDeleteUser = async (id: number) => {
+    await deleteUser(token!, id)
+    setNewUsers(prev => prev.filter(u => u.id !== id))
+    setDeletedUserIds(prev => new Set(prev).add(id))
+  }
+
+  const handleEditAgency = (agency: Agency) => {
+    setEditingAgency(agency)
+    setShowAgencyForm(true)
+  }
+
+  const handleDeleteAgency = async (id: number) => {
+    await deleteAgency(token!, id)
+    setNewAgencies(prev => prev.filter(a => a.id !== id))
+    setDeletedAgencyIds(prev => new Set(prev).add(id))
+  }
+
+  const handleCancelUserForm = () => {
+    setShowUserForm(false)
+    setEditingUser(null)
+  }
+
+  const handleCancelAgencyForm = () => {
+    setShowAgencyForm(false)
+    setEditingAgency(null)
   }
 
   return (
@@ -98,9 +158,9 @@ export default function AdminPage() {
           {!current.loading && !current.error && tab === 'users' && (
             <>
               {showUserForm && (
-                <UserForm onSubmit={handleCreateUser} onCancel={() => setShowUserForm(false)} />
+                <UserForm initial={editingUser ?? undefined} onSubmit={handleSubmitUser} onCancel={handleCancelUserForm} />
               )}
-              <UsersTable rows={usersPagination.pagedData as User[]} />
+              <UsersTable rows={usersPagination.pagedData as User[]} onEdit={handleEditUser} onDelete={handleDeleteUser} />
               <div className="admin-toolbar">
                 <Pager p={usersPagination} pageSize={pageSize} onPageSize={setPageSize} />
                 {!showUserForm && (
@@ -119,9 +179,9 @@ export default function AdminPage() {
           {!current.loading && !current.error && tab === 'agencies' && (
             <>
               {showAgencyForm && (
-                <AgencyForm onSubmit={handleCreateAgency} onCancel={() => setShowAgencyForm(false)} />
+                <AgencyForm initial={editingAgency ?? undefined} onSubmit={handleSubmitAgency} onCancel={handleCancelAgencyForm} />
               )}
-              <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} />
+              <AgenciesTable rows={agenciesPagination.pagedData as Agency[]} onEdit={handleEditAgency} onDelete={handleDeleteAgency} />
               <div className="admin-toolbar">
                 <Pager p={agenciesPagination} pageSize={pageSize} onPageSize={setPageSize} />
                 {!showAgencyForm && (
@@ -162,13 +222,13 @@ export default function AdminPage() {
   )
 }
 
-function UsersTable({ rows }: { rows: User[] }) {
+function UsersTable({ rows, onEdit, onDelete }: { rows: User[]; onEdit: (user: User) => void; onDelete: (id: number) => void }) {
   if (rows.length === 0) return <p className="admin-status">No users found.</p>
   return (
     <table className="admin-table" data-testid="users-table">
       <thead>
         <tr>
-          <th>Username</th><th>Email</th><th>Profile</th>
+          <th>Username</th><th>Email</th><th>Profile</th><th></th>
         </tr>
       </thead>
       <tbody>
@@ -177,6 +237,14 @@ function UsersTable({ rows }: { rows: User[] }) {
             <td>{u.username}</td>
             <td>{u.email}</td>
             <td><span className={`admin-badge admin-badge--${u.profileType}`}>{u.profileType}</span></td>
+            <td className="admin-row-actions">
+              <button className="admin-icon-btn" data-testid="btn-edit-user" title="Edit" onClick={() => onEdit(u)}>
+                <Pencil size={16} />
+              </button>
+              <button className="admin-icon-btn admin-icon-btn--danger" data-testid="btn-delete-user" title="Delete" onClick={() => onDelete(u.id)}>
+                <Trash2 size={16} />
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>
@@ -184,13 +252,13 @@ function UsersTable({ rows }: { rows: User[] }) {
   )
 }
 
-function AgenciesTable({ rows }: { rows: Agency[] }) {
+function AgenciesTable({ rows, onEdit, onDelete }: { rows: Agency[]; onEdit: (agency: Agency) => void; onDelete: (id: number) => void }) {
   if (rows.length === 0) return <p className="admin-status">No agencies found.</p>
   return (
     <table className="admin-table">
       <thead>
         <tr>
-          <th>Username</th><th>Email</th>
+          <th>Username</th><th>Email</th><th></th>
         </tr>
       </thead>
       <tbody>
@@ -198,6 +266,14 @@ function AgenciesTable({ rows }: { rows: Agency[] }) {
           <tr key={a.id}>
             <td>{a.username}</td>
             <td>{a.email}</td>
+            <td className="admin-row-actions">
+              <button className="admin-icon-btn" data-testid="btn-edit-agency" title="Edit" onClick={() => onEdit(a)}>
+                <Pencil size={16} />
+              </button>
+              <button className="admin-icon-btn admin-icon-btn--danger" data-testid="btn-delete-agency" title="Delete" onClick={() => onDelete(a.id)}>
+                <Trash2 size={16} />
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>
