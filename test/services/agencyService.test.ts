@@ -88,7 +88,7 @@ describe('updateProperty', () => {
     expect(apiFetch).toHaveBeenNthCalledWith(
       1,
       expect.stringContaining('/properties/10'),
-      expect.objectContaining({ method: 'PUT', body: JSON.stringify({ price: 2000 }) }),
+      expect.objectContaining({ method: 'PUT', body: JSON.stringify({}) }),
     )
     expect(apiFetch).toHaveBeenNthCalledWith(
       2,

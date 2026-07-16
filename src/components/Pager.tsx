@@ -1,9 +1,14 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { usePagination, PAGE_SIZE_OPTIONS } from '../hooks/usePagination'
+import { PAGE_SIZE_OPTIONS } from '../hooks/usePagination'
 
-type PaginationState = ReturnType<typeof usePagination>
+interface PagerState {
+  page: number
+  totalPages: number
+  next: () => void
+  prev: () => void
+}
 
-export function Pager({ p, pageSize, onPageSize }: { p: PaginationState; pageSize: number; onPageSize: (n: number) => void }) {
+export function Pager({ p, pageSize, onPageSize }: { p: PagerState; pageSize: number; onPageSize: (n: number) => void }) {
   return (
     <div className="pagination">
       <button data-testid="btn-prev-page" disabled={p.page === 1} onClick={p.prev}>

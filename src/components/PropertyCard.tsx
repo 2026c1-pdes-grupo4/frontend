@@ -68,7 +68,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
 
         <div className="property-card__row">
           <span className="property-card__city">{p.city}, {p.province}</span>
-          <span className="property-card__price">${p.listedPrice.toLocaleString()}</span>
+          <span className="property-card__price">${p.listedPrice.toLocaleString('en-US')}</span>
         </div>
 
         <div className="property-card__row">
@@ -100,7 +100,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
 
       {confirmBuy && (
         <div className="buy-confirm-dialog" data-testid="buy-confirm-dialog">
-          <p>Confirm purchase of {p.address} for ${p.listedPrice.toLocaleString()}?</p>
+          <p>Confirm purchase of {p.address} for ${p.listedPrice.toLocaleString('en-US')}?</p>
           <div className="fav-form-actions">
             <button data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>Confirm</button>
             <button onClick={() => setConfirmBuy(false)}>Cancel</button>

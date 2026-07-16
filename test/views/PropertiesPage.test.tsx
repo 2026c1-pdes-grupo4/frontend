@@ -64,7 +64,7 @@ describe('PropertiesPage', () => {
 
     fireEvent.change(screen.getByPlaceholderText('City'), { target: { value: 'Quilmes' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ city: 'Quilmes' })
+    expect(useProperties).toHaveBeenLastCalledWith({ city: 'Quilmes' }, 1, 10)
   })
 
   it('clears the filter when Clear is clicked', () => {
@@ -74,6 +74,6 @@ describe('PropertiesPage', () => {
     fireEvent.change(screen.getByPlaceholderText('City'), { target: { value: 'Quilmes' } })
     fireEvent.click(screen.getByText('Clear'))
 
-    expect(useProperties).toHaveBeenLastCalledWith({})
+    expect(useProperties).toHaveBeenLastCalledWith({}, 1, 10)
   })
 })

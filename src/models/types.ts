@@ -75,6 +75,14 @@ export interface PropertyFilter {
   minRooms?: number
 }
 
+export interface PagedResult<T> {
+  content: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
 export interface PropertyInput {
   propertyType: string
   price: number
