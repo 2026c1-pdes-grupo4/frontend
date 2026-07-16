@@ -21,7 +21,7 @@ export interface AgencyProperty {
   province: string
   propertyType: string
   areaSq: number
-  rooms: number
+  rooms?: number
   description: string
   circumscription?: string
   section?: string
@@ -82,8 +82,9 @@ export interface PropertyInput {
   city: string
   province: string
   areaSq: number
-  rooms: number
+  rooms?: number
   description: string
+  imageUrl?: string
 }
 
 export type AdminFavoriteRaw = {

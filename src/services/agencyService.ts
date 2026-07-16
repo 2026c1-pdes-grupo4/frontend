@@ -29,26 +29,41 @@ export async function createProperty(token: string, data: PropertyInput): Promis
       province: data.province,
       propertyType: data.propertyType,
       areaSq: data.areaSq,
-      rooms: data.rooms,
+      rooms: data.rooms ?? 0,
       description: data.description,
       listedPrice: data.price,
       listedDate: new Date().toISOString().split('T')[0],
       available: true,
       agencyId: 1,
       agencyName: 'ritondo_propiedades',
+      imageUrl: data.imageUrl,
     }
+  }
+  const payload: Record<string, unknown> = {
+    propertyType: data.propertyType,
+    address: data.address,
+    city: data.city,
+    province: data.province,
+    areaSq: data.areaSq,
+    description: data.description,
+    ...(data.rooms !== undefined && { rooms: data.rooms }),
   }
   const propRes = await apiFetch(`${API}/properties`, {
     method: 'POST',
     headers: authHeaders(token),
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   const property = await propRes.json() as { id: number }
 
+  const listingPayload: Record<string, unknown> = {
+    propertyId: property.id,
+    listedPrice: data.price,
+    ...(data.imageUrl && { imageUrl: data.imageUrl }),
+  }
   const listingRes = await apiFetch(`${API}/agency-properties`, {
     method: 'POST',
     headers: authHeaders(token),
-    body: JSON.stringify({ propertyId: property.id, listedPrice: data.price }),
+    body: JSON.stringify(listingPayload),
   })
   return listingRes.json()
 }
@@ -58,15 +73,29 @@ export async function updateProperty(token: string, agencyPropertyId: number, pr
     const found = agencyPropFixtures.find(p => p.id === agencyPropertyId)
     return { ...found!, ...data, listedPrice: data.price ?? found!.listedPrice }
   }
+  const propertyPayload: Record<string, unknown> = {
+    ...(data.propertyType && { propertyType: data.propertyType }),
+    ...(data.address && { address: data.address }),
+    ...(data.city && { city: data.city }),
+    ...(data.province && { province: data.province }),
+    ...(data.areaSq !== undefined && { areaSq: data.areaSq }),
+    ...(data.description !== undefined && { description: data.description }),
+    ...(data.rooms !== undefined && { rooms: data.rooms }),
+  }
   await apiFetch(`${API}/properties/${propertyId}`, {
     method: 'PUT',
     headers: authHeaders(token),
-    body: JSON.stringify(data),
+    body: JSON.stringify(propertyPayload),
   })
+  const listingUpdatePayload: Record<string, unknown> = {
+    propertyId,
+    listedPrice: data.price,
+    ...(data.imageUrl && { imageUrl: data.imageUrl }),
+  }
   const res = await apiFetch(`${API}/agency-properties/${agencyPropertyId}`, {
     method: 'PUT',
     headers: authHeaders(token),
-    body: JSON.stringify({ propertyId, listedPrice: data.price }),
+    body: JSON.stringify(listingUpdatePayload),
   })
   return res.json()
 }
