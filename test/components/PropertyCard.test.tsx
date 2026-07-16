@@ -39,7 +39,7 @@ describe('PropertyCard', () => {
     fireEvent.change(screen.getByLabelText(/Comment/), { target: { value: 'great place' } })
     fireEvent.click(screen.getByText('Save'))
 
-    expect(onFavorite).toHaveBeenCalledWith(5, 3, 'great place')
+    expect(onFavorite).toHaveBeenCalledWith(5, 6, 'great place')
   })
 
   it('does not reopen the favorite form when already a favorite', () => {
