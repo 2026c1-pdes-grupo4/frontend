@@ -66,8 +66,8 @@ describe('FavoritesPage', () => {
     render(<FavoritesPage />)
 
     fireEvent.click(screen.getByText('Edit'))
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'updated comment' } })
-    fireEvent.click(screen.getByText('Save'))
+    fireEvent.change(screen.getByTestId('fav-edit-modal-comment'), { target: { value: 'updated comment' } })
+    fireEvent.click(screen.getByTestId('fav-edit-modal-save'))
 
     expect(editFavorite).toHaveBeenCalledWith(1, 4, 'updated comment')
   })
@@ -78,9 +78,9 @@ describe('FavoritesPage', () => {
     render(<FavoritesPage />)
 
     fireEvent.click(screen.getByText('Edit'))
-    fireEvent.click(screen.getByText('Cancel'))
+    fireEvent.click(screen.getByTestId('fav-edit-modal-cancel'))
 
     expect(editFavorite).not.toHaveBeenCalled()
-    expect(screen.queryByText('Save')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('fav-edit-modal-save')).not.toBeInTheDocument()
   })
 })

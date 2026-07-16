@@ -100,6 +100,7 @@ export default function FavoritesPage() {
                 <label className="fav-edit-modal__label" htmlFor="fav-edit-comment">Comment</label>
                 <textarea
                   id="fav-edit-comment"
+                  data-testid="fav-edit-modal-comment"
                   className="fav-edit-modal__textarea"
                   value={editComment}
                   onChange={(e) => setEditComment(e.target.value)}
@@ -109,6 +110,7 @@ export default function FavoritesPage() {
               <div className="fav-edit-modal__actions">
                 <button
                   type="button"
+                  data-testid="fav-edit-modal-cancel"
                   className="fav-edit-modal__btn fav-edit-modal__btn--cancel"
                   onClick={() => setEditingId(null)}
                 >
@@ -116,6 +118,7 @@ export default function FavoritesPage() {
                 </button>
                 <button
                   type="submit"
+                  data-testid="fav-edit-modal-save"
                   className="fav-edit-modal__btn fav-edit-modal__btn--save"
                 >
                   Save
