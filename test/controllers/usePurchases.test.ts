@@ -1,20 +1,22 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { usePurchases } from '../../src/controllers/usePurchases'
-import { createPurchase } from '../../src/services/purchaseService'
+import { createPurchase, fetchMyPurchases } from '../../src/services/purchaseService'
 import { useAuthContext } from '../../src/context/AuthContext'
 
-vi.mock('../../src/services/purchaseService', () => ({ createPurchase: vi.fn() }))
+vi.mock('../../src/services/purchaseService', () => ({ createPurchase: vi.fn(), fetchMyPurchases: vi.fn() }))
 vi.mock('../../src/context/AuthContext', () => ({ useAuthContext: vi.fn() }))
 
 afterEach(() => {
   vi.mocked(createPurchase).mockReset()
+  vi.mocked(fetchMyPurchases).mockReset()
   vi.mocked(useAuthContext).mockReset()
 })
 
 describe('usePurchases', () => {
   it('buys a property with the current token', async () => {
     vi.mocked(useAuthContext).mockReturnValue({ token: 'tok', role: 'ROLE_BUYER', setToken: vi.fn() })
+    vi.mocked(fetchMyPurchases).mockResolvedValue([])
     vi.mocked(createPurchase).mockResolvedValue({} as never)
 
     const { result } = renderHook(() => usePurchases())
@@ -25,6 +27,7 @@ describe('usePurchases', () => {
 
   it('does nothing when there is no token', async () => {
     vi.mocked(useAuthContext).mockReturnValue({ token: null, role: null, setToken: vi.fn() })
+    vi.mocked(fetchMyPurchases).mockResolvedValue([])
 
     const { result } = renderHook(() => usePurchases())
     await result.current.buyProperty(7)

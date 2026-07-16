@@ -49,7 +49,7 @@ describe('PropertiesPage', () => {
   it('shows an error message', () => {
     setupMocks({ error: 'Server error - please try again later.', list: [] })
     render(<PropertiesPage />)
-    expect(screen.getByText('Error: Server error - please try again later.')).toBeInTheDocument()
+    expect(screen.getByText('Server error - please try again later.')).toBeInTheDocument()
   })
 
   it('shows an empty state when there are no properties', () => {

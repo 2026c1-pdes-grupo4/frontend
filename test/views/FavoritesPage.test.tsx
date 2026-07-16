@@ -33,7 +33,7 @@ describe('FavoritesPage', () => {
   it('shows an error message', () => {
     setupMocks({ error: 'Access denied.', list: [] })
     render(<FavoritesPage />)
-    expect(screen.getByText('Error: Access denied.')).toBeInTheDocument()
+    expect(screen.getByText('Access denied.')).toBeInTheDocument()
   })
 
   it('shows an empty state when there are no favorites', () => {

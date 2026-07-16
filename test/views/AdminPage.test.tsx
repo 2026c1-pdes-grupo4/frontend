@@ -250,6 +250,6 @@ describe('AdminPage', () => {
     )
     render(<AdminPage />)
 
-    expect(screen.getByText('Error: Access denied.')).toBeInTheDocument()
+    expect(screen.getByText('Access denied.')).toBeInTheDocument()
   })
 })

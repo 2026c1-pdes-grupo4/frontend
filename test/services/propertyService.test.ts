@@ -41,7 +41,7 @@ describe('fetchProperties (API mode)', () => {
     expect(url).toContain('/properties/search?')
     expect(url).toContain('city=Quilmes')
     expect(url).toContain('priceMin=1000')
-    expect(url).toContain('rooms=2')
+    expect(url).toContain('roomsMin=2')
     expect(url).toContain('page=0')
     expect(url).toContain('size=10')
   })
