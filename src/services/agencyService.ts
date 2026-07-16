@@ -47,6 +47,10 @@ export async function createProperty(token: string, data: PropertyInput): Promis
     areaSq: data.areaSq,
     description: data.description,
     ...(data.rooms !== undefined && { rooms: data.rooms }),
+    ...(data.circumscription && { circumscription: data.circumscription }),
+    ...(data.section && { section: data.section }),
+    ...(data.block && { block: data.block }),
+    ...(data.parcel && { parcel: data.parcel }),
   }
   const propRes = await apiFetch(`${API}/properties`, {
     method: 'POST',
