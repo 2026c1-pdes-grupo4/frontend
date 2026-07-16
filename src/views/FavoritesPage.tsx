@@ -60,35 +60,13 @@ export default function FavoritesPage() {
               <button className="fav-action-btn" data-testid="btn-edit-favorite" onClick={() => openEdit(f.id, f.score, f.comment)}>Edit</button>
               <button className="fav-action-btn fav-action-btn--delete" data-testid="btn-delete-favorite" onClick={() => removeFavorite(f.id)}>Delete</button>
             </div>
-
-            {editingId === f.id && (
-              <form className="fav-edit-form" data-testid="favorite-edit-form" onSubmit={(e) => handleEditSubmit(e, f.id)}>
-                <label>
-                  Score
-                  <StarRating value={editScore} onChange={setEditScore} />
-                </label>
-                <label>
-                  Comment
-                  <textarea
-                    value={editComment}
-                    onChange={(e) => setEditComment(e.target.value)}
-                    rows={2}
-                    data-testid="input-edit-favorite-comment"
-                  />
-                </label>
-                <div className="fav-form-actions">
-                  <button type="submit" data-testid="btn-submit-edit-favorite">Save</button>
-                  <button type="button" onClick={() => setEditingId(null)} data-testid="btn-cancel-edit-favorite">Cancel</button>
-                </div>
-              </form>
-            )}
           </div>
         ))}
       </div>
       <Pager p={pagination} pageSize={pageSize} onPageSize={setPageSize} />
 
       {editingId !== null && (
-        <div className="fav-edit-overlay">
+        <div className="fav-edit-overlay" data-testid="favorite-edit-form">
           <div className="fav-edit-modal">
             <h3 className="fav-edit-modal__title">Edit Favorite</h3>
             <form onSubmit={(e) => handleEditSubmit(e, editingId)}>
@@ -100,7 +78,7 @@ export default function FavoritesPage() {
                 <label className="fav-edit-modal__label" htmlFor="fav-edit-comment">Comment</label>
                 <textarea
                   id="fav-edit-comment"
-                  data-testid="fav-edit-modal-comment"
+                  data-testid="input-edit-favorite-comment"
                   className="fav-edit-modal__textarea"
                   value={editComment}
                   onChange={(e) => setEditComment(e.target.value)}
@@ -110,7 +88,7 @@ export default function FavoritesPage() {
               <div className="fav-edit-modal__actions">
                 <button
                   type="button"
-                  data-testid="fav-edit-modal-cancel"
+                  data-testid="btn-cancel-edit-favorite"
                   className="fav-edit-modal__btn fav-edit-modal__btn--cancel"
                   onClick={() => setEditingId(null)}
                 >
@@ -118,7 +96,7 @@ export default function FavoritesPage() {
                 </button>
                 <button
                   type="submit"
-                  data-testid="fav-edit-modal-save"
+                  data-testid="btn-submit-edit-favorite"
                   className="fav-edit-modal__btn fav-edit-modal__btn--save"
                 >
                   Save
