@@ -9,6 +9,7 @@ interface Props {
 }
 
 const PROPERTY_TYPES = ['APARTMENT', 'HOUSE']
+const TYPES_WITH_ROOMS = ['APARTMENT', 'HOUSE']
 
 export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<PropertyInput>({
@@ -24,14 +25,21 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
     section: initial?.section ?? '',
     block: initial?.block ?? '',
     parcel: initial?.parcel ?? '',
+    imageUrl: initial?.imageUrl ?? '',
   })
+
+  const hasRooms = TYPES_WITH_ROOMS.includes(form.propertyType)
 
   const set = (key: keyof PropertyInput, value: string | number) =>
     setForm(prev => ({ ...prev, [key]: value }))
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(form)
+    const submitData: PropertyInput = {
+      ...(hasRooms ? form : { ...form, rooms: undefined }),
+      imageUrl: form.imageUrl?.trim() || undefined,
+    }
+    onSubmit(submitData)
   }
 
   return (
@@ -96,17 +104,19 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
             data-testid="input-areaSq"
           />
         </div>
-        <div className="form-group form-group--narrow">
-          <label>Rooms</label>
-          <input
-            type="number"
-            value={form.rooms}
-            onChange={e => set('rooms', Number(e.target.value))}
-            required
-            min={0}
-            data-testid="input-rooms"
-          />
-        </div>
+        {hasRooms && (
+          <div className="form-group form-group--narrow">
+            <label>Rooms</label>
+            <input
+              type="number"
+              value={form.rooms}
+              onChange={e => set('rooms', Number(e.target.value))}
+              required
+              min={0}
+              data-testid="input-rooms"
+            />
+          </div>
+        )}
       </div>
       <div className="form-group">
         <label>Description</label>
@@ -149,6 +159,16 @@ export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
             data-testid="input-parcel"
           />
         </div>
+      </div>
+      <div className="form-group">
+        <label>Image URL (optional)</label>
+        <input
+          type="url"
+          value={form.imageUrl ?? ''}
+          onChange={e => set('imageUrl', e.target.value)}
+          placeholder="https://..."
+          data-testid="input-imageUrl"
+        />
       </div>
       <div className="form-actions">
         <button type="submit" data-testid="btn-submit-property">Save</button>

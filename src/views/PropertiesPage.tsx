@@ -4,7 +4,7 @@ import { useFavorites } from '../controllers/useFavorites'
 import { usePurchases } from '../controllers/usePurchases'
 import PropertyCard from '../components/PropertyCard'
 import { Pager } from '../components/Pager'
-import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import { DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import type { PropertyFilter, PropertyType } from '../models/types'
 import './PropertiesPage.css'
 
@@ -12,14 +12,35 @@ const PROPERTY_TYPES: PropertyType[] = ['house', 'apartment']
 
 export default function PropertiesPage() {
   const [filter, setFilter] = useState<PropertyFilter>({})
+  const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
-  const { list, loading, error } = useProperties(filter)
+  const { list, loading, error, totalPages } = useProperties(filter, page, pageSize)
   const { addFavorite, isFavorite } = useFavorites()
   const { buyProperty } = usePurchases()
-  const pagination = usePagination(list, pageSize)
 
-  const set = (field: keyof PropertyFilter, value: string | number) =>
+  const set = (field: keyof PropertyFilter, value: string | number) => {
     setFilter((prev) => ({ ...prev, [field]: value === '' ? undefined : value }))
+    setPage(1)
+  }
+
+  const handleClear = () => {
+    setFilter({})
+    setPage(1)
+  }
+
+  const pagination = {
+    pagedData: list,
+    page,
+    totalPages,
+    next: () => setPage(p => Math.min(p + 1, totalPages)),
+    prev: () => setPage(p => Math.max(p - 1, 1)),
+    reset: () => setPage(1),
+  }
+
+  const handlePageSize = (n: number) => {
+    setPageSize(n)
+    setPage(1)
+  }
 
   return (
     <div className="properties-list-wrapper" data-testid="properties-page">
@@ -72,7 +93,7 @@ export default function PropertiesPage() {
           value={filter.minRooms ?? ''}
           onChange={(e) => set('minRooms', e.target.value === '' ? '' : Number(e.target.value))}
         />
-        <button className="filter-clear" onClick={() => setFilter({})}>Clear</button>
+        <button className="filter-clear" onClick={handleClear}>Clear</button>
       </div>
 
       {loading && <p className="properties-status">Loading...</p>}
@@ -92,7 +113,7 @@ export default function PropertiesPage() {
           />
         ))}
       </div>
-      <Pager p={pagination} pageSize={pageSize} onPageSize={setPageSize} />
+      <Pager p={pagination} pageSize={pageSize} onPageSize={handlePageSize} />
     </div>
   )
 }

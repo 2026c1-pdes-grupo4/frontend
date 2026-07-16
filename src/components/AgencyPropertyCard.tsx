@@ -25,7 +25,7 @@ export default function AgencyPropertyCard({ property: p, onEdit, onDelete }: Pr
 
         <div className="property-card__row">
           <span className="property-card__city">{p.city}</span>
-          <span className="property-card__price">USD {p.listedPrice.toLocaleString()}</span>
+          <span className="property-card__price">USD {p.listedPrice.toLocaleString('en-US')}</span>
         </div>
 
         <div className="property-card__row">

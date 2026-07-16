@@ -15,15 +15,16 @@ afterEach(() => {
 describe('useProperties', () => {
   it('fetches properties with the given filter and token, then stops loading', async () => {
     vi.mocked(useAuthContext).mockReturnValue({ token: 'tok', role: 'ROLE_BUYER', setToken: vi.fn() })
-    vi.mocked(fetchProperties).mockResolvedValue([{ id: 1 } as never])
+    vi.mocked(fetchProperties).mockResolvedValue({ content: [{ id: 1 } as never], page: 1, size: 10, totalElements: 1, totalPages: 1 })
 
     const { result } = renderHook(() => useProperties({ city: 'Quilmes' }))
 
     expect(result.current.loading).toBe(true)
     await waitFor(() => expect(result.current.loading).toBe(false))
 
-    expect(fetchProperties).toHaveBeenCalledWith({ city: 'Quilmes' }, 'tok')
+    expect(fetchProperties).toHaveBeenCalledWith({ city: 'Quilmes' }, 'tok', 1, 10)
     expect(result.current.list).toEqual([{ id: 1 }])
+    expect(result.current.totalPages).toBe(1)
     expect(result.current.error).toBeNull()
   })
 

@@ -9,7 +9,8 @@ Given('que ya compró una propiedad disponible', async function (this: CustomWor
   const searchRes = await fetch(`${apiUrl}/properties/search`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  const properties = await searchRes.json() as { address: string; available: boolean; id: number }[]
+  const paged = await searchRes.json() as { content: { address: string; available: boolean; id: number }[] }
+  const properties = paged.content
   const target = properties.find((p) => p.available)
   if (!target) throw new Error('No available property found to purchase')
 

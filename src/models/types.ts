@@ -21,7 +21,7 @@ export interface AgencyProperty {
   province: string
   propertyType: string
   areaSq: number
-  rooms: number
+  rooms?: number
   description: string
   circumscription?: string
   section?: string
@@ -92,6 +92,14 @@ export interface PropertyFilter {
   minRooms?: number
 }
 
+export interface PagedResult<T> {
+  content: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
 export interface PropertyInput {
   propertyType: string
   price: number
@@ -99,12 +107,13 @@ export interface PropertyInput {
   city: string
   province: string
   areaSq: number
-  rooms: number
+  rooms?: number
   description: string
   circumscription: string
   section: string
   block: string
   parcel: string
+  imageUrl?: string
 }
 
 export type AdminFavoriteRaw = {

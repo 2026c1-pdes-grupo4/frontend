@@ -1,17 +1,26 @@
 import { properties as fixtureData } from '../models/fixtures'
-import type { AgencyProperty, PropertyFilter } from '../models/types'
+import type { AgencyProperty, PagedResult, PropertyFilter } from '../models/types'
 import { apiFetch } from './http'
 
-export async function fetchProperties(filter: PropertyFilter = {}, token?: string | null): Promise<AgencyProperty[]> {
+export async function fetchProperties(filter: PropertyFilter = {}, token?: string | null, page = 1, pageSize = 10): Promise<PagedResult<AgencyProperty>> {
   if (import.meta.env.VITE_USE_FIXTURES === 'true') {
-    return applyFilter(fixtureData, filter)
+    const filtered = applyFilter(fixtureData, filter)
+    const start = (page - 1) * pageSize
+    return {
+      content: filtered.slice(start, start + pageSize),
+      page,
+      size: pageSize,
+      totalElements: filtered.length,
+      totalPages: Math.max(1, Math.ceil(filtered.length / pageSize)),
+    }
   }
 
   const params = buildParams(filter)
-  const query = params.toString() ? `?${params}` : ''
+  params.set('page', String(page - 1))
+  params.set('size', String(pageSize))
   const headers: Record<string, string> = {}
   if (token) headers['Authorization'] = `Bearer ${token}`
-  const res = await apiFetch(`${import.meta.env.VITE_API_URL}/properties/search${query}`, { headers })
+  const res = await apiFetch(`${import.meta.env.VITE_API_URL}/properties/search?${params}`, { headers })
   return res.json()
 }
 
@@ -33,7 +42,7 @@ function applyFilter(list: AgencyProperty[], filter: PropertyFilter): AgencyProp
     if (filter.propertyType && p.propertyType !== filter.propertyType) return false
     if (filter.minPrice != null && p.listedPrice < filter.minPrice) return false
     if (filter.maxPrice != null && p.listedPrice > filter.maxPrice) return false
-    if (filter.minRooms != null && p.rooms < filter.minRooms) return false
+    if (filter.minRooms != null && (p.rooms ?? 0) < filter.minRooms) return false
     return true
   })
 }
