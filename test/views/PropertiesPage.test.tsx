@@ -108,58 +108,72 @@ describe('PropertiesPage', () => {
     fireEvent.change(screen.getByDisplayValue('10 per page'), { target: { value: '20' } })
 
     expect(useProperties).toHaveBeenLastCalledWith({}, 1, 20)
-  it('filters by province', () => {
+  })
+  
+  it('filters by province', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getByPlaceholderText('Province'), { target: { value: 'Buenos Aires' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ province: 'Buenos Aires' }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ province: 'Buenos Aires' }, 1, 10)
+    })
   })
 
-  it('filters by property type', () => {
+  it('filters by property type', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getAllByRole('combobox')[0], { target: { value: 'house' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ propertyType: 'house' }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ propertyType: 'house' }, 1, 10)
+    })
   })
 
-  it('filters by min price', () => {
+  it('filters by min price', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getByPlaceholderText('Min price'), { target: { value: '100000' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ minPrice: 100000 }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ minPrice: 100000 }, 1, 10)
+    })
   })
 
-  it('filters by max price', () => {
+  it('filters by max price', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getByPlaceholderText('Max price'), { target: { value: '500000' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ maxPrice: 500000 }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ maxPrice: 500000 }, 1, 10)
+    })
   })
 
-  it('filters by min rooms', () => {
+  it('filters by min rooms', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getByPlaceholderText('Min rooms'), { target: { value: '2' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ minRooms: 2 }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ minRooms: 2 }, 1, 10)
+    })
   })
 
-  it('filters by max rooms', () => {
+  it('filters by max rooms', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getByPlaceholderText('Max rooms'), { target: { value: '4' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ maxRooms: 4 }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ maxRooms: 4 }, 1, 10)
+    })
   })
 
   it('clears a numeric filter when input is emptied', () => {
