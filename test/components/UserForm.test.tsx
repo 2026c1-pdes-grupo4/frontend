@@ -34,6 +34,28 @@ describe('UserForm', () => {
     })
   })
 
+  it('pre-fills fields from the initial value, keeping the existing profileType', () => {
+    render(<UserForm initial={{ username: 'existing', email: 'existing@cth.com', profileType: 'ADMIN' }} onSubmit={vi.fn()} onCancel={vi.fn()} />)
+
+    expect(screen.getByTestId('input-username')).toHaveValue('existing')
+    expect(screen.getByTestId('input-email')).toHaveValue('existing@cth.com')
+  })
+
+  it('submits the existing profileType unchanged when editing', () => {
+    const onSubmit = vi.fn()
+    render(<UserForm initial={{ username: 'existing', email: 'existing@cth.com', profileType: 'ADMIN' }} onSubmit={onSubmit} onCancel={vi.fn()} />)
+
+    fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'secret123' } })
+    fireEvent.click(screen.getByTestId('btn-submit-user'))
+
+    expect(onSubmit).toHaveBeenCalledWith({
+      username: 'existing',
+      email: 'existing@cth.com',
+      password: 'secret123',
+      profileType: 'ADMIN',
+    })
+  })
+
   it('calls onCancel when Cancel is clicked', () => {
     const onCancel = vi.fn()
     render(<UserForm onSubmit={vi.fn()} onCancel={onCancel} />)

@@ -31,6 +31,33 @@ export async function createUser(token: string, data: UserInput): Promise<User> 
   return res.json()
 }
 
+export async function updateUser(token: string, id: number, data: UserInput): Promise<User> {
+  if (USE_FIXTURES) {
+    const updated: User = { id, username: data.username, email: data.email, profileType: data.profileType }
+    const idx = users.findIndex(u => u.id === id)
+    if (idx !== -1) users[idx] = updated
+    return updated
+  }
+  const res = await apiFetch(`${BASE}/users/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+export async function deleteUser(token: string, id: number): Promise<void> {
+  if (USE_FIXTURES) {
+    const idx = users.findIndex(u => u.id === id)
+    if (idx !== -1) users.splice(idx, 1)
+    return
+  }
+  await apiFetch(`${BASE}/users/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+}
+
 export async function fetchAllAgencies(token: string): Promise<Agency[]> {
   if (USE_FIXTURES) return agencies
   return authGet('/admin/agencies', token)
@@ -48,6 +75,33 @@ export async function createAgency(token: string, data: AgencyInput): Promise<Ag
     body: JSON.stringify(data),
   })
   return res.json()
+}
+
+export async function updateAgency(token: string, id: number, data: AgencyInput): Promise<Agency> {
+  if (USE_FIXTURES) {
+    const updated: Agency = { id, username: data.username, email: data.email }
+    const idx = agencies.findIndex(a => a.id === id)
+    if (idx !== -1) agencies[idx] = updated
+    return updated
+  }
+  const res = await apiFetch(`${BASE}/agencies/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+export async function deleteAgency(token: string, id: number): Promise<void> {
+  if (USE_FIXTURES) {
+    const idx = agencies.findIndex(a => a.id === id)
+    if (idx !== -1) agencies.splice(idx, 1)
+    return
+  }
+  await apiFetch(`${BASE}/agencies/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
 }
 
 export async function fetchAllFavorites(token: string): Promise<Favorite[]> {

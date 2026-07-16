@@ -138,3 +138,32 @@
 .admin-fab:hover {
   background: #256b2a;
 }
+
+.admin-row-actions {
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.admin-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  color: #444;
+  cursor: pointer;
+}
+
+.admin-icon-btn:hover {
+  background: #f0f0f0;
+}
+
+.admin-icon-btn--danger:hover {
+  background: #fdecea;
+  color: #c62828;
+}

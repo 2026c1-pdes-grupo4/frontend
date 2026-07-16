@@ -13,6 +13,10 @@ import {
   fetchTopAgenciesSales,
   createUser,
   createAgency,
+  updateUser,
+  deleteUser,
+  updateAgency,
+  deleteAgency,
 } from '../../src/controllers/useAdmin'
 
 vi.mock('../../src/context/AuthContext', () => ({ useAuthContext: vi.fn() }))
@@ -27,6 +31,10 @@ vi.mock('../../src/controllers/useAdmin', () => ({
   fetchTopAgenciesSales: vi.fn(),
   createUser: vi.fn(),
   createAgency: vi.fn(),
+  updateUser: vi.fn(),
+  deleteUser: vi.fn(),
+  updateAgency: vi.fn(),
+  deleteAgency: vi.fn(),
 }))
 
 const empty = { data: [], loading: false, error: null }
@@ -37,6 +45,10 @@ afterEach(() => {
   vi.mocked(useAdminData).mockReset()
   vi.mocked(createUser).mockReset()
   vi.mocked(createAgency).mockReset()
+  vi.mocked(updateUser).mockReset()
+  vi.mocked(deleteUser).mockReset()
+  vi.mocked(updateAgency).mockReset()
+  vi.mocked(deleteAgency).mockReset()
   dataByFetcher.clear()
 })
 
@@ -158,6 +170,77 @@ describe('AdminPage', () => {
     })
     expect(await screen.findByText('nueva_inmo')).toBeInTheDocument()
     expect(screen.queryByTestId('agency-form')).not.toBeInTheDocument()
+  })
+
+  it('edits a user and reflects the change in the table', async () => {
+    setupMocks()
+    vi.mocked(updateUser).mockResolvedValue({ id: 1, username: 'buyer1', email: 'updated@test.com', profileType: 'BUYER' })
+    render(<AdminPage />)
+
+    fireEvent.click(screen.getByTestId('btn-edit-user'))
+    expect(screen.getByTestId('user-form')).toBeInTheDocument()
+    expect(screen.getByTestId('input-username')).toHaveValue('buyer1')
+
+    fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'updated@test.com' } })
+    fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'secret123' } })
+    fireEvent.click(screen.getByTestId('btn-submit-user'))
+
+    expect(updateUser).toHaveBeenCalledWith('tok', 1, {
+      username: 'buyer1',
+      email: 'updated@test.com',
+      password: 'secret123',
+      profileType: 'BUYER',
+    })
+    expect(await screen.findByText('updated@test.com')).toBeInTheDocument()
+  })
+
+  it('deletes a user and removes it from the table', async () => {
+    setupMocks()
+    vi.mocked(deleteUser).mockResolvedValue(undefined)
+    render(<AdminPage />)
+
+    expect(screen.getByText('buyer1')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('btn-delete-user'))
+
+    expect(deleteUser).toHaveBeenCalledWith('tok', 1)
+    await new Promise(r => setTimeout(r, 0))
+    expect(screen.queryByText('buyer1')).not.toBeInTheDocument()
+  })
+
+  it('edits an agency and reflects the change in the table', async () => {
+    setupMocks()
+    vi.mocked(updateAgency).mockResolvedValue({ id: 1, username: 'ritondo_propiedades', email: 'updated@test.com' })
+    render(<AdminPage />)
+
+    fireEvent.click(screen.getByTestId('tab-agencies'))
+    fireEvent.click(screen.getByTestId('btn-edit-agency'))
+    expect(screen.getByTestId('agency-form')).toBeInTheDocument()
+    expect(screen.getByTestId('input-username')).toHaveValue('ritondo_propiedades')
+
+    fireEvent.change(screen.getByTestId('input-email'), { target: { value: 'updated@test.com' } })
+    fireEvent.change(screen.getByTestId('input-password'), { target: { value: 'secret123' } })
+    fireEvent.click(screen.getByTestId('btn-submit-agency'))
+
+    expect(updateAgency).toHaveBeenCalledWith('tok', 1, {
+      username: 'ritondo_propiedades',
+      email: 'updated@test.com',
+      password: 'secret123',
+    })
+    expect(await screen.findByText('updated@test.com')).toBeInTheDocument()
+  })
+
+  it('deletes an agency and removes it from the table', async () => {
+    setupMocks()
+    vi.mocked(deleteAgency).mockResolvedValue(undefined)
+    render(<AdminPage />)
+
+    fireEvent.click(screen.getByTestId('tab-agencies'))
+    expect(screen.getByText('ritondo_propiedades')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('btn-delete-agency'))
+
+    expect(deleteAgency).toHaveBeenCalledWith('tok', 1)
+    await new Promise(r => setTimeout(r, 0))
+    expect(screen.queryByText('ritondo_propiedades')).not.toBeInTheDocument()
   })
 
   it('shows an error state', () => {
