@@ -12,7 +12,7 @@ export default function FavoritesPage() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const pagination = usePagination(list, pageSize)
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [editScore, setEditScore] = useState(1)
+  const [editStars, setEditStars] = useState(1)
   const [editComment, setEditComment] = useState('')
 
   if (loading) return <p>Loading...</p>
@@ -21,13 +21,13 @@ export default function FavoritesPage() {
 
   const openEdit = (favoriteId: number, score: number, comment: string) => {
     setEditingId(favoriteId)
-    setEditScore(score)
+    setEditStars(Math.round(score / 2))
     setEditComment(comment)
   }
 
   const handleEditSubmit = async (e: React.FormEvent, favoriteId: number) => {
     e.preventDefault()
-    await editFavorite(favoriteId, editScore, editComment)
+    await editFavorite(favoriteId, editStars * 2, editComment)
     setEditingId(null)
   }
 
@@ -41,7 +41,7 @@ export default function FavoritesPage() {
               <div className="property-card__row">
                 <span className="property-card__address">{f.propertyAddress}</span>
                 <div className="property-card__meta">
-                  <span>{'★'.repeat(Math.min(f.score, 5))}{'☆'.repeat(Math.max(0, 5 - f.score))}</span>
+                  <span>{'★'.repeat(Math.round(f.score / 2))}{'☆'.repeat(5 - Math.round(f.score / 2))}</span>
                 </div>
               </div>
 
@@ -72,7 +72,7 @@ export default function FavoritesPage() {
             <form onSubmit={(e) => handleEditSubmit(e, editingId)}>
               <div className="fav-edit-modal__field">
                 <label className="fav-edit-modal__label" htmlFor="fav-edit-score">Score</label>
-                <StarRating value={editScore} onChange={setEditScore} />
+                <StarRating value={editStars} onChange={setEditStars} />
               </div>
               <div className="fav-edit-modal__field">
                 <label className="fav-edit-modal__label" htmlFor="fav-edit-comment">Comment</label>
