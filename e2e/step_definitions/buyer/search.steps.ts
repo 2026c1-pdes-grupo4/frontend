@@ -2,21 +2,30 @@ import { When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import { CustomWorld } from '../../support/world.ts'
 
+// wait for CI
+async function waitForSearchResponse(world: CustomWorld, action: () => Promise<void>) {
+  await Promise.all([
+    world.page.waitForResponse((res) => res.url().includes('/properties/search') && res.request().method() === 'GET'),
+    action(),
+  ])
+}
+
 When('filtra por ciudad {string}', async function (this: CustomWorld, city: string) {
-  await this.page.getByPlaceholder('City').fill(city)
+  await waitForSearchResponse(this, () => this.page.getByPlaceholder('City').fill(city))
 })
 
 When('filtra por precio mínimo {string} y precio máximo {string}', async function (this: CustomWorld, min: string, max: string) {
   await this.page.getByPlaceholder('Min price').fill(min)
-  await this.page.getByPlaceholder('Max price').fill(max)
+  await waitForSearchResponse(this, () => this.page.getByPlaceholder('Max price').fill(max))
 })
 
 When('cuenta las propiedades del listado de búsqueda', async function (this: CustomWorld) {
+  await this.page.waitForSelector('.property-card, text=No properties found.')
   this.state.initialPropertiesCount = await this.page.locator('.property-card').count()
 })
 
 When('hace clic en {string}', async function (this: CustomWorld, buttonText: string) {
-  await this.page.getByRole('button', { name: buttonText, exact: true }).click()
+  await waitForSearchResponse(this, () => this.page.getByRole('button', { name: buttonText, exact: true }).click())
 })
 
 Then('hay al menos una propiedad en la lista', async function (this: CustomWorld) {
