@@ -143,3 +143,16 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string
 }
+
+export interface UserInput {
+  username: string
+  email: string
+  password: string
+  profileType: string
+}
+
+export interface AgencyInput {
+  username: string
+  email: string
+  password: string
+}

@@ -1,9 +1,13 @@
 import { users, agencies, favorites, purchases, topBuyers, topRankedProperties, topAgenciesSales } from '../models/fixtures'
-import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
+import type { User, Agency, Favorite, Purchase, AdminFavoriteRaw, AdminPurchaseRaw, TopBuyer, TopRankedProperty, TopAgencySales, UserInput, AgencyInput } from '../models/types'
 import { apiFetch } from './http'
 
 const BASE = import.meta.env.VITE_API_URL
 const USE_FIXTURES = import.meta.env.VITE_USE_FIXTURES === 'true'
+
+function authHeaders(token: string): Record<string, string> {
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+}
 
 async function authGet<T>(path: string, token: string): Promise<T> {
   const res = await apiFetch(`${BASE}${path}`, {
@@ -67,4 +71,72 @@ export async function fetchAllPurchases(token: string): Promise<Purchase[]> {
     buyerUsername: p.user.username,
     buyerEmail: p.user.email,
   }))
+}
+
+/* ── CRUD Usuarios ── */
+
+export async function createUser(token: string, data: UserInput): Promise<User> {
+  if (USE_FIXTURES) {
+    return { id: Date.now(), username: data.username, email: data.email, profileType: data.profileType }
+  }
+  const res = await apiFetch(`${BASE}/users`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+export async function updateUser(token: string, id: number, data: UserInput): Promise<User> {
+  if (USE_FIXTURES) {
+    return { id, username: data.username, email: data.email, profileType: data.profileType }
+  }
+  const res = await apiFetch(`${BASE}/users/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+export async function deleteUser(token: string, id: number): Promise<void> {
+  if (USE_FIXTURES) return
+  await apiFetch(`${BASE}/users/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+}
+
+/* ── CRUD Agencias ── */
+
+export async function createAgency(token: string, data: AgencyInput): Promise<Agency> {
+  if (USE_FIXTURES) {
+    return { id: Date.now(), username: data.username, email: data.email }
+  }
+  const res = await apiFetch(`${BASE}/agencies`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+export async function updateAgency(token: string, id: number, data: AgencyInput): Promise<Agency> {
+  if (USE_FIXTURES) {
+    return { id, username: data.username, email: data.email }
+  }
+  const res = await apiFetch(`${BASE}/agencies/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+export async function deleteAgency(token: string, id: number): Promise<void> {
+  if (USE_FIXTURES) return
+  await apiFetch(`${BASE}/agencies/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
 }

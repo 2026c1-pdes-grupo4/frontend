@@ -10,6 +10,12 @@ interface Props {
   onBuy?: (agencyPropertyId: number) => Promise<void>
 }
 
+function badgeClass(type: string) {
+  if (type === 'house' || type === 'HOUSE') return 'property-card__badge--house'
+  if (type === 'apartment' || type === 'APARTMENT') return 'property-card__badge--apartment'
+  return 'property-card__badge--other'
+}
+
 export default function PropertyCard({ property: p, onFavorite, isFavorite, onBuy }: Props) {
   const [open, setOpen] = useState(false)
   const [score, setScore] = useState(3)
@@ -24,8 +30,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
   }
 
   const handleFavClick = () => {
-    if (!onFavorite) return
-    if (isFavorite) return
+    if (!onFavorite || isFavorite) return
     setOpen(v => !v)
   }
 
@@ -40,29 +45,27 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
   }
 
   return (
-    <div className="property-card">
+    <div className="property-card animate-in">
       <div className="property-card__image">
-        {p.imageUrl
-          ? <img src={p.imageUrl} alt={p.address} />
-          : <span>no image</span>}
+        {p.imageUrl ? (
+          <img src={p.imageUrl} alt={p.address} />
+        ) : (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+        )}
       </div>
-      <div className="property-card__body">
 
+      <div className="property-card__body">
         <div className="property-card__row">
           <span className="property-card__address">{p.address}</span>
           <div className="property-card__meta">
             <span>{p.areaSq} m²</span>
             <span>{p.rooms} rooms</span>
-            <span className="property-card__type">{p.propertyType}</span>
-            {onFavorite && (
-              <button
-                className="property-card__fav-btn"
-                onClick={handleFavClick}
-                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              >
-                {isFavorite ? '★' : '☆'}
-              </button>
-            )}
+            <span className={`property-card__badge ${badgeClass(p.propertyType)}`}>
+              {p.propertyType}
+            </span>
           </div>
         </div>
 
@@ -71,42 +74,37 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
           <span className="property-card__price">${p.price.toLocaleString()}</span>
         </div>
 
-        <div className="property-card__row">
+        {p.description && (
           <p className="property-card__description">{p.description}</p>
-          <span className={`property-card__status${p.available ? '' : ' property-card__status--sold'}`}>
-            {p.available ? 'Available' : 'Sold'}
-          </span>
-        </div>
-
-        {onBuy && p.available && !purchased && (
-          <div className="property-card__row">
-            <button
-              className="property-card__buy-btn"
-              data-testid="btn-buy-property"
-              onClick={() => setConfirmBuy(true)}
-            >
-              Buy
-            </button>
-          </div>
         )}
-
-        {purchased && (
-          <p className="property-card__purchase-success" data-testid="purchase-success-message">
-            Purchase confirmed!
-          </p>
-        )}
-
       </div>
 
-      {confirmBuy && (
-        <div className="buy-confirm-dialog" data-testid="buy-confirm-dialog">
-          <p>Confirm purchase of {p.address} for ${p.price.toLocaleString()}?</p>
-          <div className="fav-form-actions">
-            <button data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>Confirm</button>
-            <button onClick={() => setConfirmBuy(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
+      <div className="property-card__actions">
+        {onFavorite && (
+          <button
+            className={`property-card__fav-btn${isFavorite ? ' property-card__fav-btn--active' : ''}`}
+            onClick={handleFavClick}
+            aria-label={isFavorite ? 'Already in favorites' : 'Add to favorites'}
+            aria-pressed={isFavorite}
+          >
+            {isFavorite ? '♥' : '♡'} {isFavorite ? 'Saved' : 'Save'}
+          </button>
+        )}
+        {onBuy && p.available && !purchased && (
+          <button
+            className="property-card__buy-btn"
+            data-testid="btn-buy-property"
+            onClick={() => setConfirmBuy(true)}
+          >
+            Buy
+          </button>
+        )}
+        {purchased && (
+          <span className="property-card__buy-btn property-card__buy-btn--purchased" data-testid="purchase-success-message">
+            ✓ Purchased
+          </span>
+        )}
+      </div>
 
       {open && (
         <form className="fav-form" onSubmit={handleSubmit}>
@@ -118,11 +116,26 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
             Comment
             <textarea value={comment} onChange={e => setComment(e.target.value)} rows={2} />
           </label>
-          <div className="fav-form-actions">
-            <button type="submit">Save</button>
-            <button type="button" onClick={() => setOpen(false)}>Cancel</button>
+          <div className="fav-form__actions">
+            <button type="submit" className="btn-primary">Save</button>
+            <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>Cancel</button>
           </div>
         </form>
+      )}
+
+      {confirmBuy && (
+        <div className="buy-dialog-backdrop" data-testid="buy-confirm-dialog" role="dialog" aria-modal="true">
+          <div className="buy-dialog">
+            <h3>Confirm Purchase</h3>
+            <p>{p.address} · ${p.price.toLocaleString()}</p>
+            <div className="buy-dialog__actions">
+              <button className="btn-primary" data-testid="btn-confirm-purchase" onClick={handleConfirmBuy}>
+                Confirm
+              </button>
+              <button className="btn-ghost" onClick={() => setConfirmBuy(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
