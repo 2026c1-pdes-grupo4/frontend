@@ -51,6 +51,7 @@ export default function PropertiesPage() {
 
   return (
     <div className="properties-list-wrapper" data-testid="properties-page">
+      <h2 className="properties-title">Available Properties</h2>
       <div className="properties-filter">
         <input
           className="filter-input"
@@ -99,6 +100,14 @@ export default function PropertiesPage() {
           min={1}
           value={filter.minRooms ?? ''}
           onChange={(e) => set('minRooms', e.target.value === '' ? '' : Number(e.target.value))}
+        />
+        <input
+          className="filter-input filter-input--short"
+          type="number"
+          placeholder="Max rooms"
+          min={1}
+          value={filter.maxRooms ?? ''}
+          onChange={(e) => set('maxRooms', e.target.value === '' ? '' : Number(e.target.value))}
         />
         <button className="filter-clear" onClick={handleClear}>Clear</button>
       </div>

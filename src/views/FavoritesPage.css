@@ -1,8 +1,8 @@
 .fav-page {
-  max-width: 700px;
+  max-width: 900px;
   box-sizing: border-box;
   margin: 40px auto;
-  padding: 0 16px;
+  padding: 0 24px;
 }
 
 .fav-page h2 {
@@ -15,11 +15,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.fav-list .property-card:has(.fav-edit-form) {
-  height: auto;
-  overflow: visible;
 }
 
 .fav-comment {
@@ -110,4 +105,97 @@
 .fav-form-actions button[type='button'] {
   background: #eee;
   color: #444;
+}
+
+/* ── Edit favorite modal ───────────────────────────────────── */
+.fav-edit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.fav-edit-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fav-edit-modal__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #003366;
+}
+
+.fav-edit-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fav-edit-modal__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}
+
+.fav-edit-modal__textarea {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.fav-edit-modal__textarea:focus {
+  outline: none;
+  border-color: #2a7ae2;
+  box-shadow: 0 0 0 3px rgba(42, 122, 226, 0.15);
+}
+
+.fav-edit-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.fav-edit-modal__btn {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.fav-edit-modal__btn--cancel {
+  background: #eee;
+  color: #444;
+}
+
+.fav-edit-modal__btn--cancel:hover {
+  background: #ddd;
+}
+
+.fav-edit-modal__btn--save {
+  background: #003366;
+  color: #fff;
+}
+
+.fav-edit-modal__btn--save:hover {
+  background: #00254d;
 }

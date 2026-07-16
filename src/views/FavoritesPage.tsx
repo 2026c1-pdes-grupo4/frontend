@@ -85,6 +85,45 @@ export default function FavoritesPage() {
         ))}
       </div>
       <Pager p={pagination} pageSize={pageSize} onPageSize={setPageSize} />
+
+      {editingId !== null && (
+        <div className="fav-edit-overlay">
+          <div className="fav-edit-modal">
+            <h3 className="fav-edit-modal__title">Edit Favorite</h3>
+            <form onSubmit={(e) => handleEditSubmit(e, editingId)}>
+              <div className="fav-edit-modal__field">
+                <label className="fav-edit-modal__label" htmlFor="fav-edit-score">Score</label>
+                <StarRating value={editScore} onChange={setEditScore} />
+              </div>
+              <div className="fav-edit-modal__field">
+                <label className="fav-edit-modal__label" htmlFor="fav-edit-comment">Comment</label>
+                <textarea
+                  id="fav-edit-comment"
+                  className="fav-edit-modal__textarea"
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  rows={3}
+                />
+              </div>
+              <div className="fav-edit-modal__actions">
+                <button
+                  type="button"
+                  className="fav-edit-modal__btn fav-edit-modal__btn--cancel"
+                  onClick={() => setEditingId(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="fav-edit-modal__btn fav-edit-modal__btn--save"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
