@@ -8,10 +8,13 @@ import {
   findPropertyByCadastral,
   listExistingProperty,
 } from '../../src/services/agencyService'
-import { apiFetch } from '../../src/services/http'
+import { apiFetch, ApiError } from '../../src/services/http'
 import { agencyProperties as agencyPropFixtures } from '../../src/models/fixtures'
 
-vi.mock('../../src/services/http', () => ({ apiFetch: vi.fn() }))
+vi.mock('../../src/services/http', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/services/http')>()
+  return { ...actual, apiFetch: vi.fn() }
+})
 
 function fakeToken(id: number): string {
   const header = btoa(JSON.stringify({ alg: 'none' }))
@@ -117,7 +120,7 @@ describe('findPropertyByCadastral', () => {
 
   it('returns null when no match is found (404)', async () => {
     vi.stubEnv('VITE_USE_FIXTURES', 'false')
-    vi.mocked(apiFetch).mockRejectedValue(new Error('Resource not found.'))
+    vi.mocked(apiFetch).mockRejectedValue(new ApiError('Property not found.', 404))
 
     const result = await findPropertyByCadastral('tok', { circumscription: '1', section: 'A', block: '10', parcel: '5' })
 
