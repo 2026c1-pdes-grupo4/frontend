@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { usePurchases } from '../controllers/usePurchases'
 import { Pager } from '../components/Pager'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import ErrorBanner from '../components/ErrorBanner'
 import '../components/PropertyCard.css'
 import './PurchasesPage.css'
 
@@ -11,7 +12,7 @@ export default function PurchasesPage() {
   const pagination = usePagination(list, pageSize)
 
   if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error}</p>
+  if (error) return <ErrorBanner message={error} />
   if (list.length === 0) return <p className="purchases-empty">No purchases yet.</p>
 
   return (

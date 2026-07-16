@@ -6,6 +6,7 @@ import AgencyPropertyCard from '../components/AgencyPropertyCard'
 import PropertyForm from '../components/PropertyForm'
 import { Pager } from '../components/Pager'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import ErrorBanner from '../components/ErrorBanner'
 import type { AgencyProperty, PropertyInput, PropertySummary } from '../models/types'
 import './AgencyDashboardPage.css'
 
@@ -13,7 +14,7 @@ type Tab = 'properties' | 'sales' | 'clients'
 
 function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
   if (loading) return <p className="loading">Loading...</p>
-  if (error) return <p className="error">{error}</p>
+  if (error) return <ErrorBanner message={error} />
   return null
 }
 

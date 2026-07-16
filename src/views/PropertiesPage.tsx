@@ -6,6 +6,7 @@ import PropertyCard from '../components/PropertyCard'
 import { Pager } from '../components/Pager'
 import { DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
 import { useDebounce } from '../hooks/useDebounce'
+import ErrorBanner from '../components/ErrorBanner'
 import type { PropertyFilter, PropertyType } from '../models/types'
 import './PropertiesPage.css'
 
@@ -113,7 +114,7 @@ export default function PropertiesPage() {
       </div>
 
       {loading && <p className="properties-status">Loading...</p>}
-      {error && <p className="properties-status">Error: {error}</p>}
+      {error && <ErrorBanner message={error} />}
       {!loading && !error && list.length === 0 && (
         <p className="properties-status">No properties found.</p>
       )}

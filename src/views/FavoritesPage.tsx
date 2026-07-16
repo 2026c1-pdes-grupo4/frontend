@@ -3,6 +3,7 @@ import { useFavorites } from '../controllers/useFavorites'
 import StarRating from '../components/StarRating'
 import { Pager } from '../components/Pager'
 import { usePagination, DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import ErrorBanner from '../components/ErrorBanner'
 import '../components/PropertyCard.css'
 import './FavoritesPage.css'
 
@@ -15,7 +16,7 @@ export default function FavoritesPage() {
   const [editComment, setEditComment] = useState('')
 
   if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error}</p>
+  if (error) return <ErrorBanner message={error} />
   if (list.length === 0) return <p className="fav-empty">No favorites yet.</p>
 
   const openEdit = (favoriteId: number, score: number, comment: string) => {

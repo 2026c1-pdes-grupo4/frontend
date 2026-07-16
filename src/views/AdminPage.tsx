@@ -21,6 +21,7 @@ import {
 } from '../controllers/useAdmin'
 import UserForm from '../components/UserForm'
 import AgencyForm from '../components/AgencyForm'
+import ErrorBanner from '../components/ErrorBanner'
 import type { User, Agency, Favorite, Purchase, TopBuyer, TopRankedProperty, TopAgencySales } from '../models/types'
 import './AdminPage.css'
 
@@ -36,7 +37,7 @@ const TABS: { key: Tab; label: string; testId: string }[] = [
 
 function TabStatus({ loading, error }: { loading: boolean; error: string | null }) {
   if (loading) return <p className="admin-status">Loading...</p>
-  if (error) return <p className="admin-status admin-status--error">Error: {error}</p>
+  if (error) return <ErrorBanner message={error} />
   return null
 }
 
