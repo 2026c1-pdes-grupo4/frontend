@@ -17,7 +17,12 @@ export default function PropertiesPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const { list, loading, error, totalPages } = useProperties(debouncedFilter, page, pageSize)
-  const { addFavorite, isFavorite } = useFavorites()
+  const { list: favoriteList, addFavorite, isFavorite, removeFavorite } = useFavorites()
+
+  const handleRemoveFavorite = (agencyPropertyId: number) => {
+    const fav = favoriteList.find((f) => f.agencyPropertyId === agencyPropertyId)
+    if (fav) removeFavorite(fav.id)
+  }
   const { buyProperty } = usePurchases()
 
   const set = (field: keyof PropertyFilter, value: string | number) => {
@@ -110,6 +115,7 @@ export default function PropertiesPage() {
             key={p.id}
             property={p}
             onFavorite={addFavorite}
+            onRemoveFavorite={handleRemoveFavorite}
             isFavorite={isFavorite(p.id)}
             onBuy={buyProperty}
           />
