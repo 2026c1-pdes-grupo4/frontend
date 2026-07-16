@@ -5,6 +5,7 @@ import { usePurchases } from '../controllers/usePurchases'
 import PropertyCard from '../components/PropertyCard'
 import { Pager } from '../components/Pager'
 import { DEFAULT_PAGE_SIZE } from '../hooks/usePagination'
+import { useDebounce } from '../hooks/useDebounce'
 import type { PropertyFilter, PropertyType } from '../models/types'
 import './PropertiesPage.css'
 
@@ -12,9 +13,10 @@ const PROPERTY_TYPES: PropertyType[] = ['house', 'apartment']
 
 export default function PropertiesPage() {
   const [filter, setFilter] = useState<PropertyFilter>({})
+  const debouncedFilter = useDebounce(filter, 300)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
-  const { list, loading, error, totalPages } = useProperties(filter, page, pageSize)
+  const { list, loading, error, totalPages } = useProperties(debouncedFilter, page, pageSize)
   const { addFavorite, isFavorite } = useFavorites()
   const { buyProperty } = usePurchases()
 

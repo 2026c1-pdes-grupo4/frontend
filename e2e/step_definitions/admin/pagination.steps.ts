@@ -27,5 +27,18 @@ Then('el botón de página anterior está deshabilitado', async function (this: 
 })
 
 Then('el botón de página siguiente está deshabilitado', async function (this: CustomWorld) {
+  // Navigate to the last page by clicking next until it's disabled
+  let isDisabled = false
+  while (!isDisabled) {
+    const nextButton = this.page.locator('[data-testid="btn-next-page"]')
+    const disabled = await nextButton.isDisabled()
+    if (disabled) {
+      isDisabled = true
+    } else {
+      await nextButton.click()
+      await this.page.waitForLoadState('networkidle')
+    }
+  }
+  
   await expect(this.page.locator('[data-testid="btn-next-page"]')).toBeDisabled()
 })

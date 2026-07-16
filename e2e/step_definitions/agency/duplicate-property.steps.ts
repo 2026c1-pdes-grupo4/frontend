@@ -79,10 +79,14 @@ async function findAcrossPages(world: CustomWorld, text: string): Promise<boolea
   await world.page.selectOption('.pagination select', '20')
   const list = world.page.locator('[data-testid="property-list"]')
   const nextBtn = world.page.locator('[data-testid="btn-next-page"]')
+  const indicator = world.page.locator('[data-testid="page-indicator"]')
   for (;;) {
     if ((await list.textContent())?.includes(text)) return true
     if (await nextBtn.isDisabled()) return false
+    // click() only waits for the DOM event to fire, not for React to actually re-render the new page
+    const currentPage = await indicator.textContent()
     await nextBtn.click()
+    await expect(indicator).not.toHaveText(currentPage ?? '')
   }
 }
 

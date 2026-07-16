@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import PropertiesPage from '../../src/views/PropertiesPage'
 import { useProperties } from '../../src/controllers/useProperties'
 import { useFavorites } from '../../src/controllers/useFavorites'
@@ -58,13 +58,15 @@ describe('PropertiesPage', () => {
     expect(screen.getByText('No properties found.')).toBeInTheDocument()
   })
 
-  it('re-fetches with the updated filter when the city input changes', () => {
+  it('re-fetches with the updated filter when the city input changes', async () => {
     setupMocks()
     render(<PropertiesPage />)
 
     fireEvent.change(screen.getByPlaceholderText('City'), { target: { value: 'Quilmes' } })
 
-    expect(useProperties).toHaveBeenLastCalledWith({ city: 'Quilmes' }, 1, 10)
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ city: 'Quilmes' }, 1, 10)
+    })
   })
 
   it('clears the filter when Clear is clicked', () => {
@@ -75,5 +77,36 @@ describe('PropertiesPage', () => {
     fireEvent.click(screen.getByText('Clear'))
 
     expect(useProperties).toHaveBeenLastCalledWith({}, 1, 10)
+  })
+
+  it('re-fetches with the updated filter when the province input changes', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByPlaceholderText('Province'), { target: { value: 'BA' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ province: 'BA' }, 1, 10)
+    })
+  })
+
+  it('re-fetches with the updated filter when the property type changes', async () => {
+    setupMocks()
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByDisplayValue('All types'), { target: { value: 'house' } })
+
+    await waitFor(() => {
+      expect(useProperties).toHaveBeenLastCalledWith({ propertyType: 'house' }, 1, 10)
+    })
+  })
+
+  it('re-fetches page 1 with the new page size when it changes', () => {
+    setupMocks({ totalPages: 3 })
+    render(<PropertiesPage />)
+
+    fireEvent.change(screen.getByDisplayValue('10 per page'), { target: { value: '20' } })
+
+    expect(useProperties).toHaveBeenLastCalledWith({}, 1, 20)
   })
 })
