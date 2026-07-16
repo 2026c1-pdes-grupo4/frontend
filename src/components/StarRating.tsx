@@ -18,6 +18,7 @@ export default function StarRating({ value, onChange }: Props) {
           onClick={() => onChange(star)}
           onMouseEnter={() => setHovered(star)}
           onMouseLeave={() => setHovered(0)}
+          data-testid={`star-${star}`}
         >
           ★
         </span>
