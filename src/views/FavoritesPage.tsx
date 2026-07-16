@@ -33,9 +33,9 @@ export default function FavoritesPage() {
   return (
     <div className="fav-page">
       <h2>My Favorites</h2>
-      <div className="fav-list">
+      <div className="fav-list" data-testid="favorites-list">
         {pagination.pagedData.map((f) => (
-          <div key={f.id} className="property-card">
+          <div key={f.id} className="property-card" data-testid="favorite-card">
             <div className="property-card__body">
               <div className="property-card__row">
                 <span className="property-card__address">{f.propertyAddress}</span>
@@ -56,23 +56,28 @@ export default function FavoritesPage() {
             </div>
 
             <div className="fav-actions">
-              <button className="fav-action-btn" onClick={() => openEdit(f.id, f.score, f.comment)}>Edit</button>
-              <button className="fav-action-btn fav-action-btn--delete" onClick={() => removeFavorite(f.id)}>Delete</button>
+              <button className="fav-action-btn" data-testid="btn-edit-favorite" onClick={() => openEdit(f.id, f.score, f.comment)}>Edit</button>
+              <button className="fav-action-btn fav-action-btn--delete" data-testid="btn-delete-favorite" onClick={() => removeFavorite(f.id)}>Delete</button>
             </div>
 
             {editingId === f.id && (
-              <form className="fav-edit-form" onSubmit={(e) => handleEditSubmit(e, f.id)}>
+              <form className="fav-edit-form" data-testid="favorite-edit-form" onSubmit={(e) => handleEditSubmit(e, f.id)}>
                 <label>
                   Score
                   <StarRating value={editScore} onChange={setEditScore} />
                 </label>
                 <label>
                   Comment
-                  <textarea value={editComment} onChange={(e) => setEditComment(e.target.value)} rows={2} />
+                  <textarea
+                    value={editComment}
+                    onChange={(e) => setEditComment(e.target.value)}
+                    rows={2}
+                    data-testid="input-edit-favorite-comment"
+                  />
                 </label>
                 <div className="fav-form-actions">
-                  <button type="submit">Save</button>
-                  <button type="button" onClick={() => setEditingId(null)}>Cancel</button>
+                  <button type="submit" data-testid="btn-submit-edit-favorite">Save</button>
+                  <button type="button" onClick={() => setEditingId(null)} data-testid="btn-cancel-edit-favorite">Cancel</button>
                 </div>
               </form>
             )}

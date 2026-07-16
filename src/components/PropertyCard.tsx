@@ -57,6 +57,7 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
             {onFavorite && (
               <button
                 className="property-card__fav-btn"
+                data-testid="btn-toggle-favorite"
                 onClick={handleFavClick}
                 title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               >
@@ -109,18 +110,23 @@ export default function PropertyCard({ property: p, onFavorite, isFavorite, onBu
       )}
 
       {open && (
-        <form className="fav-form" onSubmit={handleSubmit}>
+        <form className="fav-form" data-testid="favorite-form" onSubmit={handleSubmit}>
           <label>
             Score
             <StarRating value={score} onChange={setScore} />
           </label>
           <label>
             Comment
-            <textarea value={comment} onChange={e => setComment(e.target.value)} rows={2} />
+            <textarea
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              rows={2}
+              data-testid="input-favorite-comment"
+            />
           </label>
           <div className="fav-form-actions">
-            <button type="submit">Save</button>
-            <button type="button" onClick={() => setOpen(false)}>Cancel</button>
+            <button type="submit" data-testid="btn-submit-favorite">Save</button>
+            <button type="button" onClick={() => setOpen(false)} data-testid="btn-cancel-favorite">Cancel</button>
           </div>
         </form>
       )}
