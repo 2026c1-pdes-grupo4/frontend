@@ -12,12 +12,11 @@ export function useProperties(filter: PropertyFilter = {}, page = 1, pageSize = 
   const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
-    setLoading(true)
-    setError(null)
     fetchProperties(filter, token, page, pageSize)
       .then(result => {
         setList(result.content)
         setTotalPages(result.totalPages)
+        setError(null)
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
