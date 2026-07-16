@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { fetchAgencyProperties, createProperty, updateProperty, deleteProperty } from '../services/agencyService'
+import { fetchAgencyProperties, createProperty, updateProperty, deleteProperty, listExistingProperty, findPropertyByCadastral } from '../services/agencyService'
 import { useAuthContext } from '../context/AuthContext'
 import type { AgencyProperty, PropertyInput } from '../models/types'
 
@@ -23,6 +23,17 @@ export function useAgencyProperties() {
     setList(prev => [...prev, created])
   }, [token])
 
+  const checkDuplicate = useCallback(async (cadastral: { circumscription: string; section: string; block: string; parcel: string }) => {
+    if (!token) return null
+    return findPropertyByCadastral(token, cadastral)
+  }, [token])
+
+  const linkExisting = useCallback(async (propertyId: number, listedPrice: number) => {
+    if (!token) return
+    const created = await listExistingProperty(token, propertyId, listedPrice)
+    setList(prev => [...prev, created])
+  }, [token])
+
   const edit = useCallback(async (ap: AgencyProperty, data: Partial<PropertyInput>) => {
     if (!token) return
     const updated = await updateProperty(token, ap.id, ap.propertyId, data)
@@ -35,5 +46,5 @@ export function useAgencyProperties() {
     setList(prev => prev.filter(p => p.id !== id))
   }, [token])
 
-  return { list, loading, error, add, edit, remove }
+  return { list, loading, error, add, edit, remove, linkExisting, checkDuplicate }
 }
