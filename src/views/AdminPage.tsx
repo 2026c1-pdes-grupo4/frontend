@@ -55,30 +55,25 @@ export default function AdminPage() {
   const current = { users, agencies, favorites, purchases, reports: topBuyersData }[tab]
 
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
-  const [usersList, setUsersList] = useState<User[]>([])
-  const [agenciesList, setAgenciesList] = useState<Agency[]>([])
+  const [newUsers, setNewUsers] = useState<User[]>([])
+  const [editedUsers, setEditedUsers] = useState<Record<number, User>>({})
+  const [deletedUserIds, setDeletedUserIds] = useState<Set<number>>(new Set())
+  const [newAgencies, setNewAgencies] = useState<Agency[]>([])
+  const [editedAgencies, setEditedAgencies] = useState<Record<number, Agency>>({})
+  const [deletedAgencyIds, setDeletedAgencyIds] = useState<Set<number>>(new Set())
   const [showUserForm, setShowUserForm] = useState(false)
   const [showAgencyForm, setShowAgencyForm] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [editingAgency, setEditingAgency] = useState<Agency | null>(null)
-  const [usersLoaded, setUsersLoaded] = useState(false)
-  const [agenciesLoaded, setAgenciesLoaded] = useState(false)
 
-  if (tab === 'users' && !users.loading && !usersLoaded) {
-    setUsersList(users.data)
-    setUsersLoaded(true)
-  }
-  if (tab !== 'users' && usersLoaded) {
-    setUsersLoaded(false)
-  }
-
-  if (tab === 'agencies' && !agencies.loading && !agenciesLoaded) {
-    setAgenciesList(agencies.data)
-    setAgenciesLoaded(true)
-  }
-  if (tab !== 'agencies' && agenciesLoaded) {
-    setAgenciesLoaded(false)
-  }
+  const usersList = [
+    ...newUsers,
+    ...users.data.filter(u => !deletedUserIds.has(u.id)).map(u => editedUsers[u.id] ?? u),
+  ]
+  const agenciesList = [
+    ...newAgencies,
+    ...agencies.data.filter(a => !deletedAgencyIds.has(a.id)).map(a => editedAgencies[a.id] ?? a),
+  ]
 
   const usersPagination = usePagination(usersList, pageSize)
   const agenciesPagination = usePagination(agenciesList, pageSize)
@@ -88,11 +83,11 @@ export default function AdminPage() {
   const handleSubmitUser = async (data: Parameters<typeof createUser>[1]) => {
     if (editingUser) {
       const updated = await updateUser(token!, editingUser.id, data)
-      setUsersList(prev => prev.map(u => (u.id === updated.id ? updated : u)))
+      setEditedUsers(prev => ({ ...prev, [updated.id]: updated }))
       setEditingUser(null)
     } else {
       const created = await createUser(token!, data)
-      setUsersList(prev => [created, ...prev])
+      setNewUsers(prev => [created, ...prev])
     }
     setShowUserForm(false)
   }
@@ -100,11 +95,11 @@ export default function AdminPage() {
   const handleSubmitAgency = async (data: Parameters<typeof createAgency>[1]) => {
     if (editingAgency) {
       const updated = await updateAgency(token!, editingAgency.id, data)
-      setAgenciesList(prev => prev.map(a => (a.id === updated.id ? updated : a)))
+      setEditedAgencies(prev => ({ ...prev, [updated.id]: updated }))
       setEditingAgency(null)
     } else {
       const created = await createAgency(token!, data)
-      setAgenciesList(prev => [created, ...prev])
+      setNewAgencies(prev => [created, ...prev])
     }
     setShowAgencyForm(false)
   }
@@ -116,7 +111,8 @@ export default function AdminPage() {
 
   const handleDeleteUser = async (id: number) => {
     await deleteUser(token!, id)
-    setUsersList(prev => prev.filter(u => u.id !== id))
+    setNewUsers(prev => prev.filter(u => u.id !== id))
+    setDeletedUserIds(prev => new Set(prev).add(id))
   }
 
   const handleEditAgency = (agency: Agency) => {
@@ -126,7 +122,8 @@ export default function AdminPage() {
 
   const handleDeleteAgency = async (id: number) => {
     await deleteAgency(token!, id)
-    setAgenciesList(prev => prev.filter(a => a.id !== id))
+    setNewAgencies(prev => prev.filter(a => a.id !== id))
+    setDeletedAgencyIds(prev => new Set(prev).add(id))
   }
 
   const handleCancelUserForm = () => {
