@@ -8,7 +8,7 @@ interface Props {
   onCancel: () => void
 }
 
-const PROPERTY_TYPES = ['APARTMENT', 'HOUSE', 'LAND', 'COMMERCIAL']
+const PROPERTY_TYPES = ['APARTMENT', 'HOUSE']
 
 export default function PropertyForm({ initial, onSubmit, onCancel }: Props) {
   const [form, setForm] = useState<PropertyInput>({
